@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PropertyReply | AI Real Estate Assistant for UK Estate Agents | Industry-Leading Solution</title>
     <meta name="description" content="PropertyReply provides UK's most advanced AI-powered chat assistant for estate agents. Capture qualified leads, automate responses, and increase conversions 24/7 with our enterprise-grade solution.">
-    <meta name="keywords" content="UK estate agents, AI chatbot, property technology, lead generation, real estate AI, property reply">
+    <meta name="keywords" content="UK estate agents, AI assistant, property technology, lead generation, real estate AI, property reply">
     
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -107,7 +107,7 @@
             width: 100%;
             height: 100%;
             z-index: -1;
-            background: var(--gradient-dark);
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #0F172A 100%);
         }
 
         /* Floating Elements */
@@ -199,21 +199,22 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(17, 24, 39, 0.95);
+            background: rgba(255, 255, 255, 0.98);
             backdrop-filter: blur(20px);
             z-index: 1000;
-            border-bottom: 2px solid rgba(0, 0, 0, 0.5);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
             transition: all var(--transition-normal);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
         }
         
         .logo img {
-            filter: brightness(1.2) contrast(1.1);
+            filter: none;
         }
 
         .header.scrolled {
             padding: 0.75rem 5%;
-            box-shadow: var(--shadow-lg);
-            background: rgba(17, 24, 39, 0.98);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            background: rgba(255, 255, 255, 0.99);
         }
         
         .logo-container {
@@ -223,7 +224,7 @@
         }
         
         .logo {
-            height: 45px;
+            height: 65px;
             width: auto;
             display: flex;
             align-items: center;
@@ -249,7 +250,7 @@
         
         .nav-link {
             text-decoration: none;
-            color: white;
+            color: var(--dark);
             font-weight: 500;
             font-size: 1rem;
             position: relative;
@@ -295,11 +296,16 @@
             background: none;
             border: none;
             font-size: 1.5rem;
-            color: white;
+            color: var(--dark);
             cursor: pointer;
             padding: 0.5rem;
             border-radius: var(--radius-sm);
             transition: background-color var(--transition-fast);
+            z-index: 1001;
+        }
+        
+        .mobile-menu-btn i {
+            color: var(--dark);
         }
 
         .mobile-menu-btn:hover {
@@ -328,6 +334,17 @@
         .btn i {
             color: inherit;
             font-size: 1.1rem;
+            display: inline-block;
+        }
+        
+        .btn-primary i,
+        .btn-accent i,
+        .btn-dark i {
+            color: white;
+        }
+        
+        .btn-secondary i {
+            color: var(--primary);
         }
 
         .btn::after {
@@ -349,28 +366,30 @@
         .btn-primary {
             background: var(--gradient-primary);
             color: white;
-            box-shadow: var(--shadow-md);
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
         }
-        
+
         .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
         }
         
         .btn-secondary {
-            background: transparent;
+            background: rgba(255, 255, 255, 0.1);
             color: white;
-            border: 2px solid var(--primary);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
         }
         
         .btn-secondary i {
             color: white;
         }
-        
+
         .btn-secondary:hover {
-            background: rgba(37, 99, 235, 0.2);
-            transform: translateY(-3px);
-            box-shadow: var(--shadow-md);
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
         }
 
         .btn-accent {
@@ -397,21 +416,35 @@
         
         /* Hero Section */
         .hero {
-            padding: 6rem 5% 4rem;
+            padding: 8rem 5% 6rem;
             position: relative;
             overflow: hidden;
             max-width: var(--container-width);
             margin: 0 auto;
-            min-height: calc(100vh - 80px);
+            min-height: 100vh;
             display: flex;
             align-items: center;
+            justify-content: center;
         }
         
         .hero-content {
-            max-width: 800px;
+            max-width: 900px;
             position: relative;
             z-index: 2;
             width: 100%;
+            text-align: center;
+            animation: fadeInUp 0.8s ease-out;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .hero-badge {
@@ -420,12 +453,13 @@
 
         .hero-title {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 3.5rem;
+            font-size: clamp(2.5rem, 5vw, 4.5rem);
             font-weight: 800;
             line-height: 1.1;
             color: white;
-            margin-bottom: 1.25rem;
-            letter-spacing: -1px;
+            margin-bottom: 1.5rem;
+            letter-spacing: -1.5px;
+            text-align: center;
         }
 
         .hero-title span {
@@ -433,30 +467,53 @@
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
+            display: inline-block;
+            position: relative;
+        }
+        
+        .hero-title span::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--gradient-primary);
+            opacity: 0.3;
+            border-radius: 2px;
         }
 
         .hero-subtitle {
-            font-size: 1.125rem;
-            color: rgba(255, 255, 255, 0.8);
-            max-width: 700px;
-            margin-bottom: 2rem;
-            line-height: 1.8;
+            font-size: clamp(1rem, 2vw, 1.25rem);
+            color: rgba(255, 255, 255, 0.85);
+            max-width: 750px;
+            margin: 0 auto 3rem;
+            line-height: 1.75;
+            text-align: center;
         }
 
         .hero-cta {
             display: flex;
-            gap: 1.5rem;
+            gap: 1.25rem;
             align-items: center;
+            justify-content: center;
             flex-wrap: wrap;
-            margin-bottom: 2rem;
+            margin-bottom: 4rem;
+        }
+        
+        .btn-lg {
+            padding: 1rem 2.5rem;
+            font-size: 1.125rem;
         }
 
         .trusted-by {
             display: flex;
             align-items: center;
+            justify-content: center;
             gap: 1.5rem;
             flex-wrap: wrap;
-            margin-top: 1.5rem;
+            margin: 0 auto;
+            padding: 2rem 0;
             opacity: 0;
             transform: translateY(20px);
             transition: all 0.6s ease;
@@ -469,8 +526,10 @@
 
         .trusted-by-text {
             font-size: 0.875rem;
-            color: rgba(255, 255, 255, 0.7);
+            color: rgba(255, 255, 255, 0.6);
             font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .trusted-logos {
@@ -490,11 +549,13 @@
         }
 
         .hero-stats {
-            display: flex;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 3rem;
-            margin-top: 2rem;
-            padding-top: 2rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin: 0 auto;
+            padding-top: 3rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.15);
+            max-width: 900px;
             opacity: 0;
             transform: translateY(20px);
             transition: all 0.6s ease;
@@ -508,20 +569,25 @@
         .stat {
             display: flex;
             flex-direction: column;
+            align-items: center;
+            text-align: center;
         }
 
         .stat-number {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 2.5rem;
+            font-size: clamp(2rem, 4vw, 3rem);
             font-weight: 800;
             color: var(--primary-light);
             line-height: 1;
+            margin-bottom: 0.5rem;
         }
 
         .stat-label {
             font-size: 0.875rem;
             color: rgba(255, 255, 255, 0.7);
-            margin-top: 0.5rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         /* Services Section */
@@ -535,6 +601,15 @@
         .section-dark {
             background: var(--gradient-dark);
             color: white;
+        }
+        
+        .section-dark .feature-icon {
+            background: rgba(59, 130, 246, 0.3);
+            border-color: rgba(59, 130, 246, 0.5);
+        }
+        
+        .section-dark .feature-icon i {
+            color: #60A5FA;
         }
 
         .section-header {
@@ -689,15 +764,22 @@
 
         .feature-icon {
             flex-shrink: 0;
-            width: 60px;
-            height: 60px;
-            background: rgba(37, 99, 235, 0.2);
+            width: 70px;
+            height: 70px;
+            background: rgba(37, 99, 235, 0.25);
+            border: 2px solid rgba(37, 99, 235, 0.4);
             border-radius: var(--radius-lg);
             display: flex;
             align-items: center;
             justify-content: center;
             color: var(--primary-light);
-            font-size: 1.5rem;
+            font-size: 1.75rem;
+            box-shadow: 0 4px 15px rgba(37, 99, 235, 0.2);
+        }
+        
+        .feature-icon i {
+            color: #60A5FA;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
         }
 
         .feature-content h4 {
@@ -709,7 +791,8 @@
         }
 
         .feature-content p {
-            color: rgba(255, 255, 255, 0.8);
+            color: rgba(255, 255, 255, 0.9);
+            line-height: 1.7;
         }
 
         /* Pricing Cards */
@@ -995,6 +1078,23 @@
             color: var(--primary);
             font-size: 1.125rem;
         }
+        
+        .contact-item i,
+        .footer-links i,
+        .social-link i,
+        .hero-badge i,
+        .section-subtitle i,
+        .trust-icon i {
+            color: inherit;
+        }
+        
+        .trust-icon {
+            color: var(--success);
+        }
+        
+        .trust-icon i {
+            color: var(--success);
+        }
 
         .social-links {
             display: flex;
@@ -1030,185 +1130,6 @@
             margin: 0 auto;
         }
         
-        /* Chatbot */
-        .chatbot-container {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            z-index: 999;
-        }
-        
-        .chatbot-toggle {
-            width: 60px;
-            height: 60px;
-            background: var(--gradient-primary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.5rem;
-            cursor: pointer;
-            box-shadow: var(--shadow-xl);
-            border: none;
-            transition: all var(--transition-normal);
-        }
-        
-        .chatbot-toggle:hover {
-            transform: scale(1.05);
-            box-shadow: var(--shadow-2xl);
-        }
-        
-        .chatbot-window {
-            position: fixed;
-            bottom: 85px;
-            right: 20px;
-            width: 320px;
-            height: 450px;
-            max-width: calc(100vw - 40px);
-            max-height: calc(100vh - 120px);
-            background: rgba(31, 41, 55, 0.98);
-            backdrop-filter: blur(20px);
-            border-radius: var(--radius-xl);
-            box-shadow: var(--shadow-2xl);
-            overflow: hidden;
-            display: none;
-            flex-direction: column;
-            transform: translateY(20px);
-            opacity: 0;
-            transition: all var(--transition-normal);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            z-index: 998;
-        }
-        
-        .chatbot-window.active {
-            display: flex;
-            transform: translateY(0);
-            opacity: 1;
-        }
-        
-        .chatbot-header {
-            background: var(--gradient-primary);
-            color: white;
-            padding: 1rem 1.25rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .chatbot-header h3 {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 1rem;
-            font-weight: 700;
-        }
-        
-        .chatbot-close {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: background var(--transition-fast);
-        }
-
-        .chatbot-close:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-        
-        .chatbot-messages {
-            flex: 1;
-            padding: 1rem;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 0.75rem;
-        }
-        
-        .chatbot-message {
-            max-width: 85%;
-            padding: 0.75rem 1rem;
-            border-radius: var(--radius-lg);
-            font-size: 0.875rem;
-            line-height: 1.5;
-        }
-
-        .chatbot-message.bot {
-            background: rgba(37, 99, 235, 0.2);
-            color: white;
-            align-self: flex-start;
-            border-bottom-left-radius: 5px;
-        }
-        
-        .chatbot-message.user {
-            background: var(--gradient-primary);
-            color: white;
-            align-self: flex-end;
-            border-bottom-right-radius: 5px;
-        }
-
-        .chatbot-input-area {
-            padding: 1rem;
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .chatbot-input {
-            display: flex;
-            gap: 0.5rem;
-            align-items: center;
-        }
-        
-        .chatbot-input input {
-            flex: 1;
-            padding: 0.75rem 1rem;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: var(--radius-full);
-            font-family: 'Inter', sans-serif;
-            font-size: 0.875rem;
-            background: rgba(17, 24, 39, 0.5);
-            color: white;
-            transition: all var(--transition-fast);
-        }
-        
-        .chatbot-input input::placeholder {
-            color: rgba(255, 255, 255, 0.5);
-        }
-
-        .chatbot-input input:focus {
-            outline: none;
-            border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
-        }
-        
-        .chatbot-send {
-            width: 40px;
-            height: 40px;
-            background: var(--gradient-primary);
-            border: none;
-            border-radius: 50%;
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all var(--transition-normal);
-            font-size: 0.875rem;
-        }
-        
-        .chatbot-send:hover {
-            transform: scale(1.05);
-        }
-        
-        .chatbot-close {
-            width: 28px;
-            height: 28px;
-            font-size: 0.875rem;
-        }
-        
         /* Responsive */
         @media (max-width: 1200px) {
             .hero-title {
@@ -1226,12 +1147,51 @@
         }
 
         @media (max-width: 992px) {
+            .header {
+                padding: 0.875rem 5%;
+            }
+            
             .nav-links {
-                display: none;
+                position: fixed;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background: white;
+                flex-direction: column;
+                padding: 2rem;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+                transform: translateY(-100%);
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
+                z-index: 999;
+                gap: 1.5rem;
+            }
+            
+            .nav-links.active {
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+            }
+            
+            .nav-link {
+                color: var(--dark);
+                font-size: 1.125rem;
+                padding: 0.75rem 0;
+            }
+            
+            .header-buttons {
+                gap: 0.75rem;
+            }
+            
+            .btn {
+                padding: 0.75rem 1.5rem;
+                font-size: 0.9375rem;
             }
             
             .mobile-menu-btn {
                 display: block;
+                z-index: 1001;
             }
             
             .hero-title {
@@ -1253,27 +1213,59 @@
         }
 
         @media (max-width: 768px) {
+            .header {
+                padding: 0.75rem 4%;
+            }
+            
+            .header-buttons {
+                gap: 0.5rem;
+            }
+            
+            .btn {
+                padding: 0.625rem 1.25rem;
+                font-size: 0.875rem;
+            }
+            
+            .btn i {
+                font-size: 1rem;
+            }
+            
             .hero {
-                padding: 5rem 5% 3rem;
-                min-height: calc(100vh - 70px);
+                padding: 6rem 4% 4rem;
+                min-height: 100vh;
             }
             
             .hero-title {
-                font-size: 2.25rem;
+                font-size: 2.5rem;
+                margin-bottom: 1.25rem;
             }
             
             .hero-subtitle {
                 font-size: 1rem;
+                margin-bottom: 2.5rem;
             }
             
             .hero-cta {
                 flex-direction: column;
-                align-items: flex-start;
+                align-items: stretch;
                 gap: 1rem;
+                width: 100%;
+                margin-bottom: 3rem;
+            }
+            
+            .hero-cta .btn {
+                width: 100%;
+                max-width: 100%;
+                justify-content: center;
+            }
+            
+            .hero-stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2rem;
             }
             
             .section {
-                padding: 4rem 5%;
+                padding: 4rem 4%;
             }
             
             .services-grid {
@@ -1284,39 +1276,66 @@
                 font-size: 2.5rem;
             }
             
-            .chatbot-window {
-                position: fixed;
-                width: calc(100vw - 20px);
-                right: 10px;
-                left: 10px;
-                height: 400px;
-                max-height: calc(100vh - 100px);
-                bottom: 75px;
-            }
-            
-            .chatbot-toggle {
-                width: 55px;
-                height: 55px;
-                font-size: 1.25rem;
-            }
-            
             .hero-stats {
                 flex-wrap: wrap;
                 gap: 2rem;
             }
+            
+            .nav-links {
+                top: 65px;
+            }
         }
         
         @media (max-width: 480px) {
+            .header {
+                padding: 0.75rem 4%;
+            }
+            
+            .logo {
+                height: 35px;
+            }
+            
+            .header-buttons {
+                gap: 0.5rem;
+            }
+            
+            .btn {
+                padding: 0.5rem 1rem;
+                font-size: 0.8125rem;
+            }
+            
+            .btn i {
+                font-size: 0.9rem;
+            }
+            
+            .mobile-menu-btn {
+                font-size: 1.25rem;
+                padding: 0.375rem;
+            }
+            
             .hero {
-                padding: 4rem 5% 2rem;
+                padding: 5rem 4% 3rem;
+                min-height: 100vh;
             }
             
             .hero-title {
                 font-size: 2rem;
+                margin-bottom: 1rem;
             }
             
             .hero-subtitle {
                 font-size: 0.9375rem;
+                margin-bottom: 2rem;
+            }
+            
+            .hero-cta {
+                margin-bottom: 2.5rem;
+            }
+            
+            .hero-stats {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+                padding-top: 2rem;
             }
             
             .section-title {
@@ -1332,30 +1351,15 @@
                 gap: 3rem;
             }
             
-            .chatbot-window {
-                position: fixed;
-                width: calc(100vw - 20px);
-                right: 10px;
-                left: 10px;
-                height: 350px;
-                max-height: calc(100vh - 90px);
-                bottom: 70px;
-            }
-            
-            .chatbot-toggle {
-                width: 50px;
-                height: 50px;
-                font-size: 1.125rem;
-            }
-            
-            .header {
-                padding: 0.75rem 5%;
-            }
-            
             .hero-stats {
                 flex-direction: column;
                 gap: 1.5rem;
                 align-items: flex-start;
+            }
+            
+            .nav-links {
+                top: 60px;
+                padding: 1.5rem;
             }
         }
     </style>
@@ -1475,7 +1479,7 @@
                         </div>
                 <h3 class="card-title">AI Chat Assistant</h3>
                 <p class="card-description">
-                    Intelligent chatbot engages visitors instantly, answering questions and capturing leads 24/7 with human-like conversations.
+                    Intelligent AI assistant engages visitors instantly, answering questions and capturing leads 24/7 with human-like conversations.
                 </p>
                 <a href="#" class="card-link">
                     Learn More <i class="fas fa-arrow-right"></i>
@@ -1581,13 +1585,13 @@
                 
                 <div class="feature-item" data-aos="fade-left" data-aos-delay="200">
                     <div class="feature-icon">
-                            <i class="fas fa-flag-uk"></i>
-                        </div>
+                        <i class="fas fa-landmark"></i>
+                    </div>
                     <div class="feature-content">
                         <h4>UK Market Focus</h4>
                         <p>Specifically trained on UK property market terminology and processes.</p>
-                        </div>
                     </div>
+                </div>
                     
                 <div class="feature-item" data-aos="fade-left" data-aos-delay="300">
                     <div class="feature-icon">
@@ -1802,7 +1806,7 @@
             <div class="footer-column">
                 <div class="logo-container" style="margin-bottom: 1.5rem;">
                     <div class="logo">
-                        <img src="logo.png" alt="PropertyReply Logo" style="height: 40px;">
+                        <img src="logo.png" alt="PropertyReply Logo" style="height: 55px;">
                             </div>
                             </div>
                 <p style="color: rgba(255,255,255,0.7); margin-bottom: 1.5rem;">
@@ -1861,37 +1865,6 @@
             <p>&copy; <span id="current-year"></span> PropertyReply. All rights reserved. | UK-Based & GDPR Compliant | <a href="#" style="color: var(--primary); text-decoration: none;">Privacy Policy</a> | <a href="#" style="color: var(--primary); text-decoration: none;">Terms & Conditions</a></p>
         </div>
     </footer>
-    
-    <!-- Chatbot -->
-    <div class="chatbot-container">
-        <button class="chatbot-toggle" id="chatbot-toggle">
-            <i class="fas fa-robot"></i>
-        </button>
-        
-        <div class="chatbot-window" id="chatbot-window">
-            <div class="chatbot-header">
-                <h3>PropertyReply AI Assistant</h3>
-                <button class="chatbot-close" id="chatbot-close">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            
-            <div class="chatbot-messages" id="chatbot-messages">
-                <div class="chatbot-message bot">
-                    Hello! I'm the PropertyReply AI assistant. How can I help you today? You can ask me about pricing, features, demos, or anything else about our AI solution for estate agents.
-                </div>
-            </div>
-            
-            <div class="chatbot-input-area">
-            <div class="chatbot-input">
-                <input type="text" id="chatbot-input" placeholder="Type your message...">
-                    <button class="chatbot-send" id="chatbot-send">
-                    <i class="fas fa-paper-plane"></i>
-                </button>
-                </div>
-            </div>
-        </div>
-    </div>
     
     <!-- JavaScript Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
@@ -1964,20 +1937,29 @@
         // Mobile menu
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
         const navLinks = document.getElementById('nav-links');
-        
+
         mobileMenuBtn.addEventListener('click', () => {
-            navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
-            if (navLinks.style.display === 'flex') {
-                navLinks.style.position = 'absolute';
-                navLinks.style.top = '100%';
-                navLinks.style.left = '0';
-                navLinks.style.width = '100%';
-                navLinks.style.backgroundColor = 'white';
-                navLinks.style.flexDirection = 'column';
-                navLinks.style.padding = '2rem';
-                navLinks.style.boxShadow = 'var(--shadow-lg)';
-                navLinks.style.gap = '1.5rem';
+            navLinks.classList.toggle('active');
+            const icon = mobileMenuBtn.querySelector('i');
+            if (navLinks.classList.contains('active')) {
+                icon.classList.remove('fa-bars');
+                icon.classList.add('fa-times');
+            } else {
+                icon.classList.remove('fa-times');
+                icon.classList.add('fa-bars');
             }
+        });
+        
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', () => {
+                if (window.innerWidth <= 992) {
+                    navLinks.classList.remove('active');
+                    const icon = mobileMenuBtn.querySelector('i');
+                    icon.classList.remove('fa-times');
+                    icon.classList.add('fa-bars');
+                }
+            });
         });
 
         // Smooth scrolling for navigation links
@@ -2002,7 +1984,12 @@
                     
                     // Close mobile menu if open
                     if (window.innerWidth <= 992) {
-                        navLinks.style.display = 'none';
+                        navLinks.classList.remove('active');
+                        const icon = mobileMenuBtn.querySelector('i');
+                        if (icon) {
+                            icon.classList.remove('fa-times');
+                            icon.classList.add('fa-bars');
+                        }
                     }
                 }
             });
@@ -2011,7 +1998,7 @@
         // CTA buttons
         document.querySelectorAll('.btn-primary, .btn-accent').forEach(btn => {
             btn.addEventListener('click', function(e) {
-                if (!this.closest('.pricing-card') && !this.id.includes('chatbot')) {
+                if (!this.closest('.pricing-card')) {
                     e.preventDefault();
                     // Scroll to contact section
                     document.querySelector('#contact').scrollIntoView({ 
@@ -2030,87 +2017,6 @@
                     }, 2000);
                 }
             });
-        });
-        
-        // Chatbot functionality
-        const chatbotToggle = document.getElementById('chatbot-toggle');
-        const chatbotWindow = document.getElementById('chatbot-window');
-        const chatbotClose = document.getElementById('chatbot-close');
-        const chatbotSend = document.getElementById('chatbot-send');
-        const chatbotInput = document.getElementById('chatbot-input');
-        const chatbotMessages = document.getElementById('chatbot-messages');
-        
-        chatbotToggle.addEventListener('click', () => {
-            chatbotWindow.classList.toggle('active');
-        });
-        
-        chatbotClose.addEventListener('click', () => {
-            chatbotWindow.classList.remove('active');
-        });
-        
-        // Chatbot responses
-        const chatbotResponses = {
-            greeting: ["Hello! How can I assist you today?", "Hi there! I'm here to help you learn about PropertyReply.", "Welcome! I'm your AI assistant. What would you like to know?"],
-            pricing: "We offer three plans: Starter (£79/month), Professional (£149/month, most popular), and Enterprise (£299/month). All plans include our AI chat assistant with no long-term contracts.",
-            features: "PropertyReply offers AI chat assistant, instant enquiry responses, advanced lead qualification, valuation capture, viewing management, CRM integration, and 24/7 operation.",
-            demo: "You can request a demo by clicking any 'Request Demo' button on our website. We'll schedule a personalized demonstration at your convenience.",
-            contact: "You can reach us at info@propertyreply.com or through our contact form. We're UK-based and typically respond within 1 business day.",
-            gdpr: "Yes! PropertyReply is fully GDPR-compliant and designed specifically for UK data protection regulations.",
-            uk: "Absolutely! We're UK-based and our AI is specifically trained on UK property market terminology and processes.",
-            setup: "Setup takes just minutes. Add one line of code to your website, customize the chat widget, and you're ready to start capturing leads.",
-            default: "I'm not sure I understood that. Could you please rephrase? You can ask about pricing, features, demos, or contact information."
-        };
-
-        function addChatbotMessage(text, sender) {
-            const messageDiv = document.createElement('div');
-            messageDiv.classList.add('chatbot-message', sender);
-            messageDiv.textContent = text;
-            chatbotMessages.appendChild(messageDiv);
-            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
-        }
-        
-        function processChatbotMessage(message) {
-            const lowerMessage = message.toLowerCase();
-            
-            if (lowerMessage.includes('hello') || lowerMessage.includes('hi') || lowerMessage.includes('hey')) {
-                return chatbotResponses.greeting[Math.floor(Math.random() * chatbotResponses.greeting.length)];
-            } else if (lowerMessage.includes('price') || lowerMessage.includes('cost') || lowerMessage.includes('plan')) {
-                return chatbotResponses.pricing;
-            } else if (lowerMessage.includes('feature') || lowerMessage.includes('what can') || lowerMessage.includes('offer')) {
-                return chatbotResponses.features;
-            } else if (lowerMessage.includes('demo') || lowerMessage.includes('trial') || lowerMessage.includes('test')) {
-                return chatbotResponses.demo;
-            } else if (lowerMessage.includes('contact') || lowerMessage.includes('email') || lowerMessage.includes('phone')) {
-                return chatbotResponses.contact;
-            } else if (lowerMessage.includes('gdpr') || lowerMessage.includes('compliance') || lowerMessage.includes('data')) {
-                return chatbotResponses.gdpr;
-            } else if (lowerMessage.includes('uk') || lowerMessage.includes('united kingdom') || lowerMessage.includes('british')) {
-                return chatbotResponses.uk;
-            } else if (lowerMessage.includes('setup') || lowerMessage.includes('install') || lowerMessage.includes('implement')) {
-                return chatbotResponses.setup;
-            } else {
-                return chatbotResponses.default;
-            }
-        }
-        
-        chatbotSend.addEventListener('click', () => {
-            const message = chatbotInput.value.trim();
-            if (message) {
-                addChatbotMessage(message, 'user');
-                chatbotInput.value = '';
-                
-                // Simulate typing delay
-                setTimeout(() => {
-                    const response = processChatbotMessage(message);
-                    addChatbotMessage(response, 'bot');
-                }, 500);
-            }
-        });
-        
-        chatbotInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                chatbotSend.click();
-            }
         });
         
         // Parallax effect on scroll
