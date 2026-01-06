@@ -368,7 +368,7 @@
             color: white;
             box-shadow: 0 4px 15px rgba(37, 99, 235, 0.4);
         }
-
+        
         .btn-primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(37, 99, 235, 0.5);
@@ -384,7 +384,7 @@
         .btn-secondary i {
             color: white;
         }
-
+        
         .btn-secondary:hover {
             background: rgba(255, 255, 255, 0.15);
             border-color: rgba(255, 255, 255, 0.5);
@@ -414,24 +414,37 @@
             box-shadow: var(--shadow-lg);
         }
         
-        /* Hero Section */
+        /* Hero Section - Industry Standard */
         .hero {
-            padding: 8rem 5% 6rem;
+            padding: 0;
             position: relative;
             overflow: hidden;
-            max-width: var(--container-width);
-            margin: 0 auto;
+            width: 100%;
             min-height: 100vh;
             display: flex;
             align-items: center;
             justify-content: center;
+            background: linear-gradient(135deg, #0F172A 0%, #1E293B 50%, #0F172A 100%);
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at 20% 50%, rgba(37, 99, 235, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(124, 58, 237, 0.1) 0%, transparent 50%);
+            z-index: 1;
         }
         
         .hero-content {
-            max-width: 900px;
+            max-width: 1200px;
             position: relative;
             z-index: 2;
             width: 100%;
+            padding: 8rem 5% 6rem;
             text-align: center;
             animation: fadeInUp 0.8s ease-out;
         }
@@ -453,12 +466,12 @@
 
         .hero-title {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: clamp(2.5rem, 5vw, 4.5rem);
+            font-size: clamp(2rem, 6vw, 4.75rem);
             font-weight: 800;
             line-height: 1.1;
             color: white;
             margin-bottom: 1.5rem;
-            letter-spacing: -1.5px;
+            letter-spacing: -2px;
             text-align: center;
         }
 
@@ -484,14 +497,15 @@
         }
 
         .hero-subtitle {
-            font-size: clamp(1rem, 2vw, 1.25rem);
-            color: rgba(255, 255, 255, 0.85);
-            max-width: 750px;
+            font-size: clamp(1rem, 2.5vw, 1.375rem);
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 800px;
             margin: 0 auto 3rem;
-            line-height: 1.75;
+            line-height: 1.8;
             text-align: center;
+            font-weight: 400;
         }
-
+        
         .hero-cta {
             display: flex;
             gap: 1.25rem;
@@ -502,18 +516,32 @@
         }
         
         .btn-lg {
-            padding: 1rem 2.5rem;
+            padding: 1.125rem 2.75rem;
             font-size: 1.125rem;
+            font-weight: 600;
+        }
+        
+        @media (max-width: 768px) {
+            .hero-cta {
+                flex-direction: column;
+                width: 100%;
+            gap: 1rem;
+            }
+            
+            .hero-cta .btn {
+                width: 100%;
+                max-width: 100%;
+            }
         }
 
         .trusted-by {
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 1.5rem;
+            gap: 1rem;
             flex-wrap: wrap;
             margin: 0 auto;
-            padding: 2rem 0;
+            padding: 2.5rem 0;
             opacity: 0;
             transform: translateY(20px);
             transition: all 0.6s ease;
@@ -525,37 +553,56 @@
         }
 
         .trusted-by-text {
-            font-size: 0.875rem;
+            font-size: clamp(0.75rem, 1.5vw, 0.875rem);
             color: rgba(255, 255, 255, 0.6);
             font-weight: 500;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: 1px;
+            width: 100%;
+            text-align: center;
+            margin-bottom: 1rem;
         }
 
         .trusted-logos {
             display: flex;
-            gap: 2rem;
+            gap: 1.5rem;
             align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
         }
 
         .trusted-logo {
-            height: 30px;
-            filter: grayscale(1) opacity(0.7);
-            transition: filter var(--transition-normal);
+            height: clamp(24px, 4vw, 32px);
+            width: auto;
+            filter: grayscale(1) opacity(0.6);
+            transition: all var(--transition-normal);
+            font-size: clamp(1.5rem, 3vw, 2rem);
         }
 
         .trusted-logo:hover {
             filter: grayscale(0) opacity(1);
+            transform: scale(1.1);
+        }
+        
+        @media (max-width: 480px) {
+            .trusted-by {
+                padding: 2rem 0;
+            }
+            
+            .trusted-logos {
+                gap: 1rem;
+            }
         }
 
         .hero-stats {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 3rem;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: clamp(1.5rem, 4vw, 3rem);
             margin: 0 auto;
             padding-top: 3rem;
             border-top: 1px solid rgba(255, 255, 255, 0.15);
-            max-width: 900px;
+            max-width: 1000px;
+            width: 100%;
             opacity: 0;
             transform: translateY(20px);
             transition: all 0.6s ease;
@@ -571,23 +618,49 @@
             flex-direction: column;
             align-items: center;
             text-align: center;
+            padding: 0.5rem;
         }
 
         .stat-number {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: clamp(2rem, 4vw, 3rem);
+            font-size: clamp(1.75rem, 5vw, 3.25rem);
             font-weight: 800;
             color: var(--primary-light);
             line-height: 1;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.75rem;
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .stat-label {
-            font-size: 0.875rem;
-            color: rgba(255, 255, 255, 0.7);
+            font-size: clamp(0.75rem, 1.5vw, 0.875rem);
+            color: rgba(255, 255, 255, 0.75);
             font-weight: 500;
             text-transform: uppercase;
             letter-spacing: 0.5px;
+            line-height: 1.4;
+        }
+        
+        @media (max-width: 768px) {
+            .hero-stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 2rem;
+                padding-top: 2.5rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero-stats {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 1.5rem;
+                padding-top: 2rem;
+            }
+            
+            .stat {
+                padding: 0.25rem;
+            }
         }
 
         /* Services Section */
@@ -1157,7 +1230,7 @@
                 left: 0;
                 width: 100%;
                 background: white;
-                flex-direction: column;
+            flex-direction: column;
                 padding: 2rem;
                 box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
                 transform: translateY(-100%);
@@ -1211,7 +1284,7 @@
                 transform: translateY(-10px);
             }
         }
-
+        
         @media (max-width: 768px) {
             .header {
                 padding: 0.75rem 4%;
@@ -1231,18 +1304,24 @@
             }
             
             .hero {
-                padding: 6rem 4% 4rem;
                 min-height: 100vh;
+                min-height: 100dvh;
+            }
+            
+            .hero-content {
+                padding: 7rem 4% 4rem;
             }
             
             .hero-title {
-                font-size: 2.5rem;
+                font-size: clamp(1.875rem, 8vw, 2.75rem);
                 margin-bottom: 1.25rem;
+                letter-spacing: -1px;
             }
             
             .hero-subtitle {
-                font-size: 1rem;
+                font-size: clamp(0.9375rem, 3vw, 1.125rem);
                 margin-bottom: 2.5rem;
+                line-height: 1.7;
             }
             
             .hero-cta {
@@ -1257,11 +1336,18 @@
                 width: 100%;
                 max-width: 100%;
                 justify-content: center;
+                padding: 1rem 2rem;
+            }
+            
+            .btn-lg {
+                padding: 1rem 2rem;
+                font-size: 1rem;
             }
             
             .hero-stats {
                 grid-template-columns: repeat(2, 1fr);
                 gap: 2rem;
+                padding-top: 2.5rem;
             }
             
             .section {
@@ -1276,13 +1362,8 @@
                 font-size: 2.5rem;
             }
             
-            .hero-stats {
-                flex-wrap: wrap;
-                gap: 2rem;
-            }
-            
             .nav-links {
-                top: 65px;
+                top: 70px;
             }
         }
         
@@ -1292,7 +1373,7 @@
             }
             
             .logo {
-                height: 35px;
+                height: 50px;
             }
             
             .header-buttons {
@@ -1300,12 +1381,12 @@
             }
             
             .btn {
-                padding: 0.5rem 1rem;
-                font-size: 0.8125rem;
+                padding: 0.875rem 1.5rem;
+                font-size: 0.875rem;
             }
             
             .btn i {
-                font-size: 0.9rem;
+                font-size: 0.9375rem;
             }
             
             .mobile-menu-btn {
@@ -1314,28 +1395,50 @@
             }
             
             .hero {
-                padding: 5rem 4% 3rem;
                 min-height: 100vh;
+                min-height: 100dvh;
+            }
+            
+            .hero-content {
+                padding: 6rem 4% 3rem;
             }
             
             .hero-title {
-                font-size: 2rem;
+                font-size: clamp(1.75rem, 9vw, 2.25rem);
                 margin-bottom: 1rem;
+                letter-spacing: -0.5px;
+                line-height: 1.15;
             }
             
             .hero-subtitle {
-                font-size: 0.9375rem;
+                font-size: clamp(0.875rem, 3.5vw, 1rem);
                 margin-bottom: 2rem;
+                line-height: 1.65;
             }
             
             .hero-cta {
                 margin-bottom: 2.5rem;
+                gap: 0.875rem;
+            }
+            
+            .hero-cta .btn {
+                padding: 0.9375rem 1.75rem;
+                font-size: 0.9375rem;
+            }
+            
+            .btn-lg {
+                padding: 0.9375rem 1.75rem;
+                font-size: 0.9375rem;
             }
             
             .hero-stats {
-                grid-template-columns: 1fr;
+                grid-template-columns: repeat(2, 1fr);
                 gap: 1.5rem;
                 padding-top: 2rem;
+            }
+            
+            .stat {
+                padding: 0.25rem;
             }
             
             .section-title {
@@ -1358,8 +1461,28 @@
             }
             
             .nav-links {
-                top: 60px;
+                top: 65px;
                 padding: 1.5rem;
+            }
+        }
+        
+        /* Extra small devices */
+        @media (max-width: 360px) {
+            .hero-content {
+                padding: 5.5rem 3% 2.5rem;
+            }
+            
+            .hero-title {
+                font-size: 1.625rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 0.875rem;
+            }
+            
+            .hero-cta .btn {
+                padding: 0.875rem 1.5rem;
+                font-size: 0.875rem;
             }
         }
     </style>
@@ -1586,12 +1709,12 @@
                 <div class="feature-item" data-aos="fade-left" data-aos-delay="200">
                     <div class="feature-icon">
                         <i class="fas fa-landmark"></i>
-                    </div>
+                </div>
                     <div class="feature-content">
                         <h4>UK Market Focus</h4>
                         <p>Specifically trained on UK property market terminology and processes.</p>
+                        </div>
                     </div>
-                </div>
                     
                 <div class="feature-item" data-aos="fade-left" data-aos-delay="300">
                     <div class="feature-icon">
@@ -1796,13 +1919,13 @@
                             
             <div class="features-image">
                 <img src="https://images.unsplash.com/photo-1556761175-b413da4baf72?ixlib=rb-4.0.3&auto=format&fit=crop&w=2400&q=80" alt="Contact PropertyReply">
-                            </div>
-                            </div>
-    </section>
-
+                </div>
+            </div>
+        </section>
+    
     <!-- Footer -->
     <footer class="footer">
-        <div class="footer-content">
+            <div class="footer-content">
             <div class="footer-column">
                 <div class="logo-container" style="margin-bottom: 1.5rem;">
                     <div class="logo">
@@ -1818,8 +1941,8 @@
                     <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
                     <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
                     </div>
-    </div>
-    
+                </div>
+                
             <div class="footer-column">
                 <h3>Quick Links</h3>
                 <ul class="footer-links">
@@ -1828,7 +1951,7 @@
                     <li><a href="#features"><i class="fas fa-chevron-right"></i> Features</a></li>
                     <li><a href="#pricing"><i class="fas fa-chevron-right"></i> Pricing</a></li>
                     <li><a href="#contact"><i class="fas fa-chevron-right"></i> Contact</a></li>
-                </ul>
+                    </ul>
                 </div>
                 
             <div class="footer-column">
@@ -1840,19 +1963,19 @@
                     <li><a href="#"><i class="fas fa-chevron-right"></i> Viewing Management</a></li>
                     <li><a href="#"><i class="fas fa-chevron-right"></i> CRM Integration</a></li>
                     </ul>
-                </div>
-                
+            </div>
+            
             <div class="footer-column">
                 <h3>Contact Info</h3>
                 <div class="contact-info">
                     <div class="contact-item">
                         <i class="fas fa-envelope"></i>
                         <span>info@propertyreply.com</span>
-                    </div>
+            </div>
                     <div class="contact-item">
                         <i class="fas fa-globe"></i>
                         <span>propertyreply.com</span>
-                </div>
+        </div>
                     <div class="contact-item">
                         <i class="fas fa-map-marker-alt"></i>
                         <span>United Kingdom</span>
@@ -1863,7 +1986,7 @@
             
             <div class="footer-bottom">
             <p>&copy; <span id="current-year"></span> PropertyReply. All rights reserved. | UK-Based & GDPR Compliant | <a href="#" style="color: var(--primary); text-decoration: none;">Privacy Policy</a> | <a href="#" style="color: var(--primary); text-decoration: none;">Terms & Conditions</a></p>
-        </div>
+            </div>
     </footer>
     
     <!-- JavaScript Libraries -->
@@ -1937,7 +2060,7 @@
         // Mobile menu
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
         const navLinks = document.getElementById('nav-links');
-
+        
         mobileMenuBtn.addEventListener('click', () => {
             navLinks.classList.toggle('active');
             const icon = mobileMenuBtn.querySelector('i');
@@ -1954,14 +2077,14 @@
         document.querySelectorAll('.nav-link').forEach(link => {
             link.addEventListener('click', () => {
                 if (window.innerWidth <= 992) {
-                    navLinks.classList.remove('active');
+                navLinks.classList.remove('active');
                     const icon = mobileMenuBtn.querySelector('i');
                     icon.classList.remove('fa-times');
                     icon.classList.add('fa-bars');
                 }
             });
         });
-
+        
         // Smooth scrolling for navigation links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
@@ -2029,7 +2152,7 @@
                 element.style.transform = `translateY(${scrolled * speed * 0.1}px) rotate(${scrolled * 0.05}deg)`;
             });
         });
-
+        
         // Initialize Swiper for testimonials (if needed)
         // const testimonialSwiper = new Swiper('.testimonials-slider', {
         //     slidesPerView: 1,
@@ -2119,10 +2242,10 @@
         // Form submission
         const contactForm = document.getElementById('contact-form');
         if (contactForm) {
-            contactForm.addEventListener('submit', (e) => {
-                e.preventDefault();
-                
-                // Get form data
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            // Get form data
                 const formData = new FormData(contactForm);
                 const data = Object.fromEntries(formData);
                 
@@ -2131,8 +2254,8 @@
                 
                 // Show success message
                 alert('Thank you for your message! We\'ll get back to you within 1 business day.');
-                contactForm.reset();
-            });
+            contactForm.reset();
+        });
         }
     </script>
 </body>
