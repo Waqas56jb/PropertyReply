@@ -1,0 +1,2107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PropertyReply | AI Real Estate Assistant for UK Estate Agents | Industry-Leading Solution</title>
+    <meta name="description" content="PropertyReply provides UK's most advanced AI-powered chat assistant for estate agents. Capture qualified leads, automate responses, and increase conversions 24/7 with our enterprise-grade solution.">
+    <meta name="keywords" content="UK estate agents, AI chatbot, property technology, lead generation, real estate AI, property reply">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Animate.css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    
+    <!-- AOS (Animate On Scroll) -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <!-- Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css">
+    
+    <style>
+        :root {
+            --primary: #2563EB;
+            --primary-dark: #1D4ED8;
+            --primary-light: #3B82F6;
+            --secondary: #7C3AED;
+            --accent: #F59E0B;
+            --success: #10B981;
+            --danger: #EF4444;
+            --dark: #111827;
+            --dark-light: #1F2937;
+            --gray: #6B7280;
+            --gray-light: #F3F4F6;
+            --light: #F9FAFB;
+            --white: #FFFFFF;
+            
+            --gradient-primary: linear-gradient(135deg, #2563EB 0%, #7C3AED 100%);
+            --gradient-dark: linear-gradient(135deg, #111827 0%, #1F2937 100%);
+            --gradient-accent: linear-gradient(135deg, #F59E0B 0%, #EF4444 100%);
+            
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.12);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.1);
+            --shadow-lg: 0 10px 25px -5px rgba(0,0,0,0.1);
+            --shadow-xl: 0 20px 50px -12px rgba(0,0,0,0.25);
+            --shadow-2xl: 0 25px 50px -12px rgba(0,0,0,0.5);
+            
+            --radius-sm: 8px;
+            --radius-md: 12px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            --radius-full: 9999px;
+            
+            --transition-fast: 0.2s ease;
+            --transition-normal: 0.3s ease;
+            --transition-slow: 0.5s ease;
+            
+            --container-width: 1280px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.7;
+            color: var(--dark);
+            background-color: var(--white);
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--gray-light);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: var(--radius-full);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Background Particles */
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: var(--gradient-dark);
+        }
+
+        /* Floating Elements */
+        .floating-element {
+            position: absolute;
+            border-radius: 50%;
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(124, 58, 237, 0.1) 100%);
+            filter: blur(40px);
+            z-index: -1;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .floating-element:nth-child(1) {
+            width: 400px;
+            height: 400px;
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+
+        .floating-element:nth-child(2) {
+            width: 300px;
+            height: 300px;
+            top: 60%;
+            right: 10%;
+            animation-delay: 5s;
+        }
+
+        .floating-element:nth-child(3) {
+            width: 200px;
+            height: 200px;
+            bottom: 20%;
+            left: 15%;
+            animation-delay: 10s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            33% {
+                transform: translateY(-30px) rotate(120deg);
+            }
+            66% {
+                transform: translateY(30px) rotate(240deg);
+            }
+        }
+
+        /* Loader */
+        .loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--gradient-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader-spinner {
+            width: 70px;
+            height: 70px;
+            border: 5px solid rgba(255,255,255,0.1);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Header */
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 1.5rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            z-index: 1000;
+            border-bottom: 1px solid rgba(229, 231, 235, 0.5);
+            transition: all var(--transition-normal);
+        }
+
+        .header.scrolled {
+            padding: 1rem 5%;
+            box-shadow: var(--shadow-lg);
+            background: rgba(255, 255, 255, 0.98);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo {
+            width: 45px;
+            height: 45px;
+            background: var(--gradient-primary);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 800;
+            font-size: 1.4rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .logo-text {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 800;
+            font-size: 1.8rem;
+            color: var(--dark);
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text span {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 2.5rem;
+            align-items: center;
+            list-style: none;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 500;
+            font-size: 1rem;
+            position: relative;
+            padding: 0.5rem 0;
+            transition: color var(--transition-fast);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--gradient-primary);
+            transition: width var(--transition-normal);
+        }
+
+        .nav-link:hover {
+            color: var(--primary);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .nav-link.active {
+            color: var(--primary);
+        }
+
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        .header-buttons {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--dark);
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: var(--radius-sm);
+            transition: background-color var(--transition-fast);
+        }
+
+        .mobile-menu-btn:hover {
+            background-color: var(--gray-light);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.875rem 2rem;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+            border: none;
+            font-family: 'Inter', sans-serif;
+            position: relative;
+            overflow: hidden;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.75rem;
+            letter-spacing: 0.3px;
+        }
+
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+
+        .btn:hover::after {
+            transform: translateX(100%);
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(37, 99, 235, 0.05);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-accent {
+            background: var(--gradient-accent);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-accent:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .btn-dark {
+            background: var(--gradient-dark);
+            color: white;
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-dark:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 12rem 5% 8rem;
+            position: relative;
+            overflow: hidden;
+            max-width: var(--container-width);
+            margin: 0 auto;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary);
+            padding: 0.5rem 1.25rem;
+            border-radius: var(--radius-full);
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(37, 99, 235, 0.2);
+        }
+
+        .hero-title {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 4rem;
+            font-weight: 800;
+            line-height: 1.1;
+            color: var(--dark);
+            margin-bottom: 1.5rem;
+            letter-spacing: -1px;
+        }
+
+        .hero-title span {
+            background: var(--gradient-primary);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtitle {
+            font-size: 1.25rem;
+            color: var(--gray);
+            max-width: 700px;
+            margin-bottom: 3rem;
+            line-height: 1.8;
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 3rem;
+        }
+
+        .trusted-by {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .trusted-by-text {
+            font-size: 0.875rem;
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        .trusted-logos {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .trusted-logo {
+            height: 30px;
+            filter: grayscale(1) opacity(0.7);
+            transition: filter var(--transition-normal);
+        }
+
+        .trusted-logo:hover {
+            filter: grayscale(0) opacity(1);
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 3rem;
+            margin-top: 4rem;
+            padding-top: 3rem;
+            border-top: 1px solid rgba(229, 231, 235, 0.5);
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-number {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--gray);
+            margin-top: 0.5rem;
+        }
+
+        /* Services Section */
+        .section {
+            padding: 8rem 5%;
+            position: relative;
+        }
+
+        .section-dark {
+            background: var(--gradient-dark);
+            color: white;
+        }
+
+        .section-header {
+            text-align: center;
+            max-width: 800px;
+            margin: 0 auto 5rem;
+        }
+
+        .section-subtitle {
+            display: inline-block;
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary);
+            padding: 0.5rem 1.25rem;
+            border-radius: var(--radius-full);
+            font-size: 0.875rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            border: 1px solid rgba(37, 99, 235, 0.2);
+        }
+
+        .section-title {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-dark .section-title {
+            color: white;
+        }
+
+        .section-description {
+            font-size: 1.125rem;
+            color: var(--gray);
+            line-height: 1.8;
+        }
+
+        .section-dark .section-description {
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Cards */
+        .card {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: 2.5rem;
+            box-shadow: var(--shadow-lg);
+            transition: all var(--transition-normal);
+            border: 1px solid rgba(229, 231, 235, 0.5);
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .card-icon {
+            width: 70px;
+            height: 70px;
+            background: var(--gradient-primary);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.75rem;
+            margin-bottom: 1.5rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .card-title {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .card-description {
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+        }
+
+        .card-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary);
+            font-weight: 600;
+            text-decoration: none;
+            transition: gap var(--transition-fast);
+        }
+
+        .card-link:hover {
+            gap: 0.75rem;
+        }
+
+        /* Services Grid */
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            max-width: var(--container-width);
+            margin: 0 auto;
+        }
+
+        /* Features Showcase */
+        .features-showcase {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 5rem;
+            align-items: center;
+            max-width: var(--container-width);
+            margin: 0 auto;
+        }
+
+        .features-image {
+            position: relative;
+        }
+
+        .features-image img {
+            width: 100%;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-2xl);
+        }
+
+        .features-list {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .feature-item {
+            display: flex;
+            gap: 1.5rem;
+            align-items: flex-start;
+        }
+
+        .feature-icon {
+            flex-shrink: 0;
+            width: 60px;
+            height: 60px;
+            background: rgba(37, 99, 235, 0.1);
+            border-radius: var(--radius-lg);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary);
+            font-size: 1.5rem;
+        }
+
+        .feature-content h4 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .feature-content p {
+            color: var(--gray);
+        }
+
+        /* Pricing Cards */
+        .pricing-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            max-width: var(--container-width);
+            margin: 0 auto;
+        }
+
+        .pricing-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: 3rem;
+            box-shadow: var(--shadow-lg);
+            transition: all var(--transition-normal);
+            border: 2px solid rgba(229, 231, 235, 0.5);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pricing-card.featured {
+            border-color: var(--primary);
+            transform: scale(1.05);
+        }
+
+        .pricing-card.featured::before {
+            content: 'Most Popular';
+            position: absolute;
+            top: 20px;
+            right: -35px;
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0.5rem 3rem;
+            font-size: 0.875rem;
+            font-weight: 600;
+            transform: rotate(45deg);
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-xl);
+        }
+
+        .pricing-card.featured:hover {
+            transform: translateY(-10px) scale(1.05);
+        }
+
+        .pricing-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .pricing-name {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+
+        .pricing-price {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            line-height: 1;
+        }
+
+        .pricing-period {
+            font-size: 1rem;
+            color: var(--gray);
+            font-weight: 500;
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin: 2.5rem 0;
+        }
+
+        .pricing-features li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(229, 231, 235, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .pricing-features li:last-child {
+            border-bottom: none;
+        }
+
+        .pricing-features li i {
+            color: var(--success);
+        }
+
+        /* Testimonials */
+        .testimonials-slider {
+            max-width: var(--container-width);
+            margin: 0 auto;
+        }
+
+        .testimonial-card {
+            background: white;
+            border-radius: var(--radius-xl);
+            padding: 2.5rem;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid rgba(229, 231, 235, 0.5);
+            margin: 1rem;
+        }
+
+        .testimonial-content {
+            font-size: 1.125rem;
+            line-height: 1.8;
+            color: var(--dark);
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .testimonial-content::before {
+            content: '"';
+            font-size: 4rem;
+            color: var(--primary);
+            opacity: 0.2;
+            position: absolute;
+            top: -20px;
+            left: -10px;
+            font-family: serif;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .author-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            overflow: hidden;
+        }
+
+        .author-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .author-info h4 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1.125rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .author-info p {
+            font-size: 0.875rem;
+            color: var(--gray);
+        }
+
+        /* CTA Section */
+        .cta-section {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 6rem 5%;
+            border-radius: var(--radius-xl);
+            text-align: center;
+            max-width: var(--container-width);
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://images.unsplash.com/photo-1560518883-ce09059eeffa?ixlib=rb-4.0.3&auto=format&fit=crop&w=2400&q=80') center/cover;
+            opacity: 0.1;
+        }
+
+        .cta-title {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        .cta-description {
+            font-size: 1.125rem;
+            opacity: 0.9;
+            max-width: 700px;
+            margin: 0 auto 3rem;
+            position: relative;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--dark);
+            color: white;
+            padding: 5rem 5% 2rem;
+            position: relative;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 4rem;
+            max-width: var(--container-width);
+            margin: 0 auto 4rem;
+        }
+
+        .footer-column h3 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            position: relative;
+            padding-bottom: 0.75rem;
+        }
+
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background: var(--gradient-primary);
+            border-radius: var(--radius-full);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.75rem;
+        }
+
+        .footer-links a {
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: color var(--transition-fast);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .footer-links a:hover {
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .contact-item i {
+            color: var(--primary);
+            font-size: 1.125rem;
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .social-link {
+            width: 45px;
+            height: 45px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-decoration: none;
+            transition: all var(--transition-normal);
+        }
+
+        .social-link:hover {
+            background: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding-top: 2rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 0.875rem;
+            max-width: var(--container-width);
+            margin: 0 auto;
+        }
+
+        /* Chatbot */
+        .chatbot-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 999;
+        }
+
+        .chatbot-toggle {
+            width: 70px;
+            height: 70px;
+            background: var(--gradient-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.75rem;
+            cursor: pointer;
+            box-shadow: var(--shadow-xl);
+            border: none;
+            transition: all var(--transition-normal);
+        }
+
+        .chatbot-toggle:hover {
+            transform: scale(1.1) rotate(15deg);
+            box-shadow: var(--shadow-2xl);
+        }
+
+        .chatbot-window {
+            position: absolute;
+            bottom: 90px;
+            right: 0;
+            width: 400px;
+            height: 600px;
+            background: white;
+            border-radius: var(--radius-xl);
+            box-shadow: var(--shadow-2xl);
+            overflow: hidden;
+            display: none;
+            flex-direction: column;
+            transform: translateY(20px);
+            opacity: 0;
+            transition: all var(--transition-normal);
+            border: 1px solid rgba(229, 231, 235, 0.5);
+        }
+
+        .chatbot-window.active {
+            display: flex;
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .chatbot-header {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chatbot-header h3 {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+        }
+
+        .chatbot-close {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background var(--transition-fast);
+        }
+
+        .chatbot-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .chatbot-messages {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .chatbot-message {
+            max-width: 80%;
+            padding: 1rem 1.25rem;
+            border-radius: var(--radius-lg);
+            font-size: 0.9375rem;
+            line-height: 1.6;
+        }
+
+        .chatbot-message.bot {
+            background: var(--gray-light);
+            align-self: flex-start;
+            border-bottom-left-radius: 5px;
+        }
+
+        .chatbot-message.user {
+            background: var(--gradient-primary);
+            color: white;
+            align-self: flex-end;
+            border-bottom-right-radius: 5px;
+        }
+
+        .chatbot-input-area {
+            padding: 1.5rem;
+            border-top: 1px solid rgba(229, 231, 235, 0.5);
+        }
+
+        .chatbot-input {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
+
+        .chatbot-input input {
+            flex: 1;
+            padding: 0.875rem 1.25rem;
+            border: 1px solid rgba(229, 231, 235, 0.5);
+            border-radius: var(--radius-full);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9375rem;
+            transition: all var(--transition-fast);
+        }
+
+        .chatbot-input input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .chatbot-send {
+            width: 50px;
+            height: 50px;
+            background: var(--gradient-primary);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all var(--transition-normal);
+        }
+
+        .chatbot-send:hover {
+            transform: scale(1.05);
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .hero-title {
+                font-size: 3.5rem;
+            }
+            
+            .section-title {
+                font-size: 2.5rem;
+            }
+            
+            .features-showcase {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+            }
+            
+            .hero-title {
+                font-size: 3rem;
+            }
+            
+            .pricing-cards {
+                grid-template-columns: 1fr;
+                max-width: 500px;
+            }
+            
+            .pricing-card.featured {
+                transform: scale(1);
+            }
+            
+            .pricing-card.featured:hover {
+                transform: translateY(-10px);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero {
+                padding: 10rem 5% 6rem;
+            }
+            
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-cta {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+            
+            .section {
+                padding: 6rem 5%;
+            }
+            
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .cta-title {
+                font-size: 2.5rem;
+            }
+            
+            .chatbot-window {
+                width: calc(100vw - 60px);
+                right: 10px;
+                height: 500px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .hero-title {
+                font-size: 2rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .card, .pricing-card, .testimonial-card {
+                padding: 2rem;
+            }
+            
+            .footer-content {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loader -->
+    <div class="loader" id="loader">
+        <div class="loader-spinner"></div>
+    </div>
+
+    <!-- Background Elements -->
+    <div id="particles-js"></div>
+    <div class="floating-element"></div>
+    <div class="floating-element"></div>
+    <div class="floating-element"></div>
+
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="logo-container">
+            <div class="logo">PR</div>
+            <div class="logo-text">Property<span>Reply</span></div>
+        </div>
+
+        <nav>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="#home" class="nav-link active">Home</a></li>
+                <li><a href="#services" class="nav-link">Services</a></li>
+                <li><a href="#features" class="nav-link">Features</a></li>
+                <li><a href="#pricing" class="nav-link">Pricing</a></li>
+                <li><a href="#testimonials" class="nav-link">Testimonials</a></li>
+                <li><a href="#contact" class="nav-link">Contact</a></li>
+            </ul>
+        </nav>
+
+        <div class="header-buttons">
+            <button class="btn btn-primary" id="request-demo-btn">
+                <i class="fas fa-calendar-check"></i>
+                Request Demo
+            </button>
+            <button class="mobile-menu-btn" id="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content" data-aos="fade-up" data-aos-duration="1000">
+            <div class="hero-badge">
+                <i class="fas fa-star"></i>
+                <span>Industry-Leading AI Solution for UK Estate Agents</span>
+            </div>
+            
+            <h1 class="hero-title">
+                Transform Property Enquiries Into 
+                <span>Qualified Leads</span> 
+                24/7
+            </h1>
+            
+            <p class="hero-subtitle">
+                PropertyReply's advanced AI chat assistant engages website visitors instantly, captures qualified leads, and automates responses for UK estate agents. Increase conversions by 40% with our enterprise-grade solution.
+            </p>
+            
+            <div class="hero-cta">
+                <button class="btn btn-primary btn-lg" id="hero-cta-primary">
+                    <i class="fas fa-rocket"></i>
+                    Start Free Trial
+                </button>
+                <button class="btn btn-secondary" id="hero-cta-secondary">
+                    <i class="fas fa-play-circle"></i>
+                    Watch Demo
+                </button>
+            </div>
+            
+            <div class="trusted-by">
+                <div class="trusted-by-text">Trusted by leading UK agencies:</div>
+                <div class="trusted-logos">
+                    <!-- Placeholder for trusted logos -->
+                    <div class="trusted-logo">🏢</div>
+                    <div class="trusted-logo">🏘️</div>
+                    <div class="trusted-logo">🏠</div>
+                    <div class="trusted-logo">🏛️</div>
+                </div>
+            </div>
+            
+            <div class="hero-stats">
+                <div class="stat">
+                    <div class="stat-number">98%</div>
+                    <div class="stat-label">Response Rate</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">40%</div>
+                    <div class="stat-label">More Leads</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">24/7</div>
+                    <div class="stat-label">Availability</div>
+                </div>
+                <div class="stat">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">GDPR Compliant</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="section" id="services">
+        <div class="section-header" data-aos="fade-up">
+            <div class="section-subtitle">Our Services</div>
+            <h2 class="section-title">Complete AI Solution for Modern Estate Agencies</h2>
+            <p class="section-description">
+                We provide end-to-end AI-powered solutions specifically designed for UK estate agents to capture, qualify, and convert property enquiries efficiently.
+            </p>
+        </div>
+
+        <div class="services-grid">
+            <div class="card" data-aos="fade-up" data-aos-delay="100">
+                <div class="card-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+                <h3 class="card-title">AI Chat Assistant</h3>
+                <p class="card-description">
+                    Intelligent chatbot engages visitors instantly, answering questions and capturing leads 24/7 with human-like conversations.
+                </p>
+                <a href="#" class="card-link">
+                    Learn More <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="card" data-aos="fade-up" data-aos-delay="200">
+                <div class="card-icon">
+                    <i class="fas fa-bolt"></i>
+                </div>
+                <h3 class="card-title">Instant Response</h3>
+                <p class="card-description">
+                    Respond to enquiries within seconds, not hours. Never miss a potential buyer or seller with our lightning-fast system.
+                </p>
+                <a href="#" class="card-link">
+                    Learn More <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="card" data-aos="fade-up" data-aos-delay="300">
+                <div class="card-icon">
+                    <i class="fas fa-filter"></i>
+                </div>
+                <h3 class="card-title">Advanced Qualification</h3>
+                <p class="card-description">
+                    Automatically qualify leads based on budget, timeline, property type, and location to prioritize high-value prospects.
+                </p>
+                <a href="#" class="card-link">
+                    Learn More <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+        <div class="services-grid" style="margin-top: 2rem;">
+            <div class="card" data-aos="fade-up" data-aos-delay="400">
+                <div class="card-icon">
+                    <i class="fas fa-home"></i>
+                </div>
+                <h3 class="card-title">Valuation Capture</h3>
+                <p class="card-description">
+                    Automatically capture seller details and schedule valuations directly through intelligent conversation flows.
+                </p>
+                <a href="#" class="card-link">
+                    Learn More <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="card" data-aos="fade-up" data-aos-delay="500">
+                <div class="card-icon">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <h3 class="card-title">Viewing Management</h3>
+                <p class="card-description">
+                    Automate viewing bookings, sync with your calendar, and send automated reminders to buyers and agents.
+                </p>
+                <a href="#" class="card-link">
+                    Learn More <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="card" data-aos="fade-up" data-aos-delay="600">
+                <div class="card-icon">
+                    <i class="fas fa-bell"></i>
+                </div>
+                <h3 class="card-title">Smart Notifications</h3>
+                <p class="card-description">
+                    Receive instant email and SMS alerts for high-quality leads with complete details and qualification scores.
+                </p>
+                <a href="#" class="card-link">
+                    Learn More <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="section section-dark" id="features">
+        <div class="section-header" data-aos="fade-up">
+            <div class="section-subtitle" style="background: rgba(255,255,255,0.1); color: white; border-color: rgba(255,255,255,0.2);">
+                Advanced Features
+            </div>
+            <h2 class="section-title">Enterprise-Grade Technology for UK Estate Agents</h2>
+            <p class="section-description">
+                Built with cutting-edge AI technology specifically designed for the UK property market and fully compliant with UK regulations.
+            </p>
+        </div>
+
+        <div class="features-showcase" data-aos="fade-up">
+            <div class="features-image">
+                <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=2400&q=80" alt="PropertyReply Dashboard">
+            </div>
+            
+            <div class="features-list">
+                <div class="feature-item" data-aos="fade-left" data-aos-delay="100">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h4>GDPR Compliant</h4>
+                        <p>Full compliance with UK data protection regulations and privacy laws.</p>
+                    </div>
+                </div>
+                
+                <div class="feature-item" data-aos="fade-left" data-aos-delay="200">
+                    <div class="feature-icon">
+                        <i class="fas fa-flag-uk"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h4>UK Market Focus</h4>
+                        <p>Specifically trained on UK property market terminology and processes.</p>
+                    </div>
+                </div>
+                
+                <div class="feature-item" data-aos="fade-left" data-aos-delay="300">
+                    <div class="feature-icon">
+                        <i class="fas fa-sync"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h4>CRM Integration</h4>
+                        <p>Seamless integration with popular UK estate agency CRM systems.</p>
+                    </div>
+                </div>
+                
+                <div class="feature-item" data-aos="fade-left" data-aos-delay="400">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h4>Advanced Analytics</h4>
+                        <p>Comprehensive reporting and insights on lead quality and conversion rates.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="section" id="pricing">
+        <div class="section-header" data-aos="fade-up">
+            <div class="section-subtitle">Simple Pricing</div>
+            <h2 class="section-title">Transparent Pricing for All Agency Sizes</h2>
+            <p class="section-description">
+                One flat monthly fee with no hidden costs. Cancel anytime with no long-term contracts.
+            </p>
+        </div>
+
+        <div class="pricing-cards">
+            <div class="pricing-card" data-aos="fade-up" data-aos-delay="100">
+                <div class="pricing-header">
+                    <h3 class="pricing-name">Starter</h3>
+                    <div class="pricing-price">£79<span class="pricing-period">/month</span></div>
+                    <p>Perfect for small agencies</p>
+                </div>
+                
+                <ul class="pricing-features">
+                    <li><i class="fas fa-check"></i> AI Chat Assistant</li>
+                    <li><i class="fas fa-check"></i> Lead Capture</li>
+                    <li><i class="fas fa-check"></i> Email Notifications</li>
+                    <li><i class="fas fa-times"></i> Advanced Qualification</li>
+                    <li><i class="fas fa-times"></i> CRM Integration</li>
+                </ul>
+                
+                <button class="btn btn-secondary" style="width: 100%;">
+                    Get Started
+                </button>
+            </div>
+
+            <div class="pricing-card featured" data-aos="fade-up" data-aos-delay="200">
+                <div class="pricing-header">
+                    <h3 class="pricing-name">Professional</h3>
+                    <div class="pricing-price">£149<span class="pricing-period">/month</span></div>
+                    <p>Most popular for growing agencies</p>
+                </div>
+                
+                <ul class="pricing-features">
+                    <li><i class="fas fa-check"></i> Everything in Starter</li>
+                    <li><i class="fas fa-check"></i> Advanced Qualification</li>
+                    <li><i class="fas fa-check"></i> Valuation Capture</li>
+                    <li><i class="fas fa-check"></i> Viewing Management</li>
+                    <li><i class="fas fa-check"></i> Basic CRM Integration</li>
+                </ul>
+                
+                <button class="btn btn-primary" style="width: 100%;">
+                    Get Started
+                </button>
+            </div>
+
+            <div class="pricing-card" data-aos="fade-up" data-aos-delay="300">
+                <div class="pricing-header">
+                    <h3 class="pricing-name">Enterprise</h3>
+                    <div class="pricing-price">£299<span class="pricing-period">/month</span></div>
+                    <p>For large agencies & franchises</p>
+                </div>
+                
+                <ul class="pricing-features">
+                    <li><i class="fas fa-check"></i> Everything in Professional</li>
+                    <li><i class="fas fa-check"></i> Advanced CRM Integration</li>
+                    <li><i class="fas fa-check"></i> Custom AI Training</li>
+                    <li><i class="fas fa-check"></i> Priority Support</li>
+                    <li><i class="fas fa-check"></i> Dedicated Account Manager</li>
+                </ul>
+                
+                <button class="btn btn-secondary" style="width: 100%;">
+                    Contact Sales
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="section section-dark" id="testimonials">
+        <div class="section-header" data-aos="fade-up">
+            <div class="section-subtitle" style="background: rgba(255,255,255,0.1); color: white; border-color: rgba(255,255,255,0.2);">
+                Testimonials
+            </div>
+            <h2 class="section-title">Trusted by UK Estate Agencies</h2>
+            <p class="section-description">
+                See what leading estate agents across the UK say about PropertyReply.
+            </p>
+        </div>
+
+        <div class="testimonials-slider" data-aos="fade-up">
+            <div class="testimonial-card">
+                <div class="testimonial-content">
+                    PropertyReply has transformed our lead generation. We're now capturing 40% more qualified leads and responding instantly to enquiries 24/7. The AI assistant feels incredibly natural to our website visitors.
+                </div>
+                
+                <div class="testimonial-author">
+                    <div class="author-avatar">
+                        <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" alt="Sarah Johnson">
+                    </div>
+                    <div class="author-info">
+                        <h4>Sarah Johnson</h4>
+                        <p>Director, London Property Partners</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="section">
+        <div class="cta-section" data-aos="zoom-in">
+            <h2 class="cta-title">Ready to Transform Your Lead Generation?</h2>
+            <p class="cta-description">
+                Join hundreds of UK estate agencies using PropertyReply to capture more qualified leads, respond instantly to enquiries, and grow their business.
+            </p>
+            
+            <div style="display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap;">
+                <button class="btn btn-accent btn-lg">
+                    <i class="fas fa-rocket"></i>
+                    Start Free Trial
+                </button>
+                <button class="btn btn-dark">
+                    <i class="fas fa-calendar-check"></i>
+                    Book a Demo
+                </button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="section" id="contact">
+        <div class="section-header" data-aos="fade-up">
+            <div class="section-subtitle">Contact Us</div>
+            <h2 class="section-title">Get in Touch</h2>
+            <p class="section-description">
+                Have questions? Our team is here to help you get started with PropertyReply.
+            </p>
+        </div>
+
+        <div class="features-showcase" data-aos="fade-up">
+            <div class="features-list">
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h4>Email</h4>
+                        <p>hello@propertyreply.com</p>
+                    </div>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h4>Website</h4>
+                        <p>propertyreply.com</p>
+                    </div>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-map-marker-alt"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h4>Location</h4>
+                        <p>United Kingdom</p>
+                    </div>
+                </div>
+                
+                <div class="feature-item">
+                    <div class="feature-icon">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="feature-content">
+                        <h4>Response Time</h4>
+                        <p>Typically within 1 business day</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="features-image">
+                <img src="https://images.unsplash.com/photo-1556761175-b413da4baf72?ixlib=rb-4.0.3&auto=format&fit=crop&w=2400&q=80" alt="Contact PropertyReply">
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-column">
+                <div class="logo-container" style="margin-bottom: 1.5rem;">
+                    <div class="logo">PR</div>
+                    <div class="logo-text">Property<span>Reply</span></div>
+                </div>
+                <p style="color: rgba(255,255,255,0.7); margin-bottom: 1.5rem;">
+                    AI-powered chat assistants for UK estate agents, capturing and qualifying leads 24/7.
+                </p>
+                <div class="social-links">
+                    <a href="#" class="social-link"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                </div>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Quick Links</h3>
+                <ul class="footer-links">
+                    <li><a href="#home"><i class="fas fa-chevron-right"></i> Home</a></li>
+                    <li><a href="#services"><i class="fas fa-chevron-right"></i> Services</a></li>
+                    <li><a href="#features"><i class="fas fa-chevron-right"></i> Features</a></li>
+                    <li><a href="#pricing"><i class="fas fa-chevron-right"></i> Pricing</a></li>
+                    <li><a href="#contact"><i class="fas fa-chevron-right"></i> Contact</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Services</h3>
+                <ul class="footer-links">
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> AI Chat Assistant</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Lead Qualification</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Valuation Capture</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> Viewing Management</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right"></i> CRM Integration</a></li>
+                </ul>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Contact Info</h3>
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <span>hello@propertyreply.com</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-globe"></i>
+                        <span>propertyreply.com</span>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>United Kingdom</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="footer-bottom">
+            <p>&copy; <span id="current-year"></span> PropertyReply. All rights reserved. | UK-Based & GDPR Compliant | <a href="#" style="color: var(--primary); text-decoration: none;">Privacy Policy</a> | <a href="#" style="color: var(--primary); text-decoration: none;">Terms & Conditions</a></p>
+        </div>
+    </footer>
+
+    <!-- Chatbot -->
+    <div class="chatbot-container">
+        <button class="chatbot-toggle" id="chatbot-toggle">
+            <i class="fas fa-robot"></i>
+        </button>
+        
+        <div class="chatbot-window" id="chatbot-window">
+            <div class="chatbot-header">
+                <h3>PropertyReply AI Assistant</h3>
+                <button class="chatbot-close" id="chatbot-close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <div class="chatbot-messages" id="chatbot-messages">
+                <div class="chatbot-message bot">
+                    Hello! I'm the PropertyReply AI assistant. How can I help you today? You can ask me about pricing, features, demos, or anything else about our AI solution for estate agents.
+                </div>
+            </div>
+            
+            <div class="chatbot-input-area">
+                <div class="chatbot-input">
+                    <input type="text" id="chatbot-input" placeholder="Type your message...">
+                    <button class="chatbot-send" id="chatbot-send">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- JavaScript Libraries -->
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+    
+    <script>
+        // Initialize AOS
+        AOS.init({
+            duration: 1000,
+            once: false,
+            mirror: true
+        });
+
+        // Set current year
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        // Loader
+        window.addEventListener('load', () => {
+            const loader = document.getElementById('loader');
+            setTimeout(() => {
+                loader.classList.add('hidden');
+            }, 1000);
+        });
+
+        // Initialize Particles.js
+        particlesJS("particles-js", {
+            particles: {
+                number: { value: 80, density: { enable: true, value_area: 800 } },
+                color: { value: "#3B82F6" },
+                shape: { type: "circle" },
+                opacity: { value: 0.5, random: true },
+                size: { value: 3, random: true },
+                line_linked: {
+                    enable: true,
+                    distance: 150,
+                    color: "#3B82F6",
+                    opacity: 0.2,
+                    width: 1
+                },
+                move: {
+                    enable: true,
+                    speed: 2,
+                    direction: "none",
+                    random: true,
+                    straight: false,
+                    out_mode: "out",
+                    bounce: false
+                }
+            },
+            interactivity: {
+                detect_on: "canvas",
+                events: {
+                    onhover: { enable: true, mode: "repulse" },
+                    onclick: { enable: true, mode: "push" }
+                }
+            }
+        });
+
+        // Header scroll effect
+        const header = document.getElementById('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Mobile menu
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const navLinks = document.getElementById('nav-links');
+
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
+            if (navLinks.style.display === 'flex') {
+                navLinks.style.position = 'absolute';
+                navLinks.style.top = '100%';
+                navLinks.style.left = '0';
+                navLinks.style.width = '100%';
+                navLinks.style.backgroundColor = 'white';
+                navLinks.style.flexDirection = 'column';
+                navLinks.style.padding = '2rem';
+                navLinks.style.boxShadow = 'var(--shadow-lg)';
+                navLinks.style.gap = '1.5rem';
+            }
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Update active nav link
+                    document.querySelectorAll('.nav-link').forEach(link => {
+                        link.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                    
+                    // Close mobile menu if open
+                    if (window.innerWidth <= 992) {
+                        navLinks.style.display = 'none';
+                    }
+                }
+            });
+        });
+
+        // CTA buttons
+        document.querySelectorAll('.btn-primary, .btn-accent').forEach(btn => {
+            btn.addEventListener('click', function(e) {
+                if (!this.closest('.pricing-card') && !this.id.includes('chatbot')) {
+                    e.preventDefault();
+                    // Scroll to contact section
+                    document.querySelector('#contact').scrollIntoView({ 
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    
+                    // Show success message
+                    const originalText = this.innerHTML;
+                    this.innerHTML = '<i class="fas fa-check"></i> Redirecting...';
+                    this.style.backgroundColor = '#10B981';
+                    
+                    setTimeout(() => {
+                        this.innerHTML = originalText;
+                        this.style.backgroundColor = '';
+                    }, 2000);
+                }
+            });
+        });
+
+        // Chatbot functionality
+        const chatbotToggle = document.getElementById('chatbot-toggle');
+        const chatbotWindow = document.getElementById('chatbot-window');
+        const chatbotClose = document.getElementById('chatbot-close');
+        const chatbotSend = document.getElementById('chatbot-send');
+        const chatbotInput = document.getElementById('chatbot-input');
+        const chatbotMessages = document.getElementById('chatbot-messages');
+
+        chatbotToggle.addEventListener('click', () => {
+            chatbotWindow.classList.toggle('active');
+        });
+
+        chatbotClose.addEventListener('click', () => {
+            chatbotWindow.classList.remove('active');
+        });
+
+        // Chatbot responses
+        const chatbotResponses = {
+            greeting: ["Hello! How can I assist you today?", "Hi there! I'm here to help you learn about PropertyReply.", "Welcome! I'm your AI assistant. What would you like to know?"],
+            pricing: "We offer three plans: Starter (£79/month), Professional (£149/month, most popular), and Enterprise (£299/month). All plans include our AI chat assistant with no long-term contracts.",
+            features: "PropertyReply offers AI chat assistant, instant enquiry responses, advanced lead qualification, valuation capture, viewing management, CRM integration, and 24/7 operation.",
+            demo: "You can request a demo by clicking any 'Request Demo' button on our website. We'll schedule a personalized demonstration at your convenience.",
+            contact: "You can reach us at hello@propertyreply.com or through our contact form. We're UK-based and typically respond within 1 business day.",
+            gdpr: "Yes! PropertyReply is fully GDPR-compliant and designed specifically for UK data protection regulations.",
+            uk: "Absolutely! We're UK-based and our AI is specifically trained on UK property market terminology and processes.",
+            setup: "Setup takes just minutes. Add one line of code to your website, customize the chat widget, and you're ready to start capturing leads.",
+            default: "I'm not sure I understood that. Could you please rephrase? You can ask about pricing, features, demos, or contact information."
+        };
+
+        function addChatbotMessage(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('chatbot-message', sender);
+            messageDiv.textContent = text;
+            chatbotMessages.appendChild(messageDiv);
+            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+        }
+
+        function processChatbotMessage(message) {
+            const lowerMessage = message.toLowerCase();
+            
+            if (lowerMessage.includes('hello') || lowerMessage.includes('hi') || lowerMessage.includes('hey')) {
+                return chatbotResponses.greeting[Math.floor(Math.random() * chatbotResponses.greeting.length)];
+            } else if (lowerMessage.includes('price') || lowerMessage.includes('cost') || lowerMessage.includes('plan')) {
+                return chatbotResponses.pricing;
+            } else if (lowerMessage.includes('feature') || lowerMessage.includes('what can') || lowerMessage.includes('offer')) {
+                return chatbotResponses.features;
+            } else if (lowerMessage.includes('demo') || lowerMessage.includes('trial') || lowerMessage.includes('test')) {
+                return chatbotResponses.demo;
+            } else if (lowerMessage.includes('contact') || lowerMessage.includes('email') || lowerMessage.includes('phone')) {
+                return chatbotResponses.contact;
+            } else if (lowerMessage.includes('gdpr') || lowerMessage.includes('compliance') || lowerMessage.includes('data')) {
+                return chatbotResponses.gdpr;
+            } else if (lowerMessage.includes('uk') || lowerMessage.includes('united kingdom') || lowerMessage.includes('british')) {
+                return chatbotResponses.uk;
+            } else if (lowerMessage.includes('setup') || lowerMessage.includes('install') || lowerMessage.includes('implement')) {
+                return chatbotResponses.setup;
+            } else {
+                return chatbotResponses.default;
+            }
+        }
+
+        chatbotSend.addEventListener('click', () => {
+            const message = chatbotInput.value.trim();
+            if (message) {
+                addChatbotMessage(message, 'user');
+                chatbotInput.value = '';
+                
+                // Simulate typing delay
+                setTimeout(() => {
+                    const response = processChatbotMessage(message);
+                    addChatbotMessage(response, 'bot');
+                }, 500);
+            }
+        });
+
+        chatbotInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                chatbotSend.click();
+            }
+        });
+
+        // Parallax effect on scroll
+        window.addEventListener('scroll', () => {
+            const scrolled = window.pageYOffset;
+            const parallaxElements = document.querySelectorAll('.floating-element');
+            
+            parallaxElements.forEach((element, index) => {
+                const speed = 0.5 + (index * 0.1);
+                element.style.transform = `translateY(${scrolled * speed * 0.1}px) rotate(${scrolled * 0.05}deg)`;
+            });
+        });
+
+        // Initialize Swiper for testimonials (if needed)
+        // const testimonialSwiper = new Swiper('.testimonials-slider', {
+        //     slidesPerView: 1,
+        //     spaceBetween: 30,
+        //     loop: true,
+        //     autoplay: {
+        //         delay: 5000,
+        //         disableOnInteraction: false,
+        //     },
+        //     pagination: {
+        //         el: '.swiper-pagination',
+        //         clickable: true,
+        //     },
+        // });
+
+        // Card hover effects
+        document.querySelectorAll('.card, .pricing-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-10px)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                if (!this.classList.contains('featured') || window.innerWidth > 992) {
+                    this.style.transform = 'translateY(0)';
+                }
+            });
+        });
+
+        // Animate stats on scroll
+        const animateStats = () => {
+            const stats = document.querySelectorAll('.stat-number');
+            stats.forEach(stat => {
+                const target = parseInt(stat.textContent);
+                let current = 0;
+                const increment = target / 50;
+                const timer = setInterval(() => {
+                    current += increment;
+                    if (current >= target) {
+                        stat.textContent = target + (stat.textContent.includes('%') ? '%' : '');
+                        clearInterval(timer);
+                    } else {
+                        stat.textContent = Math.floor(current) + (stat.textContent.includes('%') ? '%' : '');
+                    }
+                }, 30);
+            });
+        };
+
+        // Intersection Observer for stats animation
+        const statsObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    animateStats();
+                    statsObserver.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        const heroSection = document.querySelector('.hero');
+        if (heroSection) {
+            statsObserver.observe(heroSection);
+        }
+
+        // Form submission
+        const contactForm = document.getElementById('contact-form');
+        if (contactForm) {
+            contactForm.addEventListener('submit', (e) => {
+                e.preventDefault();
+                
+                // Get form data
+                const formData = new FormData(contactForm);
+                const data = Object.fromEntries(formData);
+                
+                // In production, send this to your backend
+                console.log('Form submitted:', data);
+                
+                // Show success message
+                alert('Thank you for your message! We\'ll get back to you within 1 business day.');
+                contactForm.reset();
+            });
+        }
+    </script>
+</body>
+</html>
