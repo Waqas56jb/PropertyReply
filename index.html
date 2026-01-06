@@ -62,27 +62,27 @@
             
             --container-width: 1280px;
         }
-
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-
+        
         html {
             scroll-behavior: smooth;
             font-size: 16px;
         }
-
+        
         body {
             font-family: 'Inter', sans-serif;
             line-height: 1.7;
-            color: var(--dark);
-            background-color: var(--white);
+            color: white;
+            background-color: var(--dark);
             overflow-x: hidden;
             position: relative;
         }
-
+        
         /* Custom Scrollbar */
         ::-webkit-scrollbar {
             width: 10px;
@@ -188,75 +188,68 @@
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
-
+        
         /* Header */
         .header {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
-            padding: 1.5rem 5%;
+            padding: 1rem 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background: rgba(255, 255, 255, 0.95);
+            background: rgba(17, 24, 39, 0.95);
             backdrop-filter: blur(20px);
             z-index: 1000;
-            border-bottom: 1px solid rgba(229, 231, 235, 0.5);
+            border-bottom: 2px solid rgba(0, 0, 0, 0.5);
             transition: all var(--transition-normal);
+        }
+        
+        .logo img {
+            filter: brightness(1.2) contrast(1.1);
         }
 
         .header.scrolled {
-            padding: 1rem 5%;
+            padding: 0.75rem 5%;
             box-shadow: var(--shadow-lg);
-            background: rgba(255, 255, 255, 0.98);
+            background: rgba(17, 24, 39, 0.98);
         }
-
+        
         .logo-container {
             display: flex;
             align-items: center;
             gap: 12px;
         }
-
+        
         .logo {
-            width: 45px;
             height: 45px;
-            background: var(--gradient-primary);
-            border-radius: 12px;
+            width: auto;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            font-weight: 800;
-            font-size: 1.4rem;
-            box-shadow: var(--shadow-md);
+        }
+        
+        .logo img {
+            height: 100%;
+            width: auto;
+            object-fit: contain;
         }
 
         .logo-text {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            font-weight: 800;
-            font-size: 1.8rem;
-            color: var(--dark);
-            letter-spacing: -0.5px;
+            display: none;
         }
-
-        .logo-text span {
-            background: var(--gradient-primary);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
-
+        
         .nav-links {
             display: flex;
             gap: 2.5rem;
             align-items: center;
             list-style: none;
         }
-
+        
         .nav-link {
             text-decoration: none;
-            color: var(--dark);
+            color: white;
             font-weight: 500;
             font-size: 1rem;
             position: relative;
@@ -282,7 +275,7 @@
         .nav-link:hover::after {
             width: 100%;
         }
-
+        
         .nav-link.active {
             color: var(--primary);
         }
@@ -302,7 +295,7 @@
             background: none;
             border: none;
             font-size: 1.5rem;
-            color: var(--dark);
+            color: white;
             cursor: pointer;
             padding: 0.5rem;
             border-radius: var(--radius-sm);
@@ -331,6 +324,11 @@
             gap: 0.75rem;
             letter-spacing: 0.3px;
         }
+        
+        .btn i {
+            color: inherit;
+            font-size: 1.1rem;
+        }
 
         .btn::after {
             content: '';
@@ -347,26 +345,30 @@
         .btn:hover::after {
             transform: translateX(100%);
         }
-
+        
         .btn-primary {
             background: var(--gradient-primary);
             color: white;
             box-shadow: var(--shadow-md);
         }
-
+        
         .btn-primary:hover {
             transform: translateY(-3px);
             box-shadow: var(--shadow-lg);
         }
-
+        
         .btn-secondary {
             background: transparent;
-            color: var(--primary);
+            color: white;
             border: 2px solid var(--primary);
         }
-
+        
+        .btn-secondary i {
+            color: white;
+        }
+        
         .btn-secondary:hover {
-            background: rgba(37, 99, 235, 0.05);
+            background: rgba(37, 99, 235, 0.2);
             transform: translateY(-3px);
             box-shadow: var(--shadow-md);
         }
@@ -392,43 +394,37 @@
             transform: translateY(-3px);
             box-shadow: var(--shadow-lg);
         }
-
+        
         /* Hero Section */
         .hero {
-            padding: 12rem 5% 8rem;
+            padding: 6rem 5% 4rem;
             position: relative;
             overflow: hidden;
             max-width: var(--container-width);
             margin: 0 auto;
+            min-height: calc(100vh - 80px);
+            display: flex;
+            align-items: center;
         }
-
+        
         .hero-content {
             max-width: 800px;
             position: relative;
             z-index: 2;
+            width: 100%;
         }
 
         .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            background: rgba(37, 99, 235, 0.1);
-            color: var(--primary);
-            padding: 0.5rem 1.25rem;
-            border-radius: var(--radius-full);
-            font-size: 0.875rem;
-            font-weight: 600;
-            margin-bottom: 1.5rem;
-            border: 1px solid rgba(37, 99, 235, 0.2);
+            display: none;
         }
 
         .hero-title {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 4rem;
+            font-size: 3.5rem;
             font-weight: 800;
             line-height: 1.1;
-            color: var(--dark);
-            margin-bottom: 1.5rem;
+            color: white;
+            margin-bottom: 1.25rem;
             letter-spacing: -1px;
         }
 
@@ -440,10 +436,10 @@
         }
 
         .hero-subtitle {
-            font-size: 1.25rem;
-            color: var(--gray);
+            font-size: 1.125rem;
+            color: rgba(255, 255, 255, 0.8);
             max-width: 700px;
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
             line-height: 1.8;
         }
 
@@ -452,7 +448,7 @@
             gap: 1.5rem;
             align-items: center;
             flex-wrap: wrap;
-            margin-bottom: 3rem;
+            margin-bottom: 2rem;
         }
 
         .trusted-by {
@@ -460,11 +456,20 @@
             align-items: center;
             gap: 1.5rem;
             flex-wrap: wrap;
+            margin-top: 1.5rem;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+        }
+        
+        .trusted-by.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .trusted-by-text {
             font-size: 0.875rem;
-            color: var(--gray);
+            color: rgba(255, 255, 255, 0.7);
             font-weight: 500;
         }
 
@@ -487,9 +492,17 @@
         .hero-stats {
             display: flex;
             gap: 3rem;
-            margin-top: 4rem;
-            padding-top: 3rem;
-            border-top: 1px solid rgba(229, 231, 235, 0.5);
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.6s ease;
+        }
+        
+        .hero-stats.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .stat {
@@ -501,13 +514,13 @@
             font-family: 'Plus Jakarta Sans', sans-serif;
             font-size: 2.5rem;
             font-weight: 800;
-            color: var(--primary);
+            color: var(--primary-light);
             line-height: 1;
         }
 
         .stat-label {
             font-size: 0.875rem;
-            color: var(--gray);
+            color: rgba(255, 255, 255, 0.7);
             margin-top: 0.5rem;
         }
 
@@ -515,6 +528,8 @@
         .section {
             padding: 8rem 5%;
             position: relative;
+            background: var(--gradient-dark);
+            color: white;
         }
 
         .section-dark {
@@ -530,14 +545,14 @@
 
         .section-subtitle {
             display: inline-block;
-            background: rgba(37, 99, 235, 0.1);
-            color: var(--primary);
+            background: rgba(37, 99, 235, 0.2);
+            color: white;
             padding: 0.5rem 1.25rem;
             border-radius: var(--radius-full);
             font-size: 0.875rem;
             font-weight: 600;
             margin-bottom: 1rem;
-            border: 1px solid rgba(37, 99, 235, 0.2);
+            border: 1px solid rgba(37, 99, 235, 0.4);
         }
 
         .section-title {
@@ -546,6 +561,7 @@
             font-weight: 800;
             line-height: 1.1;
             margin-bottom: 1.5rem;
+            color: white;
         }
 
         .section-dark .section-title {
@@ -554,7 +570,7 @@
 
         .section-description {
             font-size: 1.125rem;
-            color: var(--gray);
+            color: rgba(255, 255, 255, 0.8);
             line-height: 1.8;
         }
 
@@ -564,12 +580,12 @@
 
         /* Cards */
         .card {
-            background: white;
+            background: rgba(31, 41, 55, 0.8);
             border-radius: var(--radius-xl);
             padding: 2.5rem;
             box-shadow: var(--shadow-lg);
             transition: all var(--transition-normal);
-            border: 1px solid rgba(229, 231, 235, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             height: 100%;
             position: relative;
             overflow: hidden;
@@ -593,17 +609,22 @@
             margin-bottom: 1.5rem;
             box-shadow: var(--shadow-md);
         }
+        
+        .card-icon i {
+            color: white;
+            filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));
+        }
 
         .card-title {
             font-family: 'Plus Jakarta Sans', sans-serif;
             font-size: 1.5rem;
             font-weight: 700;
             margin-bottom: 1rem;
-            color: var(--dark);
+            color: white;
         }
 
         .card-description {
-            color: var(--gray);
+            color: rgba(255, 255, 255, 0.8);
             margin-bottom: 1.5rem;
         }
 
@@ -611,10 +632,14 @@
             display: inline-flex;
             align-items: center;
             gap: 0.5rem;
-            color: var(--primary);
+            color: var(--primary-light);
             font-weight: 600;
             text-decoration: none;
             transition: gap var(--transition-fast);
+        }
+        
+        .card-link i {
+            color: var(--primary-light);
         }
 
         .card-link:hover {
@@ -666,12 +691,12 @@
             flex-shrink: 0;
             width: 60px;
             height: 60px;
-            background: rgba(37, 99, 235, 0.1);
+            background: rgba(37, 99, 235, 0.2);
             border-radius: var(--radius-lg);
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--primary);
+            color: var(--primary-light);
             font-size: 1.5rem;
         }
 
@@ -680,11 +705,11 @@
             font-size: 1.25rem;
             font-weight: 700;
             margin-bottom: 0.5rem;
-            color: var(--dark);
+            color: white;
         }
 
         .feature-content p {
-            color: var(--gray);
+            color: rgba(255, 255, 255, 0.8);
         }
 
         /* Pricing Cards */
@@ -697,12 +722,12 @@
         }
 
         .pricing-card {
-            background: white;
+            background: rgba(31, 41, 55, 0.8);
             border-radius: var(--radius-xl);
             padding: 3rem;
             box-shadow: var(--shadow-lg);
             transition: all var(--transition-normal);
-            border: 2px solid rgba(229, 231, 235, 0.5);
+            border: 2px solid rgba(255, 255, 255, 0.1);
             position: relative;
             overflow: hidden;
         }
@@ -744,23 +769,23 @@
             font-size: 1.5rem;
             font-weight: 700;
             margin-bottom: 1rem;
-            color: var(--dark);
+            color: white;
         }
 
         .pricing-price {
             font-family: 'Plus Jakarta Sans', sans-serif;
             font-size: 3.5rem;
             font-weight: 800;
-            color: var(--primary);
+            color: var(--primary-light);
             line-height: 1;
         }
 
         .pricing-period {
             font-size: 1rem;
-            color: var(--gray);
+            color: rgba(255, 255, 255, 0.7);
             font-weight: 500;
         }
-
+        
         .pricing-features {
             list-style: none;
             margin: 2.5rem 0;
@@ -768,18 +793,24 @@
 
         .pricing-features li {
             padding: 0.75rem 0;
-            border-bottom: 1px solid rgba(229, 231, 235, 0.5);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             display: flex;
             align-items: center;
             gap: 0.75rem;
+            color: rgba(255, 255, 255, 0.9);
         }
-
+        
         .pricing-features li:last-child {
             border-bottom: none;
         }
-
+        
         .pricing-features li i {
             color: var(--success);
+            font-size: 1.1rem;
+        }
+        
+        .pricing-features li .fa-times {
+            color: rgba(255, 255, 255, 0.3);
         }
 
         /* Testimonials */
@@ -789,18 +820,18 @@
         }
 
         .testimonial-card {
-            background: white;
+            background: rgba(31, 41, 55, 0.8);
             border-radius: var(--radius-xl);
             padding: 2.5rem;
             box-shadow: var(--shadow-lg);
-            border: 1px solid rgba(229, 231, 235, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             margin: 1rem;
         }
 
         .testimonial-content {
             font-size: 1.125rem;
             line-height: 1.8;
-            color: var(--dark);
+            color: white;
             margin-bottom: 2rem;
             position: relative;
         }
@@ -840,11 +871,12 @@
             font-size: 1.125rem;
             font-weight: 700;
             margin-bottom: 0.25rem;
+            color: white;
         }
 
         .author-info p {
             font-size: 0.875rem;
-            color: var(--gray);
+            color: rgba(255, 255, 255, 0.7);
         }
 
         /* CTA Section */
@@ -887,7 +919,7 @@
             margin: 0 auto 3rem;
             position: relative;
         }
-
+        
         /* Footer */
         .footer {
             background: var(--dark);
@@ -895,7 +927,7 @@
             padding: 5rem 5% 2rem;
             position: relative;
         }
-
+        
         .footer-content {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -903,7 +935,7 @@
             max-width: var(--container-width);
             margin: 0 auto 4rem;
         }
-
+        
         .footer-column h3 {
             font-family: 'Plus Jakarta Sans', sans-serif;
             font-size: 1.25rem;
@@ -912,7 +944,7 @@
             position: relative;
             padding-bottom: 0.75rem;
         }
-
+        
         .footer-column h3::after {
             content: '';
             position: absolute;
@@ -927,11 +959,11 @@
         .footer-links {
             list-style: none;
         }
-
+        
         .footer-links li {
             margin-bottom: 0.75rem;
         }
-
+        
         .footer-links a {
             color: rgba(255, 255, 255, 0.7);
             text-decoration: none;
@@ -940,7 +972,7 @@
             align-items: center;
             gap: 0.5rem;
         }
-
+        
         .footer-links a:hover {
             color: white;
             transform: translateX(5px);
@@ -982,12 +1014,12 @@
             text-decoration: none;
             transition: all var(--transition-normal);
         }
-
+        
         .social-link:hover {
             background: var(--primary);
             transform: translateY(-3px);
         }
-
+        
         .footer-bottom {
             border-top: 1px solid rgba(255, 255, 255, 0.1);
             padding-top: 2rem;
@@ -997,43 +1029,46 @@
             max-width: var(--container-width);
             margin: 0 auto;
         }
-
+        
         /* Chatbot */
         .chatbot-container {
             position: fixed;
-            bottom: 30px;
-            right: 30px;
+            bottom: 20px;
+            right: 20px;
             z-index: 999;
         }
-
+        
         .chatbot-toggle {
-            width: 70px;
-            height: 70px;
+            width: 60px;
+            height: 60px;
             background: var(--gradient-primary);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             color: white;
-            font-size: 1.75rem;
+            font-size: 1.5rem;
             cursor: pointer;
             box-shadow: var(--shadow-xl);
             border: none;
             transition: all var(--transition-normal);
         }
-
+        
         .chatbot-toggle:hover {
-            transform: scale(1.1) rotate(15deg);
+            transform: scale(1.05);
             box-shadow: var(--shadow-2xl);
         }
-
+        
         .chatbot-window {
-            position: absolute;
-            bottom: 90px;
-            right: 0;
-            width: 400px;
-            height: 600px;
-            background: white;
+            position: fixed;
+            bottom: 85px;
+            right: 20px;
+            width: 320px;
+            height: 450px;
+            max-width: calc(100vw - 40px);
+            max-height: calc(100vh - 120px);
+            background: rgba(31, 41, 55, 0.98);
+            backdrop-filter: blur(20px);
             border-radius: var(--radius-xl);
             box-shadow: var(--shadow-2xl);
             overflow: hidden;
@@ -1042,30 +1077,31 @@
             transform: translateY(20px);
             opacity: 0;
             transition: all var(--transition-normal);
-            border: 1px solid rgba(229, 231, 235, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            z-index: 998;
         }
-
+        
         .chatbot-window.active {
             display: flex;
             transform: translateY(0);
             opacity: 1;
         }
-
+        
         .chatbot-header {
             background: var(--gradient-primary);
             color: white;
-            padding: 1.5rem;
+            padding: 1rem 1.25rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-
+        
         .chatbot-header h3 {
             font-family: 'Plus Jakarta Sans', sans-serif;
-            font-size: 1.25rem;
+            font-size: 1rem;
             font-weight: 700;
         }
-
+        
         .chatbot-close {
             background: rgba(255, 255, 255, 0.2);
             border: none;
@@ -1083,30 +1119,31 @@
         .chatbot-close:hover {
             background: rgba(255, 255, 255, 0.3);
         }
-
+        
         .chatbot-messages {
             flex: 1;
-            padding: 1.5rem;
+            padding: 1rem;
             overflow-y: auto;
             display: flex;
             flex-direction: column;
-            gap: 1rem;
+            gap: 0.75rem;
         }
-
+        
         .chatbot-message {
-            max-width: 80%;
-            padding: 1rem 1.25rem;
+            max-width: 85%;
+            padding: 0.75rem 1rem;
             border-radius: var(--radius-lg);
-            font-size: 0.9375rem;
-            line-height: 1.6;
+            font-size: 0.875rem;
+            line-height: 1.5;
         }
 
         .chatbot-message.bot {
-            background: var(--gray-light);
+            background: rgba(37, 99, 235, 0.2);
+            color: white;
             align-self: flex-start;
             border-bottom-left-radius: 5px;
         }
-
+        
         .chatbot-message.user {
             background: var(--gradient-primary);
             color: white;
@@ -1115,35 +1152,41 @@
         }
 
         .chatbot-input-area {
-            padding: 1.5rem;
-            border-top: 1px solid rgba(229, 231, 235, 0.5);
+            padding: 1rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
         }
-
+        
         .chatbot-input {
             display: flex;
-            gap: 0.75rem;
+            gap: 0.5rem;
             align-items: center;
         }
-
+        
         .chatbot-input input {
             flex: 1;
-            padding: 0.875rem 1.25rem;
-            border: 1px solid rgba(229, 231, 235, 0.5);
+            padding: 0.75rem 1rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
             border-radius: var(--radius-full);
             font-family: 'Inter', sans-serif;
-            font-size: 0.9375rem;
+            font-size: 0.875rem;
+            background: rgba(17, 24, 39, 0.5);
+            color: white;
             transition: all var(--transition-fast);
+        }
+        
+        .chatbot-input input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
         }
 
         .chatbot-input input:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.2);
         }
-
+        
         .chatbot-send {
-            width: 50px;
-            height: 50px;
+            width: 40px;
+            height: 40px;
             background: var(--gradient-primary);
             border: none;
             border-radius: 50%;
@@ -1153,12 +1196,19 @@
             justify-content: center;
             cursor: pointer;
             transition: all var(--transition-normal);
+            font-size: 0.875rem;
         }
-
+        
         .chatbot-send:hover {
             transform: scale(1.05);
         }
-
+        
+        .chatbot-close {
+            width: 28px;
+            height: 28px;
+            font-size: 0.875rem;
+        }
+        
         /* Responsive */
         @media (max-width: 1200px) {
             .hero-title {
@@ -1204,20 +1254,26 @@
 
         @media (max-width: 768px) {
             .hero {
-                padding: 10rem 5% 6rem;
+                padding: 5rem 5% 3rem;
+                min-height: calc(100vh - 70px);
             }
             
             .hero-title {
-                font-size: 2.5rem;
+                font-size: 2.25rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1rem;
             }
             
             .hero-cta {
                 flex-direction: column;
                 align-items: flex-start;
+                gap: 1rem;
             }
             
             .section {
-                padding: 6rem 5%;
+                padding: 4rem 5%;
             }
             
             .services-grid {
@@ -1229,15 +1285,38 @@
             }
             
             .chatbot-window {
-                width: calc(100vw - 60px);
+                position: fixed;
+                width: calc(100vw - 20px);
                 right: 10px;
-                height: 500px;
+                left: 10px;
+                height: 400px;
+                max-height: calc(100vh - 100px);
+                bottom: 75px;
+            }
+            
+            .chatbot-toggle {
+                width: 55px;
+                height: 55px;
+                font-size: 1.25rem;
+            }
+            
+            .hero-stats {
+                flex-wrap: wrap;
+                gap: 2rem;
             }
         }
-
+        
         @media (max-width: 480px) {
+            .hero {
+                padding: 4rem 5% 2rem;
+            }
+            
             .hero-title {
                 font-size: 2rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 0.9375rem;
             }
             
             .section-title {
@@ -1251,6 +1330,32 @@
             .footer-content {
                 grid-template-columns: 1fr;
                 gap: 3rem;
+            }
+            
+            .chatbot-window {
+                position: fixed;
+                width: calc(100vw - 20px);
+                right: 10px;
+                left: 10px;
+                height: 350px;
+                max-height: calc(100vh - 90px);
+                bottom: 70px;
+            }
+            
+            .chatbot-toggle {
+                width: 50px;
+                height: 50px;
+                font-size: 1.125rem;
+            }
+            
+            .header {
+                padding: 0.75rem 5%;
+            }
+            
+            .hero-stats {
+                flex-direction: column;
+                gap: 1.5rem;
+                align-items: flex-start;
             }
         }
     </style>
@@ -1266,14 +1371,15 @@
     <div class="floating-element"></div>
     <div class="floating-element"></div>
     <div class="floating-element"></div>
-
+    
     <!-- Header -->
     <header class="header" id="header">
         <div class="logo-container">
-            <div class="logo">PR</div>
-            <div class="logo-text">Property<span>Reply</span></div>
+            <div class="logo">
+                <img src="logo.png" alt="PropertyReply Logo">
+            </div>
         </div>
-
+        
         <nav>
             <ul class="nav-links" id="nav-links">
                 <li><a href="#home" class="nav-link active">Home</a></li>
@@ -1295,15 +1401,10 @@
             </button>
         </div>
     </header>
-
-    <!-- Hero Section -->
+    
+        <!-- Hero Section -->
     <section class="hero" id="home">
         <div class="hero-content" data-aos="fade-up" data-aos-duration="1000">
-            <div class="hero-badge">
-                <i class="fas fa-star"></i>
-                <span>Industry-Leading AI Solution for UK Estate Agents</span>
-            </div>
-            
             <h1 class="hero-title">
                 Transform Property Enquiries Into 
                 <span>Qualified Leads</span> 
@@ -1354,24 +1455,24 @@
                     <div class="stat-label">GDPR Compliant</div>
                 </div>
             </div>
-        </div>
-    </section>
-
-    <!-- Services Section -->
-    <section class="section" id="services">
+            </div>
+        </section>
+        
+        <!-- Services Section -->
+        <section class="section" id="services">
         <div class="section-header" data-aos="fade-up">
             <div class="section-subtitle">Our Services</div>
             <h2 class="section-title">Complete AI Solution for Modern Estate Agencies</h2>
             <p class="section-description">
                 We provide end-to-end AI-powered solutions specifically designed for UK estate agents to capture, qualify, and convert property enquiries efficiently.
             </p>
-        </div>
-
-        <div class="services-grid">
+                </div>
+                
+                <div class="services-grid">
             <div class="card" data-aos="fade-up" data-aos-delay="100">
                 <div class="card-icon">
-                    <i class="fas fa-robot"></i>
-                </div>
+                            <i class="fas fa-robot"></i>
+                        </div>
                 <h3 class="card-title">AI Chat Assistant</h3>
                 <p class="card-description">
                     Intelligent chatbot engages visitors instantly, answering questions and capturing leads 24/7 with human-like conversations.
@@ -1379,12 +1480,12 @@
                 <a href="#" class="card-link">
                     Learn More <i class="fas fa-arrow-right"></i>
                 </a>
-            </div>
-
+                    </div>
+                    
             <div class="card" data-aos="fade-up" data-aos-delay="200">
                 <div class="card-icon">
-                    <i class="fas fa-bolt"></i>
-                </div>
+                            <i class="fas fa-bolt"></i>
+                        </div>
                 <h3 class="card-title">Instant Response</h3>
                 <p class="card-description">
                     Respond to enquiries within seconds, not hours. Never miss a potential buyer or seller with our lightning-fast system.
@@ -1392,12 +1493,12 @@
                 <a href="#" class="card-link">
                     Learn More <i class="fas fa-arrow-right"></i>
                 </a>
-            </div>
-
+                    </div>
+                    
             <div class="card" data-aos="fade-up" data-aos-delay="300">
                 <div class="card-icon">
-                    <i class="fas fa-filter"></i>
-                </div>
+                            <i class="fas fa-filter"></i>
+                        </div>
                 <h3 class="card-title">Advanced Qualification</h3>
                 <p class="card-description">
                     Automatically qualify leads based on budget, timeline, property type, and location to prioritize high-value prospects.
@@ -1406,13 +1507,13 @@
                     Learn More <i class="fas fa-arrow-right"></i>
                 </a>
             </div>
-        </div>
-
+                    </div>
+                    
         <div class="services-grid" style="margin-top: 2rem;">
             <div class="card" data-aos="fade-up" data-aos-delay="400">
                 <div class="card-icon">
-                    <i class="fas fa-home"></i>
-                </div>
+                            <i class="fas fa-home"></i>
+                        </div>
                 <h3 class="card-title">Valuation Capture</h3>
                 <p class="card-description">
                     Automatically capture seller details and schedule valuations directly through intelligent conversation flows.
@@ -1420,12 +1521,12 @@
                 <a href="#" class="card-link">
                     Learn More <i class="fas fa-arrow-right"></i>
                 </a>
-            </div>
-
+                    </div>
+                    
             <div class="card" data-aos="fade-up" data-aos-delay="500">
                 <div class="card-icon">
-                    <i class="fas fa-calendar-check"></i>
-                </div>
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
                 <h3 class="card-title">Viewing Management</h3>
                 <p class="card-description">
                     Automate viewing bookings, sync with your calendar, and send automated reminders to buyers and agents.
@@ -1433,12 +1534,12 @@
                 <a href="#" class="card-link">
                     Learn More <i class="fas fa-arrow-right"></i>
                 </a>
-            </div>
-
+                    </div>
+                    
             <div class="card" data-aos="fade-up" data-aos-delay="600">
                 <div class="card-icon">
-                    <i class="fas fa-bell"></i>
-                </div>
+                            <i class="fas fa-bell"></i>
+                        </div>
                 <h3 class="card-title">Smart Notifications</h3>
                 <p class="card-description">
                     Receive instant email and SMS alerts for high-quality leads with complete details and qualification scores.
@@ -1446,27 +1547,27 @@
                 <a href="#" class="card-link">
                     Learn More <i class="fas fa-arrow-right"></i>
                 </a>
+                </div>
             </div>
-        </div>
-    </section>
-
+        </section>
+        
     <!-- Features Section -->
     <section class="section section-dark" id="features">
         <div class="section-header" data-aos="fade-up">
             <div class="section-subtitle" style="background: rgba(255,255,255,0.1); color: white; border-color: rgba(255,255,255,0.2);">
                 Advanced Features
-            </div>
+                </div>
             <h2 class="section-title">Enterprise-Grade Technology for UK Estate Agents</h2>
             <p class="section-description">
                 Built with cutting-edge AI technology specifically designed for the UK property market and fully compliant with UK regulations.
             </p>
-        </div>
-
+                    </div>
+                    
         <div class="features-showcase" data-aos="fade-up">
             <div class="features-image">
                 <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=2400&q=80" alt="PropertyReply Dashboard">
-            </div>
-            
+                    </div>
+                    
             <div class="features-list">
                 <div class="feature-item" data-aos="fade-left" data-aos-delay="100">
                     <div class="feature-icon">
@@ -1480,37 +1581,37 @@
                 
                 <div class="feature-item" data-aos="fade-left" data-aos-delay="200">
                     <div class="feature-icon">
-                        <i class="fas fa-flag-uk"></i>
-                    </div>
+                            <i class="fas fa-flag-uk"></i>
+                        </div>
                     <div class="feature-content">
                         <h4>UK Market Focus</h4>
                         <p>Specifically trained on UK property market terminology and processes.</p>
+                        </div>
                     </div>
-                </div>
-                
+                    
                 <div class="feature-item" data-aos="fade-left" data-aos-delay="300">
                     <div class="feature-icon">
                         <i class="fas fa-sync"></i>
-                    </div>
+                        </div>
                     <div class="feature-content">
                         <h4>CRM Integration</h4>
                         <p>Seamless integration with popular UK estate agency CRM systems.</p>
+                        </div>
                     </div>
-                </div>
-                
+                    
                 <div class="feature-item" data-aos="fade-left" data-aos-delay="400">
                     <div class="feature-icon">
                         <i class="fas fa-chart-line"></i>
-                    </div>
+                        </div>
                     <div class="feature-content">
                         <h4>Advanced Analytics</h4>
                         <p>Comprehensive reporting and insights on lead quality and conversion rates.</p>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
-
+        </section>
+        
     <!-- Pricing Section -->
     <section class="section" id="pricing">
         <div class="section-header" data-aos="fade-up">
@@ -1519,8 +1620,8 @@
             <p class="section-description">
                 One flat monthly fee with no hidden costs. Cancel anytime with no long-term contracts.
             </p>
-        </div>
-
+                </div>
+                
         <div class="pricing-cards">
             <div class="pricing-card" data-aos="fade-up" data-aos-delay="100">
                 <div class="pricing-header">
@@ -1540,15 +1641,15 @@
                 <button class="btn btn-secondary" style="width: 100%;">
                     Get Started
                 </button>
-            </div>
-
+                    </div>
+                    
             <div class="pricing-card featured" data-aos="fade-up" data-aos-delay="200">
                 <div class="pricing-header">
                     <h3 class="pricing-name">Professional</h3>
                     <div class="pricing-price">£149<span class="pricing-period">/month</span></div>
                     <p>Most popular for growing agencies</p>
-                </div>
-                
+                    </div>
+                    
                 <ul class="pricing-features">
                     <li><i class="fas fa-check"></i> Everything in Starter</li>
                     <li><i class="fas fa-check"></i> Advanced Qualification</li>
@@ -1560,15 +1661,15 @@
                 <button class="btn btn-primary" style="width: 100%;">
                     Get Started
                 </button>
-            </div>
-
+                    </div>
+                    
             <div class="pricing-card" data-aos="fade-up" data-aos-delay="300">
                 <div class="pricing-header">
                     <h3 class="pricing-name">Enterprise</h3>
                     <div class="pricing-price">£299<span class="pricing-period">/month</span></div>
                     <p>For large agencies & franchises</p>
-                </div>
-                
+                    </div>
+                    
                 <ul class="pricing-features">
                     <li><i class="fas fa-check"></i> Everything in Professional</li>
                     <li><i class="fas fa-check"></i> Advanced CRM Integration</li>
@@ -1580,8 +1681,8 @@
                 <button class="btn btn-secondary" style="width: 100%;">
                     Contact Sales
                 </button>
-            </div>
-        </div>
+                    </div>
+                </div>
     </section>
 
     <!-- Testimonials Section -->
@@ -1589,19 +1690,19 @@
         <div class="section-header" data-aos="fade-up">
             <div class="section-subtitle" style="background: rgba(255,255,255,0.1); color: white; border-color: rgba(255,255,255,0.2);">
                 Testimonials
-            </div>
+                </div>
             <h2 class="section-title">Trusted by UK Estate Agencies</h2>
             <p class="section-description">
                 See what leading estate agents across the UK say about PropertyReply.
             </p>
-        </div>
+            </div>
 
         <div class="testimonials-slider" data-aos="fade-up">
             <div class="testimonial-card">
                 <div class="testimonial-content">
                     PropertyReply has transformed our lead generation. We're now capturing 40% more qualified leads and responding instantly to enquiries 24/7. The AI assistant feels incredibly natural to our website visitors.
-                </div>
-                
+    </div>
+    
                 <div class="testimonial-author">
                     <div class="author-avatar">
                         <img src="https://images.unsplash.com/photo-1560250097-0b93528c311a?ixlib=rb-4.0.3&auto=format&fit=crop&w=200&q=80" alt="Sarah Johnson">
@@ -1613,10 +1714,10 @@
                 </div>
             </div>
         </div>
-    </section>
-
+        </section>
+        
     <!-- CTA Section -->
-    <section class="section">
+        <section class="section">
         <div class="cta-section" data-aos="zoom-in">
             <h2 class="cta-title">Ready to Transform Your Lead Generation?</h2>
             <p class="cta-description">
@@ -1632,9 +1733,9 @@
                     <i class="fas fa-calendar-check"></i>
                     Book a Demo
                 </button>
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
     <!-- Contact Section -->
     <section class="section" id="contact">
@@ -1644,55 +1745,55 @@
             <p class="section-description">
                 Have questions? Our team is here to help you get started with PropertyReply.
             </p>
-        </div>
-
+    </div>
+    
         <div class="features-showcase" data-aos="fade-up">
             <div class="features-list">
                 <div class="feature-item">
                     <div class="feature-icon">
-                        <i class="fas fa-envelope"></i>
+                                <i class="fas fa-envelope"></i>
                     </div>
                     <div class="feature-content">
-                        <h4>Email</h4>
-                        <p>hello@propertyreply.com</p>
-                    </div>
-                </div>
-                
+                                    <h4>Email</h4>
+                                    <p>info@propertyreply.com</p>
+                                </div>
+                            </div>
+                            
                 <div class="feature-item">
                     <div class="feature-icon">
-                        <i class="fas fa-globe"></i>
+                                <i class="fas fa-globe"></i>
                     </div>
                     <div class="feature-content">
-                        <h4>Website</h4>
-                        <p>propertyreply.com</p>
-                    </div>
-                </div>
-                
+                                    <h4>Website</h4>
+                                    <p>propertyreply.com</p>
+                                </div>
+                            </div>
+                            
                 <div class="feature-item">
                     <div class="feature-icon">
-                        <i class="fas fa-map-marker-alt"></i>
+                                <i class="fas fa-map-marker-alt"></i>
                     </div>
                     <div class="feature-content">
-                        <h4>Location</h4>
-                        <p>United Kingdom</p>
-                    </div>
-                </div>
-                
+                                    <h4>Location</h4>
+                                    <p>United Kingdom</p>
+                            </div>
+                        </div>
+                        
                 <div class="feature-item">
                     <div class="feature-icon">
-                        <i class="fas fa-clock"></i>
-                    </div>
+                            <i class="fas fa-clock"></i>
+                        </div>
                     <div class="feature-content">
                         <h4>Response Time</h4>
                         <p>Typically within 1 business day</p>
                     </div>
-                </div>
-            </div>
-            
+                            </div>
+                            </div>
+                            
             <div class="features-image">
                 <img src="https://images.unsplash.com/photo-1556761175-b413da4baf72?ixlib=rb-4.0.3&auto=format&fit=crop&w=2400&q=80" alt="Contact PropertyReply">
-            </div>
-        </div>
+                            </div>
+                            </div>
     </section>
 
     <!-- Footer -->
@@ -1700,9 +1801,10 @@
         <div class="footer-content">
             <div class="footer-column">
                 <div class="logo-container" style="margin-bottom: 1.5rem;">
-                    <div class="logo">PR</div>
-                    <div class="logo-text">Property<span>Reply</span></div>
-                </div>
+                    <div class="logo">
+                        <img src="logo.png" alt="PropertyReply Logo" style="height: 40px;">
+                            </div>
+                            </div>
                 <p style="color: rgba(255,255,255,0.7); margin-bottom: 1.5rem;">
                     AI-powered chat assistants for UK estate agents, capturing and qualifying leads 24/7.
                 </p>
@@ -1711,9 +1813,9 @@
                     <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
                     <a href="#" class="social-link"><i class="fab fa-facebook-f"></i></a>
                     <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
-                </div>
-            </div>
-            
+                    </div>
+    </div>
+    
             <div class="footer-column">
                 <h3>Quick Links</h3>
                 <ul class="footer-links">
@@ -1723,8 +1825,8 @@
                     <li><a href="#pricing"><i class="fas fa-chevron-right"></i> Pricing</a></li>
                     <li><a href="#contact"><i class="fas fa-chevron-right"></i> Contact</a></li>
                 </ul>
-            </div>
-            
+                </div>
+                
             <div class="footer-column">
                 <h3>Services</h3>
                 <ul class="footer-links">
@@ -1733,33 +1835,33 @@
                     <li><a href="#"><i class="fas fa-chevron-right"></i> Valuation Capture</a></li>
                     <li><a href="#"><i class="fas fa-chevron-right"></i> Viewing Management</a></li>
                     <li><a href="#"><i class="fas fa-chevron-right"></i> CRM Integration</a></li>
-                </ul>
-            </div>
-            
+                    </ul>
+                </div>
+                
             <div class="footer-column">
                 <h3>Contact Info</h3>
                 <div class="contact-info">
                     <div class="contact-item">
                         <i class="fas fa-envelope"></i>
-                        <span>hello@propertyreply.com</span>
+                        <span>info@propertyreply.com</span>
                     </div>
                     <div class="contact-item">
                         <i class="fas fa-globe"></i>
                         <span>propertyreply.com</span>
-                    </div>
+                </div>
                     <div class="contact-item">
                         <i class="fas fa-map-marker-alt"></i>
                         <span>United Kingdom</span>
-                    </div>
+            </div>
+    </div>
                 </div>
             </div>
-        </div>
-        
-        <div class="footer-bottom">
+            
+            <div class="footer-bottom">
             <p>&copy; <span id="current-year"></span> PropertyReply. All rights reserved. | UK-Based & GDPR Compliant | <a href="#" style="color: var(--primary); text-decoration: none;">Privacy Policy</a> | <a href="#" style="color: var(--primary); text-decoration: none;">Terms & Conditions</a></p>
         </div>
     </footer>
-
+    
     <!-- Chatbot -->
     <div class="chatbot-container">
         <button class="chatbot-toggle" id="chatbot-toggle">
@@ -1781,16 +1883,16 @@
             </div>
             
             <div class="chatbot-input-area">
-                <div class="chatbot-input">
-                    <input type="text" id="chatbot-input" placeholder="Type your message...">
+            <div class="chatbot-input">
+                <input type="text" id="chatbot-input" placeholder="Type your message...">
                     <button class="chatbot-send" id="chatbot-send">
-                        <i class="fas fa-paper-plane"></i>
-                    </button>
+                    <i class="fas fa-paper-plane"></i>
+                </button>
                 </div>
             </div>
         </div>
     </div>
-
+    
     <!-- JavaScript Libraries -->
     <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
@@ -1806,7 +1908,7 @@
 
         // Set current year
         document.getElementById('current-year').textContent = new Date().getFullYear();
-
+        
         // Loader
         window.addEventListener('load', () => {
             const loader = document.getElementById('loader');
@@ -1848,7 +1950,7 @@
                 }
             }
         });
-
+        
         // Header scroll effect
         const header = document.getElementById('header');
         window.addEventListener('scroll', () => {
@@ -1858,11 +1960,11 @@
                 header.classList.remove('scrolled');
             }
         });
-
+        
         // Mobile menu
         const mobileMenuBtn = document.getElementById('mobile-menu-btn');
         const navLinks = document.getElementById('nav-links');
-
+        
         mobileMenuBtn.addEventListener('click', () => {
             navLinks.style.display = navLinks.style.display === 'flex' ? 'none' : 'flex';
             if (navLinks.style.display === 'flex') {
@@ -1905,7 +2007,7 @@
                 }
             });
         });
-
+        
         // CTA buttons
         document.querySelectorAll('.btn-primary, .btn-accent').forEach(btn => {
             btn.addEventListener('click', function(e) {
@@ -1929,7 +2031,7 @@
                 }
             });
         });
-
+        
         // Chatbot functionality
         const chatbotToggle = document.getElementById('chatbot-toggle');
         const chatbotWindow = document.getElementById('chatbot-window');
@@ -1937,22 +2039,22 @@
         const chatbotSend = document.getElementById('chatbot-send');
         const chatbotInput = document.getElementById('chatbot-input');
         const chatbotMessages = document.getElementById('chatbot-messages');
-
+        
         chatbotToggle.addEventListener('click', () => {
             chatbotWindow.classList.toggle('active');
         });
-
+        
         chatbotClose.addEventListener('click', () => {
             chatbotWindow.classList.remove('active');
         });
-
+        
         // Chatbot responses
         const chatbotResponses = {
             greeting: ["Hello! How can I assist you today?", "Hi there! I'm here to help you learn about PropertyReply.", "Welcome! I'm your AI assistant. What would you like to know?"],
             pricing: "We offer three plans: Starter (£79/month), Professional (£149/month, most popular), and Enterprise (£299/month). All plans include our AI chat assistant with no long-term contracts.",
             features: "PropertyReply offers AI chat assistant, instant enquiry responses, advanced lead qualification, valuation capture, viewing management, CRM integration, and 24/7 operation.",
             demo: "You can request a demo by clicking any 'Request Demo' button on our website. We'll schedule a personalized demonstration at your convenience.",
-            contact: "You can reach us at hello@propertyreply.com or through our contact form. We're UK-based and typically respond within 1 business day.",
+            contact: "You can reach us at info@propertyreply.com or through our contact form. We're UK-based and typically respond within 1 business day.",
             gdpr: "Yes! PropertyReply is fully GDPR-compliant and designed specifically for UK data protection regulations.",
             uk: "Absolutely! We're UK-based and our AI is specifically trained on UK property market terminology and processes.",
             setup: "Setup takes just minutes. Add one line of code to your website, customize the chat widget, and you're ready to start capturing leads.",
@@ -1966,7 +2068,7 @@
             chatbotMessages.appendChild(messageDiv);
             chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
         }
-
+        
         function processChatbotMessage(message) {
             const lowerMessage = message.toLowerCase();
             
@@ -1990,7 +2092,7 @@
                 return chatbotResponses.default;
             }
         }
-
+        
         chatbotSend.addEventListener('click', () => {
             const message = chatbotInput.value.trim();
             if (message) {
@@ -2004,13 +2106,13 @@
                 }, 500);
             }
         });
-
+        
         chatbotInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 chatbotSend.click();
             }
         });
-
+        
         // Parallax effect on scroll
         window.addEventListener('scroll', () => {
             const scrolled = window.pageYOffset;
@@ -2083,6 +2185,30 @@
         if (heroSection) {
             statsObserver.observe(heroSection);
         }
+        
+        // Show trusted-by and stats on scroll
+        const trustedBy = document.querySelector('.trusted-by');
+        const heroStats = document.querySelector('.hero-stats');
+        
+        const showOnScroll = () => {
+            const scrollPosition = window.scrollY;
+            const heroHeight = heroSection ? heroSection.offsetHeight : 0;
+            const triggerPoint = heroHeight * 0.3; // Show when scrolled 30% of hero height
+            
+            if (scrollPosition > triggerPoint) {
+                if (trustedBy && !trustedBy.classList.contains('visible')) {
+                    trustedBy.classList.add('visible');
+                }
+                if (heroStats && !heroStats.classList.contains('visible')) {
+                    heroStats.classList.add('visible');
+                }
+            }
+        };
+        
+        window.addEventListener('scroll', showOnScroll);
+        
+        // Also check on initial load if already scrolled
+        showOnScroll();
 
         // Form submission
         const contactForm = document.getElementById('contact-form');
