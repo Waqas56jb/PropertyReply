@@ -125,42 +125,49 @@ const Hero = () => {
           </div>
 
           <div
-            className={`grid grid-cols-[repeat(auto-fit,minmax(140px,1fr))] gap-[clamp(1.5rem,4vw,3rem)] mx-auto pt-8 border-t border-white/10 max-w-[1000px] w-full transition-all duration-600 max-md:grid-cols-2 max-md:gap-8 max-sm:grid-cols-2 max-sm:gap-6 ${
+            className={`grid grid-cols-[repeat(auto-fit,minmax(200px,1fr))] gap-[clamp(1.25rem,3vw,2rem)] mx-auto pt-8 border-t border-white/10 max-w-[1100px] w-full transition-all duration-600 max-md:grid-cols-2 max-sm:grid-cols-1 ${
               statsVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-3'
             }`}
           >
-            <div className="flex flex-col items-center text-center p-2 max-sm:p-1">
-              <div className="font-display text-[clamp(1.4rem,4vw,2.6rem)] font-extrabold text-white leading-none mb-3">
-                Reply to leads instantly
+            {[
+              {
+                title: 'Reply to leads instantly',
+                desc: 'Keep every enquiry warm, even after hours.',
+                icon: 'fa-bolt'
+              },
+              {
+                title: 'Turn visitors into viewings',
+                desc: 'Book viewings and valuations automatically.',
+                icon: 'fa-calendar-check'
+              },
+              {
+                title: 'Qualify buyers & sellers fast',
+                desc: 'Filter serious prospects in minutes.',
+                icon: 'fa-filter'
+              },
+              {
+                title: 'Built for UK agents',
+                desc: 'GDPR-ready and tailored to your workflows.',
+                icon: 'fa-shield-alt'
+              }
+            ].map((item, idx) => (
+              <div
+                key={idx}
+                className="bg-white/5 border border-white/10 rounded-2xl p-6 flex flex-col gap-3 items-start text-left shadow-[0_18px_40px_rgba(0,0,0,0.25)] backdrop-blur-md hover:-translate-y-1 hover:shadow-[0_25px_60px_rgba(0,0,0,0.35)] transition-all duration-300"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="h-10 w-10 rounded-full bg-gradient-primary flex items-center justify-center text-white shadow-primary">
+                    <i className={`fas ${item.icon}`}></i>
+                  </div>
+                  <h3 className="font-display text-[1.3rem] font-bold text-white leading-tight">
+                    {item.title}
+                  </h3>
+                </div>
+                <p className="text-white/75 text-[0.95rem] leading-relaxed">
+                  {item.desc}
+                </p>
               </div>
-              <div className="text-[clamp(0.8rem,1.5vw,0.95rem)] text-white/75 leading-[1.5]">
-                Keep every enquiry warm, even after hours.
-              </div>
-            </div>
-            <div className="flex flex-col items-center text-center p-2 max-sm:p-1">
-              <div className="font-display text-[clamp(1.4rem,4vw,2.6rem)] font-extrabold text-white leading-none mb-3">
-                Turn visitors into viewings
-              </div>
-              <div className="text-[clamp(0.8rem,1.5vw,0.95rem)] text-white/75 leading-[1.5]">
-                Book viewings and valuations automatically.
-              </div>
-            </div>
-            <div className="flex flex-col items-center text-center p-2 max-sm:p-1">
-              <div className="font-display text-[clamp(1.4rem,4vw,2.6rem)] font-extrabold text-white leading-none mb-3">
-                Qualify buyers & sellers fast
-              </div>
-              <div className="text-[clamp(0.8rem,1.5vw,0.95rem)] text-white/75 leading-[1.5]">
-                Filter serious prospects in minutes.
-              </div>
-            </div>
-            <div className="flex flex-col items-center text-center p-2 max-sm:p-1">
-              <div className="font-display text-[clamp(1.4rem,4vw,2.6rem)] font-extrabold text-white leading-none mb-3">
-                Built for UK agents
-              </div>
-              <div className="text-[clamp(0.8rem,1.5vw,0.95rem)] text-white/75 leading-[1.5]">
-                GDPR-ready and tailored to your workflows.
-              </div>
-            </div>
+            ))}
           </div>
         </div>
 
