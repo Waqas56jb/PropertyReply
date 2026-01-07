@@ -51,8 +51,8 @@ const Hero = () => {
       id="home"
       className="relative overflow-hidden w-full min-h-screen flex items-center justify-center bg-gradient-hero before:content-[''] before:absolute before:top-0 before:left-0 before:right-0 before:bottom-0 before:bg-[radial-gradient(circle_at_20%_50%,rgba(37,99,235,0.18)_0%,transparent_55%),radial-gradient(circle_at_80%_80%,rgba(124,58,237,0.22)_0%,transparent_55%)] before:z-[1]"
     >
-      <div className="max-w-[1200px] relative z-[2] w-full py-32 px-[5%] text-center animate-fadeInUp max-md:py-28 max-md:px-4 max-sm:py-20 max-sm:px-4">
-        <div className="inline-flex items-center gap-2 rounded-full bg-white/5 border border-white/15 px-4 py-1.5 mb-6 text-[0.8rem] font-semibold uppercase tracking-[0.16em] text-white/70 shadow-[0_0_0_1px_rgba(255,255,255,0.03)] mx-auto">
+      <div className="max-w-[1200px] relative z-[2] w-full py-32 px-[5%] text-center animate-fadeInUp max-md:py-28 max-md:px-4 max-sm:pt-28 max-sm:pb-20 max-sm:px-4">
+        <div className="inline-flex items-center gap-2 rounded-full bg-white/5 border border-white/15 px-4 py-1.5 mb-6 text-[0.8rem] font-semibold uppercase tracking-[0.16em] text-white/70 shadow-[0_0_0_1px_rgba(255,255,255,0.03)] mx-auto max-sm:text-[0.7rem] max-sm:px-3 max-sm:py-1">
           <span className="flex h-6 w-6 items-center justify-center rounded-full bg-gradient-primary text-white text-xs shadow-primary">
             <i className="fas fa-bolt"></i>
           </span>
