@@ -61,7 +61,7 @@ const Hero = () => {
 
         <h1 className="font-display text-[clamp(2.4rem,5.5vw,4.75rem)] font-extrabold leading-[1.05] text-white mb-6 tracking-[-2px] max-md:text-[clamp(2rem,8vw,2.9rem)] max-md:mb-5 max-md:tracking-[-1px] max-sm:text-[clamp(1.5rem,8vw,2rem)] max-sm:mb-4 max-sm:tracking-[-0.5px] max-sm:text-left max-sm:leading-[1.2]">
           Never miss another property enquiry{' '}
-          <span className="bg-gradient-primary bg-clip-text text-transparent inline-block relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-1 after:bg-gradient-primary after:opacity-30 after:rounded-sm">
+          <span className="bg-gradient-primary bg-clip-text text-transparent inline-block relative after:content-[''] after:absolute after:bottom-0 after:left-0 after:w-full after:h-0">
             — respond instantly
           </span>
         </h1>

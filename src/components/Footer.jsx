@@ -49,7 +49,7 @@ const Footer = () => {
       <div className="grid grid-cols-[repeat(auto-fit,minmax(250px,1fr))] gap-16 max-w-container mx-auto mb-16 max-sm:grid-cols-1 max-sm:gap-12">
         <div>
           <div className="flex items-center gap-3 mb-6">
-            <div className="h-[55px] w-auto flex items-center justify-center">
+            <div className="h-[40px] w-auto flex items-center justify-center">
               <img src="/logo.png" alt="PropertyReply Logo" className="h-full w-auto object-contain" />
             </div>
           </div>

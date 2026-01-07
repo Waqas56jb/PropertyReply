@@ -38,9 +38,9 @@ const Header = () => {
   };
 
   return (
-    <header className={`fixed top-0 left-0 w-full py-4 px-[5%] flex justify-between items-center bg-dark/90 backdrop-blur-[20px] z-[1000] border-b border-white/10 transition-all duration-300 shadow-[0_2px_10px_rgba(0,0,0,0.4)] ${scrolled ? 'py-3 shadow-[0_4px_20px_rgba(0,0,0,0.6)] bg-dark-light/95' : ''}`}>
+    <header className={`fixed top-0 left-0 w-full py-4 px-[5%] flex justify-between items-center bg-dark/90 backdrop-blur-[20px] z-[1000] transition-all duration-300 shadow-[0_2px_10px_rgba(0,0,0,0.4)] ${scrolled ? 'py-3 shadow-[0_4px_20px_rgba(0,0,0,0.6)] bg-dark-light/95' : ''}`}>
       <div className="flex items-center gap-3">
-        <div className="h-[65px] w-auto flex items-center justify-center">
+        <div className="h-[45px] w-auto flex items-center justify-center">
           <img src="/logo.png" alt="PropertyReply Logo" className="h-full w-auto object-contain" />
         </div>
       </div>
