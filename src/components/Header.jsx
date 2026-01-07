@@ -56,10 +56,10 @@ const Header = () => {
         </ul>
       </nav>
 
-      <div className="flex gap-4 items-center">
-        <button onClick={handleCTAClick} className="px-8 py-3.5 rounded-full font-semibold text-base cursor-pointer transition-all duration-300 border-none font-sans relative overflow-hidden inline-flex items-center justify-center gap-3 tracking-wide bg-gradient-primary text-white shadow-primary hover:-translate-y-0.5 hover:shadow-primary-hover max-lg:px-6 max-lg:py-3 max-lg:text-[0.9375rem] max-md:hidden">
+      <div className="flex gap-3 items-center">
+        <button onClick={handleCTAClick} className="px-8 py-3.5 rounded-full font-semibold text-base cursor-pointer transition-all duration-300 border-none font-sans relative overflow-hidden inline-flex items-center justify-center gap-3 tracking-wide bg-gradient-primary text-white shadow-primary hover:-translate-y-0.5 hover:shadow-primary-hover max-lg:px-7 max-lg:py-3 max-lg:text-[0.95rem]">
           <i className="fas fa-calendar-check text-[1.1rem]"></i>
-          Request Demo
+          Request a Demo
         </button>
         <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="hidden max-lg:block bg-transparent border-none text-[1.5rem] text-white cursor-pointer p-2 rounded-lg transition-colors duration-200 z-[1001] hover:bg-white/10">
           <i className={`fas ${mobileMenuOpen ? 'fa-times' : 'fa-bars'} text-white`}></i>

@@ -8,7 +8,8 @@
     "react-dom": "^18.2.0",
     "react-scripts": "5.0.1",
     "particles.js": "^2.0.0",
-    "aos": "^2.3.4"
+    "aos": "^2.3.4",
+    "react-icons": "^4.12.0"
   },
   "devDependencies": {
     "tailwindcss": "^3.3.6",

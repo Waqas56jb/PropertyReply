@@ -33,7 +33,7 @@ const Services = () => {
       delay: 500
     },
     {
-      icon: 'fa-robot',
+      icon: 'fa-globe',
       title: 'Built for UK estate agents',
       description: 'Language, flows, and compliance aligned to UK agencies out of the box.',
       delay: 600
@@ -58,15 +58,15 @@ const Services = () => {
         {services.map((service, index) => (
           <div key={index} className="bg-dark-light/80 rounded-3xl p-10 shadow-lg transition-all duration-300 border border-white/10 h-full relative overflow-hidden hover:-translate-y-2.5 hover:shadow-xl max-sm:p-8" data-aos="fade-up" data-aos-delay={service.delay}>
             <div className="w-[70px] h-[70px] bg-gradient-primary rounded-2xl flex items-center justify-center text-white text-[1.75rem] mb-6 shadow-md">
-              <i className={`fas ${service.icon} text-white drop-shadow-[0_2px_4px_rgba(0,0,0,0.2)]`}></i>
+              <i className={`fas ${service.icon} drop-shadow-[0_2px_4px_rgba(0,0,0,0.2)]`}></i>
             </div>
             <h3 className="font-display text-2xl font-bold mb-4 text-white">{service.title}</h3>
             <p className="text-white/80 mb-6">{service.description}</p>
             <button
               type="button"
-              className="inline-flex items-center gap-2 text-primary-light font-semibold no-underline transition-all duration-200 hover:gap-3 cursor-pointer bg-transparent border-none p-0"
+              className="inline-flex items-center gap-2 text-primary-light font-semibold no-underline transition-all duration-200 hover:gap-3 hover:text-white cursor-pointer bg-transparent border-none p-0"
             >
-              Learn More <i className="fas fa-arrow-right text-primary-light"></i>
+              Learn More <span className="text-primary-light">→</span>
             </button>
           </div>
         ))}

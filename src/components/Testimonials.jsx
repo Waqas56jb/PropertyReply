@@ -5,13 +5,13 @@ const Testimonials = () => {
     <section id="testimonials" className="py-32 px-[5%] relative bg-gradient-dark text-white max-md:py-16 max-md:px-4">
       <div className="text-center max-w-[800px] mx-auto mb-20 max-md:mb-12" data-aos="fade-up">
         <div className="inline-block bg-white/10 text-white py-2 px-5 rounded-full text-sm font-semibold mb-4 border border-white/20">
-          Testimonials
+          Early partner feedback
         </div>
         <h2 className="font-display text-5xl font-extrabold leading-[1.1] mb-6 text-white max-md:text-[2.5rem] max-sm:text-[2rem]">
-          Trusted by UK Estate Agencies
+          Helping UK estate agents respond instantly
         </h2>
         <p className="text-lg text-white/80 leading-[1.8] max-md:text-base">
-          See what leading estate agents across the UK say about PropertyReply.
+          Pilot partners see faster replies and warmer enquiries from day one.
         </p>
       </div>
 
@@ -21,7 +21,7 @@ const Testimonials = () => {
             <span className="absolute -top-5 -left-3 text-6xl text-primary opacity-20 font-serif">
               &quot;
             </span>
-            PropertyReply has transformed our lead generation. We're now capturing 40% more qualified leads and responding instantly to enquiries 24/7. The AI assistant feels incredibly natural to our website visitors.
+            “We never miss enquiries now. Visitors get an instant response and we book viewings while the office is closed.”
           </div>
           
           <div className="flex items-center gap-4">
@@ -34,7 +34,7 @@ const Testimonials = () => {
             </div>
             <div>
               <h4 className="font-display text-lg font-bold mb-1 text-white">Sarah Johnson</h4>
-              <p className="text-sm text-white/70">Director, London Property Partners</p>
+              <p className="text-sm text-white/70">Director (pilot), London Property Partners</p>
             </div>
           </div>
         </div>

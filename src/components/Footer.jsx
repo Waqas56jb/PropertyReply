@@ -54,7 +54,7 @@ const Footer = () => {
             </div>
           </div>
           <p className="text-white/70 mb-6">
-            AI-powered chat assistants for UK estate agents, capturing and qualifying leads 24/7.
+            Turn property enquiries into qualified leads and booked viewings — 24/7.
           </p>
           <div className="flex gap-4 mt-6">
             {socialLinks.map((social, index) => (

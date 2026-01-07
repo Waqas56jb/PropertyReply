@@ -3,22 +3,40 @@ import React from 'react';
 const Pricing = () => {
   const plans = [
     {
-      name: 'PropertyReply Plan',
-      price: '£79',
-      period: '/month',
-      description: 'Simple pricing with a one-time setup.',
+      name: 'Starter',
+      price: '£99',
+      period: '/mo',
+      description: 'Great for your first live enquiries.',
+      setup: '£249 one-time setup',
+      featured: false,
+      features: [
+        { text: 'Reply to every enquiry instantly', included: true },
+        { text: 'Filter serious buyers & sellers fast', included: true },
+        { text: 'Book valuations & viewings automatically', included: true },
+        { text: 'Email alerts with full lead context', included: true },
+        { text: 'GDPR-ready for UK agents', included: true }
+      ],
+      buttonText: 'Request a Demo',
+      buttonClass: 'btn-secondary',
+      delay: 100
+    },
+    {
+      name: 'Pro',
+      price: '£149',
+      period: '/mo',
+      description: 'For agencies wanting more automation.',
       setup: '£249 one-time setup',
       featured: true,
       features: [
-        { text: 'Respond to every enquiry instantly', included: true },
-        { text: 'Qualify buyers & sellers automatically', included: true },
-        { text: 'Book valuations & viewings 24/7', included: true },
-        { text: 'Email/SMS alerts with full context', included: true },
-        { text: 'GDPR-ready for UK agencies', included: true }
+        { text: 'Everything in Starter', included: true },
+        { text: 'Calendar-sync for viewings & valuations', included: true },
+        { text: 'SMS + email alerts with next-best-action', included: true },
+        { text: 'Lead summaries & export', included: true },
+        { text: 'Priority support', included: true }
       ],
       buttonText: 'Request a Demo',
       buttonClass: 'btn-primary',
-      delay: 100
+      delay: 200
     }
   ];
 
@@ -29,10 +47,10 @@ const Pricing = () => {
           Simple Pricing
         </div>
         <h2 className="font-display text-5xl font-extrabold leading-[1.1] mb-6 text-white max-md:text-[2.5rem] max-sm:text-[2rem]">
-          One clear plan for UK estate agents
+          Choose the plan that fits today
         </h2>
         <p className="text-lg text-white/80 leading-[1.8] max-md:text-base">
-          £249 one-time setup, then £79/month. No hidden fees.
+          Clear pricing for UK estate agents. £249 one-time setup. No hidden fees.
         </p>
       </div>
       
