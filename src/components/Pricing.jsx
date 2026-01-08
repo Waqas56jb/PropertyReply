@@ -7,36 +7,20 @@ const Pricing = () => {
       price: '£99',
       period: '/mo',
       description: 'Great for your first live enquiries.',
-      setup: '£249 one-time setup',
+      setup: '£149',
+      setupOriginal: '£249',
       featured: false,
       features: [
         { text: 'Reply to every enquiry instantly', included: true },
         { text: 'Filter serious buyers & sellers fast', included: true },
         { text: 'Book valuations & viewings automatically', included: true },
         { text: 'Email alerts with full lead context', included: true },
-        { text: 'GDPR-ready for UK agents', included: true }
+        { text: 'GDPR-ready for UK agents', included: true },
+        { text: 'Full working customizable chat box', included: true }
       ],
       buttonText: 'Request a Demo',
       buttonClass: 'btn-secondary',
       delay: 100
-    },
-    {
-      name: 'Pro',
-      price: '£149',
-      period: '/mo',
-      description: 'For agencies wanting more automation.',
-      setup: '£249 one-time setup',
-      featured: true,
-      features: [
-        { text: 'Everything in Starter', included: true },
-        { text: 'Calendar-sync for viewings & valuations', included: true },
-        { text: 'SMS + email alerts with next-best-action', included: true },
-        { text: 'Lead summaries & export', included: true },
-        { text: 'Priority support', included: true }
-      ],
-      buttonText: 'Request a Demo',
-      buttonClass: 'btn-primary',
-      delay: 200
     }
   ];
 
@@ -47,14 +31,14 @@ const Pricing = () => {
           Simple Pricing
         </div>
         <h2 className="font-display text-5xl font-extrabold leading-[1.1] mb-6 text-white max-md:text-[2.5rem] max-sm:text-[2rem]">
-          Choose the plan that fits today
+          Enterprise grade AI technology for UK estate agents
         </h2>
         <p className="text-lg text-white/80 leading-[1.8] max-md:text-base">
-          Clear pricing for UK estate agents. £249 one-time setup. No hidden fees.
+          Clear pricing for UK estate agents. Early bird offer: £149 one-time setup. No hidden fees.
         </p>
       </div>
       
-      <div className="grid grid-cols-[repeat(auto-fit,minmax(350px,1fr))] gap-8 max-w-container mx-auto max-lg:grid-cols-1 max-lg:max-w-[500px]">
+      <div className="grid grid-cols-[repeat(auto-fit,minmax(350px,1fr))] gap-8 max-w-container mx-auto max-lg:grid-cols-1 max-lg:max-w-[500px] justify-center">
         {plans.map((plan, index) => (
           <div 
             key={index} 
@@ -70,7 +54,13 @@ const Pricing = () => {
             
             <div className="text-center mb-8">
               <h3 className="font-display text-2xl font-bold mb-2 text-white">{plan.name}</h3>
-              <p className="text-white/75 mb-3">{plan.setup}</p>
+              <p className="text-white/75 mb-3">
+                <span className="relative inline-block">
+                  <span className="line-through text-white/50 mr-2">{plan.setupOriginal}</span>
+                  <span className="text-primary-light font-semibold">{plan.setup} one-time setup</span>
+                  <span className="ml-2 text-xs bg-primary/30 text-primary-light px-2 py-0.5 rounded-full">Early Bird</span>
+                </span>
+              </p>
               <div className="font-display text-[3.2rem] font-extrabold text-primary-light leading-none">
                 {plan.price}
                 <span className="text-base text-white/70 font-medium">{plan.period}</span>
@@ -87,11 +77,19 @@ const Pricing = () => {
               ))}
             </ul>
             
-            <button className={`w-full px-8 py-3.5 rounded-full font-semibold text-base cursor-pointer transition-all duration-300 border-none font-sans relative overflow-hidden inline-flex items-center justify-center gap-3 tracking-wide ${
-              plan.buttonClass === 'btn-primary' 
-                ? 'bg-gradient-primary text-white shadow-primary hover:-translate-y-0.5 hover:shadow-primary-hover' 
-                : 'bg-white/10 text-white border-2 border-white/30 backdrop-blur-[10px] hover:bg-white/15 hover:border-white/50 hover:-translate-y-0.5 hover:shadow-[0_4px_15px_rgba(0,0,0,0.2)]'
-            }`}>
+            <button 
+              onClick={(e) => {
+                e.preventDefault();
+                if (window.openChatbox) {
+                  window.openChatbox();
+                }
+              }}
+              className={`w-full px-8 py-3.5 rounded-full font-semibold text-base cursor-pointer transition-all duration-300 border-none font-sans relative overflow-hidden inline-flex items-center justify-center gap-3 tracking-wide ${
+                plan.buttonClass === 'btn-primary' 
+                  ? 'bg-gradient-primary text-white shadow-primary hover:-translate-y-0.5 hover:shadow-primary-hover' 
+                  : 'bg-white/10 text-white border-2 border-white/30 backdrop-blur-[10px] hover:bg-white/15 hover:border-white/50 hover:-translate-y-0.5 hover:shadow-[0_4px_15px_rgba(0,0,0,0.2)]'
+              }`}
+            >
               {plan.buttonText}
             </button>
           </div>

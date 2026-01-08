@@ -34,7 +34,9 @@ const Header = () => {
 
   const handleCTAClick = (e) => {
     e.preventDefault();
-    handleNavClick(e, 'contact');
+    if (window.openChatbox) {
+      window.openChatbox();
+    }
   };
 
   return (

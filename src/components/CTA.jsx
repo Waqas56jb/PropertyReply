@@ -3,12 +3,8 @@ import React from 'react';
 const CTA = () => {
   const handleCTAClick = (e) => {
     e.preventDefault();
-    const contactSection = document.querySelector('#contact');
-    if (contactSection) {
-      window.scrollTo({
-        top: contactSection.offsetTop - 80,
-        behavior: 'smooth'
-      });
+    if (window.openChatbox) {
+      window.openChatbox();
     }
   };
 

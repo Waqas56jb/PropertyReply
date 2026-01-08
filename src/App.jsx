@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from './components/Header';
 import Hero from './components/Hero';
 import Services from './components/Services';
@@ -10,8 +10,18 @@ import Contact from './components/Contact';
 import Footer from './components/Footer';
 import Loader from './components/Loader';
 import ParticlesBackground from './components/ParticlesBackground';
+import Chatbox from './components/Chatbox';
 
 function App() {
+  const [chatboxOpen, setChatboxOpen] = useState(false);
+
+  // Expose function globally so all components can open chatbox
+  useEffect(() => {
+    window.openChatbox = () => setChatboxOpen(true);
+    return () => {
+      delete window.openChatbox;
+    };
+  }, []);
   useEffect(() => {
     // Initialize AOS
     if (window.AOS) {
@@ -70,6 +80,7 @@ function App() {
       <CTA />
       <Contact />
       <Footer />
+      <Chatbox isOpen={chatboxOpen} onClose={() => setChatboxOpen(false)} />
     </div>
   );
 }

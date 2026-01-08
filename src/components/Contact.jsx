@@ -1,4 +1,5 @@
 import React from 'react';
+import ContactForm from './ContactForm';
 
 const Contact = () => {
   const contactItems = [
@@ -10,12 +11,14 @@ const Contact = () => {
     {
       icon: 'fa-phone',
       title: 'Phone',
-      content: '+44 7776 971161'
+      content: '+447878938733'
     },
     {
       icon: 'fa-globe',
       title: 'Website',
-      content: 'propertyreply.com'
+      content: 'Visit Website',
+      url: 'https://www.propertyreply.com/',
+      isIconClickable: true
     },
     {
       icon: 'fa-map-marker-alt',
@@ -25,12 +28,12 @@ const Contact = () => {
     {
       icon: 'fa-clock',
       title: 'Response Time',
-      content: 'Typically within 1 business day'
+      content: 'Within 24 hours'
     },
     {
       icon: 'fa-business-time',
       title: 'Business Hours',
-      content: 'Mon–Fri, 9am–5pm'
+      content: '10:00AM-20:00PM Monday-Sunday'
     }
   ];
 
@@ -48,27 +51,46 @@ const Contact = () => {
         </p>
       </div>
       
-      <div className="grid grid-cols-2 gap-20 items-center max-w-container mx-auto max-lg:grid-cols-1 max-lg:gap-12" data-aos="fade-up">
+      <div className="grid grid-cols-2 gap-20 items-start max-w-container mx-auto max-lg:grid-cols-1 max-lg:gap-12" data-aos="fade-up">
         <div className="flex flex-col gap-8">
           {contactItems.map((item, index) => (
             <div key={index} className="flex gap-6 items-start">
-              <div className="flex-shrink-0 w-[70px] h-[70px] bg-primary/25 border-2 border-primary/40 rounded-2xl flex items-center justify-center text-primary-light text-[1.75rem] shadow-[0_4px_15px_rgba(37,99,235,0.2)]">
-                <i className={`fas ${item.icon} text-[#60A5FA] drop-shadow-[0_2px_4px_rgba(0,0,0,0.2)]`}></i>
-              </div>
+              {item.isIconClickable ? (
+                <a 
+                  href={item.url} 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="flex-shrink-0 w-[70px] h-[70px] bg-primary/25 border-2 border-primary/40 rounded-2xl flex items-center justify-center text-primary-light text-[1.75rem] shadow-[0_4px_15px_rgba(37,99,235,0.2)] hover:bg-primary/35 hover:border-primary/60 hover:scale-110 transition-all duration-300 cursor-pointer"
+                >
+                  <i className={`fas ${item.icon} text-[#60A5FA] drop-shadow-[0_2px_4px_rgba(0,0,0,0.2)]`}></i>
+                </a>
+              ) : (
+                <div className="flex-shrink-0 w-[70px] h-[70px] bg-primary/25 border-2 border-primary/40 rounded-2xl flex items-center justify-center text-primary-light text-[1.75rem] shadow-[0_4px_15px_rgba(37,99,235,0.2)]">
+                  <i className={`fas ${item.icon} text-[#60A5FA] drop-shadow-[0_2px_4px_rgba(0,0,0,0.2)]`}></i>
+                </div>
+              )}
               <div className="flex-1">
                 <h4 className="font-display text-xl font-bold mb-2 text-white">{item.title}</h4>
-                <p className="text-white/90 leading-[1.7]">{item.content}</p>
+                {item.isLink ? (
+                  <a 
+                    href={item.content} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                    className="text-white/90 leading-[1.7] hover:text-primary-light transition-colors underline"
+                  >
+                    {item.content}
+                  </a>
+                ) : (
+                  <p className="text-white/90 leading-[1.7]">{item.content}</p>
+                )}
               </div>
             </div>
           ))}
         </div>
         
-        <div className="relative">
-          <img 
-            src="https://images.unsplash.com/photo-1556761175-b413da4baf72?ixlib=rb-4.0.3&auto=format&fit=crop&w=2400&q=80" 
-            alt="Contact PropertyReply" 
-            className="w-full rounded-3xl shadow-2xl"
-          />
+        <div className="bg-dark-light/80 rounded-3xl p-8 border border-white/10">
+          <h3 className="font-display text-2xl font-bold mb-6 text-white">Send us a message</h3>
+          <ContactForm />
         </div>
       </div>
     </section>

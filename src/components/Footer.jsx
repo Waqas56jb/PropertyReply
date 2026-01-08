@@ -56,6 +56,9 @@ const Footer = () => {
           <p className="text-white/70 mb-6">
             Turn property enquiries into qualified leads and booked viewings — 24/7.
           </p>
+          <p className="text-white/60 text-sm mb-4">
+            <span className="font-semibold text-white">SAQIB HUSSAIN</span> | CEO
+          </p>
           <div className="flex gap-4 mt-6">
             {socialLinks.map((social, index) => (
               <a 
@@ -116,8 +119,16 @@ const Footer = () => {
               <span>info@propertyreply.com</span>
             </div>
             <div className="flex items-center gap-4 text-white/70">
-              <i className="fas fa-globe text-primary text-lg"></i>
-              <span>propertyreply.com</span>
+              <a 
+                href="https://www.propertyreply.com/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="hover:opacity-80 transition-opacity cursor-pointer"
+                title="Visit Website"
+              >
+                <i className="fas fa-globe text-primary text-lg"></i>
+              </a>
+              <span>Visit Website</span>
             </div>
             <div className="flex items-center gap-4 text-white/70">
               <i className="fas fa-map-marker-alt text-primary text-lg"></i>
