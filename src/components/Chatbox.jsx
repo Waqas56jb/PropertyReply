@@ -13,6 +13,9 @@ const Chatbox = ({ isOpen, onClose }) => {
   const [isRecording, setIsRecording] = useState(false);
   const [recordingTime, setRecordingTime] = useState(0);
   const [audioLevel, setAudioLevel] = useState(0);
+  const [isPlayingAudio, setIsPlayingAudio] = useState(false);
+  const [transcript, setTranscript] = useState('');
+  const [isTranscribing, setIsTranscribing] = useState(false);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
   const recordingIntervalRef = useRef(null);
@@ -20,6 +23,13 @@ const Chatbox = ({ isOpen, onClose }) => {
   const audioContextRef = useRef(null);
   const analyserRef = useRef(null);
   const animationFrameRef = useRef(null);
+  const speechRecognitionRef = useRef(null);
+  const lastTranscriptTimeRef = useRef(null);
+  const transcriptDebounceRef = useRef(null);
+  const audioElementsRef = useRef([]);
+  const abortControllerRef = useRef(null);
+  const accumulatedFinalTranscriptRef = useRef(''); // Component-level ref for accumulated transcript
+  const lastSentTranscriptRef = useRef(''); // Track what we've already sent
 
   useEffect(() => {
     if (isOpen && inputRef.current) {
@@ -174,23 +184,253 @@ const Chatbox = ({ isOpen, onClose }) => {
     }
   };
 
+  // Play audio chunk - Reserved for future audio playback feature
+  // eslint-disable-next-line no-unused-vars
+  const playAudioChunk = async (audioBase64, mimeType = 'audio/mpeg') => {
+    return new Promise((resolve, reject) => {
+      try {
+        const audio = new Audio(`data:${mimeType};base64,${audioBase64}`);
+        audioElementsRef.current.push(audio);
+        
+        audio.onended = () => {
+          resolve();
+        };
+        
+        audio.onerror = (error) => {
+          console.error('Audio playback error:', error);
+          reject(error);
+        };
+        
+        audio.play().catch(reject);
+      } catch (error) {
+        console.error('Error playing audio:', error);
+        reject(error);
+      }
+    });
+  };
+
+  // Send transcript to OpenAI and get TTS response
+  const sendTranscriptToOpenAI = async (text) => {
+    if (!text.trim() || text.length < 3) return;
+    
+    try {
+      setIsTyping(true);
+      setIsPlayingAudio(true);
+      
+      const API_URL = (process.env.REACT_APP_API_URL || 'https://property-reply-backend.vercel.app').replace(/\/$/, '');
+      
+      // Cancel previous request if any
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+      abortControllerRef.current = new AbortController();
+      
+      // Send to chatbot API
+      const response = await fetch(`${API_URL}/api/chatbot`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({ question: text.trim() }),
+        mode: 'cors',
+        signal: abortControllerRef.current.signal,
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        const botResponse = {
+          text: data.answer,
+          sender: 'bot',
+          timestamp: new Date()
+        };
+        setMessages(prev => [...prev, botResponse]);
+        
+        // Generate and play TTS for the response using Web Speech API
+        await generateAndPlayTTS(data.answer);
+        
+        // After TTS finishes, mic will automatically continue listening (if still recording)
+        // Reset accumulated transcript for next question
+        accumulatedFinalTranscriptRef.current = '';
+        lastSentTranscriptRef.current = '';
+      } else {
+        const errorMessage = data.message || 'Sorry, I encountered an error. Please try again.';
+        const botResponse = {
+          text: errorMessage,
+          sender: 'bot',
+          timestamp: new Date()
+        };
+        setMessages(prev => [...prev, botResponse]);
+        setIsPlayingAudio(false);
+      }
+    } catch (error) {
+      if (error.name === 'AbortError') {
+        console.log('Request aborted');
+        return;
+      }
+      console.error('Error calling chatbot API:', error);
+      const botResponse = {
+        text: 'Sorry, I\'m having trouble connecting right now. Please try again later.',
+        sender: 'bot',
+        timestamp: new Date()
+      };
+      setMessages(prev => [...prev, botResponse]);
+      setIsPlayingAudio(false);
+    } finally {
+      setIsTyping(false);
+      // isPlayingAudio will be set to false by TTS onend handler
+    }
+  };
+
+  // Generate TTS audio using Web Speech API (browser built-in)
+  const generateAndPlayTTS = async (text) => {
+    try {
+      if ('speechSynthesis' in window) {
+        // Cancel any ongoing speech
+        window.speechSynthesis.cancel();
+        
+        // Wait a bit for cancellation to complete
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        let voices = window.speechSynthesis.getVoices();
+        if (voices.length === 0) {
+          await new Promise((resolve) => {
+            const loadVoices = () => {
+              voices = window.speechSynthesis.getVoices();
+              if (voices.length > 0) {
+                resolve();
+              } else {
+                setTimeout(loadVoices, 100);
+              }
+            };
+            window.speechSynthesis.onvoiceschanged = loadVoices;
+            loadVoices();
+          });
+        }
+        
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.9;
+        utterance.pitch = 1;
+        utterance.volume = 1;
+        
+        // Find best available voice
+        const preferredVoice = voices.find(voice => 
+          voice.name.includes('Google') || 
+          voice.name.includes('Natural') ||
+          voice.name.includes('Microsoft') ||
+          (voice.lang.startsWith('en') && voice.localService)
+        ) || voices.find(voice => voice.lang.startsWith('en'));
+        
+        if (preferredVoice) {
+          utterance.voice = preferredVoice;
+        }
+        
+        utterance.onend = () => {
+          setIsPlayingAudio(false);
+        };
+        
+        utterance.onerror = (error) => {
+          // Silently handle 'interrupted' errors (common when new speech starts)
+          if (error.error !== 'interrupted') {
+            console.error('TTS error:', error);
+          }
+          setIsPlayingAudio(false);
+        };
+        
+        setIsPlayingAudio(true);
+        window.speechSynthesis.speak(utterance);
+      } else {
+        console.warn('Browser does not support speech synthesis');
+        setIsPlayingAudio(false);
+      }
+    } catch (error) {
+      console.error('Error generating TTS:', error);
+      setIsPlayingAudio(false);
+    }
+  };
+
+  // Handle real-time transcript updates with pause detection
+  const handleTranscriptUpdate = (interimTranscript, finalTranscript) => {
+    // Combine final and interim transcript for real-time display (token by token)
+    const fullTranscript = finalTranscript.trim() + (interimTranscript ? ' ' + interimTranscript : '');
+    setTranscript(fullTranscript);
+    setInputMessage(fullTranscript); // Update input field in real-time as user speaks
+    
+    // Update last transcript time whenever we get new input (interim or final)
+    if (interimTranscript || finalTranscript) {
+      lastTranscriptTimeRef.current = Date.now();
+    }
+    
+    // Clear existing pause timer
+    if (transcriptDebounceRef.current) {
+      clearTimeout(transcriptDebounceRef.current);
+      transcriptDebounceRef.current = null;
+    }
+    
+    // If we have final transcript (not just interim), wait 1 second of pause before sending
+    if (finalTranscript.trim().length > 0) {
+      transcriptDebounceRef.current = setTimeout(() => {
+        // Check if 1 second has passed since last update (no new speech)
+        const timeSinceLastUpdate = Date.now() - lastTranscriptTimeRef.current;
+        if (timeSinceLastUpdate >= 1000 && finalTranscript.trim().length > 0) {
+          // Get only the new part that hasn't been sent yet
+          const newText = finalTranscript.trim();
+          const alreadySent = lastSentTranscriptRef.current.trim();
+          
+          // Only send if there's new text
+          if (newText && newText !== alreadySent && newText.length > alreadySent.length) {
+            // Extract only the new part
+            const textToSend = newText.replace(alreadySent, '').trim() || newText;
+            
+            // Update what we've sent
+            lastSentTranscriptRef.current = newText;
+            
+            // Clear the transcript immediately to prepare for next question
+            setTranscript('');
+            setInputMessage('');
+            accumulatedFinalTranscriptRef.current = ''; // Reset for next question
+            
+            // Send to OpenAI - mic will continue listening after response
+            sendTranscriptToOpenAI(textToSend);
+          }
+        }
+      }, 1000);
+    }
+  };
+
   const handleVoiceRecord = async () => {
     if (isRecording) {
-      // Stop recording
       stopRecording();
+    } else if (isPlayingAudio) {
+      // Block recording while audio is playing
+      return;
     } else {
-      // Start recording
       await startRecording();
     }
   };
 
   const startRecording = async () => {
     try {
+      // Check if browser supports Web Speech API
+      if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+        alert('Your browser does not support speech recognition. Please use Chrome, Edge, or Safari.');
+        return;
+      }
+
       setIsRecording(true);
+      setIsTranscribing(true);
       setRecordingTime(0);
       setAudioLevel(0);
+      setTranscript('');
+      setInputMessage('');
       
-      // Request microphone access
+      // Reset transcript tracking
+      accumulatedFinalTranscriptRef.current = '';
+      lastSentTranscriptRef.current = '';
+      
+      // Request microphone access first
       const stream = await navigator.mediaDevices.getUserMedia({ 
         audio: {
           echoCancellation: true,
@@ -201,7 +441,7 @@ const Chatbox = ({ isOpen, onClose }) => {
       
       mediaStreamRef.current = stream;
       
-      // Create audio context for real-time analysis
+      // Create audio context for visual feedback
       const AudioContext = window.AudioContext || window.webkitAudioContext;
       const audioContext = new AudioContext();
       audioContextRef.current = audioContext;
@@ -226,7 +466,7 @@ const Chatbox = ({ isOpen, onClose }) => {
         const dataArray = new Uint8Array(analyser.frequencyBinCount);
         
         const updateLevel = () => {
-          if (!analyserRef.current) {
+          if (!analyserRef.current || !isRecording) {
             setAudioLevel(0);
             return;
           }
@@ -246,16 +486,130 @@ const Chatbox = ({ isOpen, onClose }) => {
       
       startMonitoring();
       
+      // Initialize Web Speech API for real-time transcription
+      const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      const recognition = new SpeechRecognition();
+      recognition.continuous = true; // Keep listening
+      recognition.interimResults = true; // Get real-time results
+      recognition.lang = 'en-US';
+      
+      speechRecognitionRef.current = recognition;
+      
+      recognition.onresult = (event) => {
+        let interimTranscript = '';
+        let newFinalTranscript = '';
+        
+        // Process all results from the last result index (token by token)
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const transcript = event.results[i][0].transcript;
+          if (event.results[i].isFinal) {
+            // Accumulate final transcripts
+            accumulatedFinalTranscriptRef.current += transcript + ' ';
+            newFinalTranscript += transcript + ' ';
+          } else {
+            // Interim results (real-time as user speaks)
+            interimTranscript += transcript;
+          }
+        }
+        
+        // Update transcript in real-time (shows in input field as user speaks)
+        handleTranscriptUpdate(interimTranscript, accumulatedFinalTranscriptRef.current.trim());
+      };
+      
+      recognition.onerror = (event) => {
+        // Silently handle common errors that don't need user attention
+        if (event.error === 'no-speech') {
+          // No speech detected - this is normal, continue listening silently
+          return;
+        } else if (event.error === 'aborted') {
+          // Recognition was aborted - normal when stopping
+          return;
+        } else if (event.error === 'audio-capture') {
+          // No microphone found
+          setIsRecording(false);
+          setIsTranscribing(false);
+          alert('No microphone found. Please connect a microphone and try again.');
+        } else if (event.error === 'not-allowed') {
+          // Microphone permission denied
+          setIsRecording(false);
+          setIsTranscribing(false);
+          alert('Microphone permission denied. Please allow microphone access in your browser settings.');
+        } else {
+          // Other errors - log but don't stop unless critical
+          console.warn('Speech recognition warning:', event.error);
+          // Only stop on critical errors
+          if (event.error === 'network' || event.error === 'service-not-allowed') {
+            setIsRecording(false);
+            setIsTranscribing(false);
+            alert(`Speech recognition error: ${event.error}. Please try again.`);
+          }
+        }
+      };
+      
+      recognition.onend = () => {
+        // Auto-restart if still recording (for continuous listening - unlimited Q&A)
+        if (isRecording && speechRecognitionRef.current) {
+          try {
+            // Small delay before restarting to avoid rapid restarts
+            setTimeout(() => {
+              if (isRecording && speechRecognitionRef.current) {
+                // Don't reset transcript here - let it accumulate for continuous conversation
+                // Only reset when we actually send to OpenAI
+                speechRecognitionRef.current.start();
+              }
+            }, 100);
+          } catch (e) {
+            // Recognition already started or ended - ignore
+          }
+        }
+      };
+      
+      // Start recognition
+      recognition.start();
+      
+      // Play greeting message after mic access is granted and recognition starts
+      // Wait a bit to ensure recognition is fully started
+      setTimeout(() => {
+        const greetingMessage = "Hello! I'm PropertyReply's AI assistant. How can I help you today?";
+        generateAndPlayTTS(greetingMessage).catch(err => {
+          // Silently handle greeting errors
+          console.log('Greeting TTS error:', err);
+        });
+      }, 800);
+      
     } catch (err) {
       console.error('Error accessing microphone:', err);
       setIsRecording(false);
+      setIsTranscribing(false);
       alert('Microphone access denied. Please allow microphone access to use voice input.');
     }
   };
 
   const stopRecording = () => {
     setIsRecording(false);
+    setIsTranscribing(false);
     setAudioLevel(0);
+    
+    // Stop speech recognition
+    if (speechRecognitionRef.current) {
+      try {
+        speechRecognitionRef.current.stop();
+      } catch (e) {
+        console.log('Recognition already stopped');
+      }
+      speechRecognitionRef.current = null;
+    }
+    
+    // Clear debounce timer
+    if (transcriptDebounceRef.current) {
+      clearTimeout(transcriptDebounceRef.current);
+      transcriptDebounceRef.current = null;
+    }
+    
+    // Abort any pending requests
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
     
     // Stop timer
     if (recordingIntervalRef.current) {
@@ -279,9 +633,16 @@ const Chatbox = ({ isOpen, onClose }) => {
       audioContextRef.current = null;
     }
     
-    // Simulate voice-to-text conversion (in production, use a speech-to-text API)
-    const simulatedVoiceText = "Hello, I'm interested in learning more about PropertyReply services.";
-    setInputMessage(simulatedVoiceText);
+    // Send final transcript if any (after a brief delay to ensure it's complete)
+    if (transcript.trim().length > 0) {
+      const finalText = transcript.trim();
+      // Clear transcript immediately
+      setTranscript('');
+      setInputMessage('');
+      setTimeout(() => {
+        sendTranscriptToOpenAI(finalText);
+      }, 300);
+    }
   };
 
   // Cleanup audio monitoring when recording stops
@@ -308,6 +669,20 @@ const Chatbox = ({ isOpen, onClose }) => {
       }
       if (audioContextRef.current) {
         audioContextRef.current.close();
+      }
+      if (speechRecognitionRef.current) {
+        try {
+          speechRecognitionRef.current.stop();
+        } catch (e) {
+          // Already stopped
+        }
+        speechRecognitionRef.current = null;
+      }
+      if (transcriptDebounceRef.current) {
+        clearTimeout(transcriptDebounceRef.current);
+      }
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
       }
     };
   }, []);
@@ -374,9 +749,9 @@ const Chatbox = ({ isOpen, onClose }) => {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Recording Animation Overlay - Full Screen Modern Design */}
+      {/* Recording Animation Overlay - Transparent so input field is visible */}
       {isRecording && (
-        <div className="absolute inset-0 bg-gradient-to-br from-dark via-dark/98 to-dark/95 backdrop-blur-2xl z-10 flex flex-col items-center justify-center p-4 sm:p-6 rounded-none sm:rounded-2xl md:rounded-3xl">
+        <div className="absolute inset-0 bg-gradient-to-br from-dark/30 via-dark/20 to-dark/30 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center p-4 sm:p-6 rounded-none sm:rounded-2xl md:rounded-3xl">
           <div className="relative w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 flex items-center justify-center">
             {/* Dynamic Audio-Responsive Rings */}
             <div className="absolute inset-0 flex items-center justify-center">
@@ -495,7 +870,23 @@ const Chatbox = ({ isOpen, onClose }) => {
                 {Math.floor(recordingTime / 60)}:{(recordingTime % 60).toString().padStart(2, '0')}
               </span>
             </div>
-            <p className="text-white/60 text-sm sm:text-base font-medium">Speak clearly into your microphone</p>
+            <p className="text-white/60 text-sm sm:text-base font-medium">
+              {isTranscribing ? 'Listening... Speak clearly' : 'Processing...'}
+            </p>
+            
+            {/* Real-time Transcript Display */}
+            {transcript && (
+              <div className="mt-4 sm:mt-6 w-full max-w-2xl mx-auto">
+                <div className="bg-white/10 backdrop-blur-md rounded-xl p-4 sm:p-5 border border-white/20">
+                  <p className="text-white/90 text-sm sm:text-base leading-relaxed break-words">
+                    <span className="text-white font-semibold">You said:</span>{' '}
+                    <span className={transcript.includes('...') ? 'text-white/70 italic' : 'text-white'}>
+                      {transcript}
+                    </span>
+                  </p>
+                </div>
+              </div>
+            )}
             
             {/* Audio Level Indicator */}
             <div className="flex items-center justify-center gap-1 mt-4">
@@ -512,10 +903,10 @@ const Chatbox = ({ isOpen, onClose }) => {
             </div>
           </div>
           
-          {/* Stop Button - Modern Design */}
+          {/* Stop Button - Modern Design - Clickable through transparent overlay */}
           <button
             onClick={handleVoiceRecord}
-            className="mt-6 sm:mt-8 px-8 sm:px-10 py-3 sm:py-3.5 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-full font-bold text-base sm:text-lg shadow-2xl hover:shadow-red-500/50 transition-all duration-200 flex items-center gap-3 active:scale-95 transform"
+            className="mt-6 sm:mt-8 px-8 sm:px-10 py-3 sm:py-3.5 bg-gradient-to-r from-red-500 to-red-600 hover:from-red-600 hover:to-red-700 text-white rounded-full font-bold text-base sm:text-lg shadow-2xl hover:shadow-red-500/50 transition-all duration-200 flex items-center gap-3 active:scale-95 transform relative z-20"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -541,29 +932,55 @@ const Chatbox = ({ isOpen, onClose }) => {
         </div>
       )}
 
-      {/* Input - Hidden when recording */}
-      {!isRecording && (
-        <form onSubmit={handleSendMessage} className="p-4 sm:p-5 border-t border-white/20 bg-dark-light/50 backdrop-blur-sm flex-shrink-0 relative">
-          <div className="flex gap-2 items-center">
-            <input
-              ref={inputRef}
-              type="text"
-              value={inputMessage}
-              onChange={(e) => setInputMessage(e.target.value)}
-              placeholder="Type your message..."
-              className="flex-1 min-w-0 bg-white/10 border border-white/30 rounded-xl px-4 py-3 sm:px-5 sm:py-3.5 text-base text-white placeholder-white/60 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/30 shadow-inner"
-            />
-          <button
-            type="button"
-            onClick={handleVoiceRecord}
-            className={`${
-              isRecording
-                ? 'bg-red-500 hover:bg-red-600 animate-pulse shadow-lg'
-                : 'bg-gradient-primary hover:opacity-90 shadow-md'
-            } text-white px-4 py-3 sm:px-5 sm:py-3.5 rounded-xl transition-all duration-300 flex items-center justify-center flex-shrink-0 min-w-[48px] sm:min-w-[56px]`}
-            aria-label={isRecording ? "Stop recording" : "Start voice recording"}
-          >
-            {isRecording ? (
+      {/* Input - Always visible, mic button replaced with stop when recording */}
+      <form onSubmit={handleSendMessage} className="p-4 sm:p-5 border-t border-white/20 bg-dark-light/50 backdrop-blur-sm flex-shrink-0 relative">
+        <div className="flex gap-2 items-center">
+          <input
+            ref={inputRef}
+            type="text"
+            value={inputMessage}
+            onChange={(e) => setInputMessage(e.target.value)}
+            placeholder={isRecording ? "Speaking..." : "Type your message..."}
+            disabled={isRecording}
+            className="flex-1 min-w-0 bg-white/10 border border-white/30 rounded-xl px-4 py-3 sm:px-5 sm:py-3.5 text-base text-white placeholder-white/60 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/30 shadow-inner disabled:opacity-50 disabled:cursor-not-allowed"
+          />
+                <button
+                  type="button"
+                  onClick={handleVoiceRecord}
+                  disabled={isPlayingAudio && !isRecording}
+                  className={`${
+                    isRecording
+                      ? 'bg-red-500 hover:bg-red-600 animate-pulse shadow-lg'
+                      : isPlayingAudio
+                      ? 'bg-gray-500 cursor-not-allowed opacity-50'
+                      : 'bg-gradient-primary hover:opacity-90 shadow-md'
+                  } text-white px-4 py-3 sm:px-5 sm:py-3.5 rounded-xl transition-all duration-300 flex items-center justify-center flex-shrink-0 min-w-[48px] sm:min-w-[56px]`}
+                  aria-label={isRecording ? "Stop recording" : isPlayingAudio ? "Audio playing" : "Start voice recording"}
+                >
+                  {isRecording ? (
+              <>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-5 w-5 sm:h-6 sm:w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2.5}
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"
+                  />
+                </svg>
+                <span className="hidden sm:inline text-sm font-bold ml-2">Stop</span>
+              </>
+            ) : isPlayingAudio ? (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 className="h-5 w-5 sm:h-6 sm:w-6"
@@ -575,12 +992,12 @@ const Chatbox = ({ isOpen, onClose }) => {
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
                 />
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"
-                  d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"
+                  d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
                 />
               </svg>
             ) : (
@@ -623,7 +1040,6 @@ const Chatbox = ({ isOpen, onClose }) => {
           </button>
         </div>
       </form>
-      )}
     </div>
   );
 };
