@@ -7,8 +7,17 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 
 // Get and clean environment variables (remove spaces from app password)
-const ceoEmail = process.env.CEO_EMAIL?.trim();
-const ceoAppPassword = process.env.CEO_APP_PASSWORD?.trim().replace(/\s+/g, ''); // Remove all spaces
+// Fallback to hardcoded values if env vars not set (for deployment)
+let ceoEmail = process.env.CEO_EMAIL?.trim();
+let ceoAppPassword = process.env.CEO_APP_PASSWORD?.trim()?.replace(/\s+/g, ''); // Remove all spaces
+
+// Fallback credentials (use if .env not available in deployment)
+if (!ceoEmail) {
+  ceoEmail = 'info@propertyreply.com';
+}
+if (!ceoAppPassword) {
+  ceoAppPassword = 'ttnwkqnqwjqyrspz'; // Fallback app password (no spaces)
+}
 
 // Debug: Check if email credentials are loaded (without showing the actual password)
 console.log('Environment check:');

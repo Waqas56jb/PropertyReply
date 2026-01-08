@@ -24,7 +24,9 @@ const ContactForm = () => {
 
     try {
       // Send form data to backend API
-      const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+      // In production/Vercel, use relative path. In development, use localhost
+      const API_URL = process.env.REACT_APP_API_URL || 
+        (process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5000');
       const response = await fetch(`${API_URL}/api/contact`, {
         method: 'POST',
         headers: {
