@@ -25,13 +25,21 @@ const ContactForm = () => {
     try {
       // Send form data to deployed API
       // Production API: https://property-reply-backend.vercel.app
-      const API_URL = process.env.REACT_APP_API_URL || 'https://property-reply-backend.vercel.app';
-      const response = await fetch(`${API_URL}/api/contact`, {
+      const API_URL = (process.env.REACT_APP_API_URL || 'https://property-reply-backend.vercel.app').replace(/\/$/, ''); // Remove trailing slash
+      const apiEndpoint = `${API_URL}/api/contact`;
+      
+      // Log for debugging (remove in production if needed)
+      console.log('Sending request to:', apiEndpoint);
+      console.log('Form data:', { name: formData.name, email: formData.email, hasMessage: !!formData.message });
+      
+      const response = await fetch(apiEndpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          'Accept': 'application/json',
         },
         body: JSON.stringify(formData),
+        mode: 'cors', // Explicitly set CORS mode
       });
 
       // Check if response is ok before trying to parse JSON
@@ -45,6 +53,9 @@ const ContactForm = () => {
         return;
       }
 
+      console.log('Response status:', response.status);
+      console.log('Response data:', data);
+      
       if (response.ok && data.success) {
         setSubmitStatus('success');
         setFormData({ name: '', email: '', phone: '', message: '' });
@@ -53,15 +64,24 @@ const ContactForm = () => {
         setTimeout(() => setSubmitStatus(null), 5000);
       } else {
         console.error('Server error:', data.message || 'Unknown error');
+        console.error('Response status:', response.status);
         setSubmitStatus('error');
       }
     } catch (error) {
       console.error('Error submitting form:', error);
+      console.error('Error name:', error.name);
+      console.error('Error message:', error.message);
+      
       // Check if it's a network error
-      if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+      if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError') || error.name === 'TypeError') {
         console.error('Network error: Unable to connect to the API server');
+        console.error('API URL attempted:', `${process.env.REACT_APP_API_URL || 'https://property-reply-backend.vercel.app'}/api/contact`);
+        
+        // Show more specific error message
+        setSubmitStatus('error');
+      } else {
+        setSubmitStatus('error');
       }
-      setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);
     }
@@ -141,8 +161,14 @@ const ContactForm = () => {
 
       {submitStatus === 'error' && (
         <div className="bg-red-500/20 border border-red-500/40 text-red-400 px-4 py-3 rounded-xl">
-          <i className="fas fa-exclamation-circle mr-2"></i>
-          Something went wrong. Please try again or email us directly at info@propertyreply.com
+          <div className="flex items-start gap-2">
+            <i className="fas fa-exclamation-circle mt-1"></i>
+            <div>
+              <p className="font-semibold">Something went wrong.</p>
+              <p className="text-sm mt-1">Please check your internet connection and try again, or email us directly at info@propertyreply.com</p>
+              <p className="text-xs mt-2 opacity-75">API: property-reply-backend.vercel.app</p>
+            </div>
+          </div>
         </div>
       )}
 
