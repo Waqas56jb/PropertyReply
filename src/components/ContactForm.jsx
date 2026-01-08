@@ -23,10 +23,9 @@ const ContactForm = () => {
     setSubmitStatus(null);
 
     try {
-      // Send form data to backend API
-      // In production/Vercel, use relative path. In development, use localhost
-      const API_URL = process.env.REACT_APP_API_URL || 
-        (process.env.NODE_ENV === 'production' ? '' : 'http://localhost:5000');
+      // Send form data to deployed API
+      // Production API: https://property-reply-backend.vercel.app
+      const API_URL = process.env.REACT_APP_API_URL || 'https://property-reply-backend.vercel.app';
       const response = await fetch(`${API_URL}/api/contact`, {
         method: 'POST',
         headers: {
@@ -60,7 +59,7 @@ const ContactForm = () => {
       console.error('Error submitting form:', error);
       // Check if it's a network error
       if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
-        console.error('Network error: Make sure the server is running on port 5000');
+        console.error('Network error: Unable to connect to the API server');
       }
       setSubmitStatus('error');
     } finally {
