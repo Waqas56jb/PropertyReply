@@ -58,10 +58,11 @@ const Header = () => {
         </ul>
       </nav>
 
-      <div className="flex gap-3 items-center">
-        <button onClick={handleCTAClick} className="px-8 py-3.5 rounded-full font-semibold text-base cursor-pointer transition-all duration-300 border-none font-sans relative overflow-hidden inline-flex items-center justify-center gap-3 tracking-wide bg-gradient-primary text-white shadow-primary hover:-translate-y-0.5 hover:shadow-primary-hover max-lg:px-7 max-lg:py-3 max-lg:text-[0.95rem]">
-          <i className="fas fa-calendar-check text-[1.1rem]"></i>
-          Request a Demo
+      <div className="flex gap-2 sm:gap-3 items-center">
+        <button onClick={handleCTAClick} className="px-4 py-2 sm:px-6 sm:py-2.5 md:px-8 md:py-3.5 rounded-full font-semibold text-xs sm:text-sm md:text-base cursor-pointer transition-all duration-300 border-none font-sans relative overflow-hidden inline-flex items-center justify-center gap-1.5 sm:gap-2 md:gap-3 tracking-wide bg-gradient-primary text-white shadow-primary hover:-translate-y-0.5 hover:shadow-primary-hover whitespace-nowrap">
+          <i className="fas fa-calendar-check text-xs sm:text-sm md:text-[1.1rem]"></i>
+          <span className="hidden sm:inline">Request a Demo</span>
+          <span className="sm:hidden">Demo</span>
         </button>
         <button onClick={() => setMobileMenuOpen(!mobileMenuOpen)} className="hidden max-lg:block bg-transparent border-none text-[1.5rem] text-white cursor-pointer p-2 rounded-lg transition-colors duration-200 z-[1001] hover:bg-white/10">
           <i className={`fas ${mobileMenuOpen ? 'fa-times' : 'fa-bars'} text-white`}></i>

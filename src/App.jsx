@@ -65,7 +65,7 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
+    <div className="App w-full max-w-full overflow-x-hidden">
       <Loader />
       <ParticlesBackground />
       <div className="floating-element"></div>

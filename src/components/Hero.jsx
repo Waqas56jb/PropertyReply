@@ -67,12 +67,12 @@ const Hero = () => {
           Turn property enquiries into qualified leads and booked viewings — 24/7.
         </p>
 
-        <div className="flex gap-4 items-center justify-center flex-wrap mb-10 max-md:flex-col max-md:items-stretch max-md:gap-4 max-md:w-full max-md:mb-8 max-sm:gap-4 max-sm:mb-7">
+        <div className="flex gap-3 sm:gap-4 items-center justify-center flex-wrap mb-10 max-md:flex-col max-md:items-stretch max-md:gap-3 max-md:w-full max-md:mb-8 max-sm:gap-3 max-sm:mb-7">
           <button
             onClick={handleCTAClick}
-            className="px-10 py-4 rounded-full font-semibold text-[0.98rem] cursor-pointer transition-all duration-300 border-none font-sans relative overflow-hidden inline-flex items-center justify-center gap-3 tracking-wide bg-gradient-primary text-white shadow-primary hover:-translate-y-0.5 hover:shadow-primary-hover max-md:w-full max-md:justify-center max-sm:w-full max-sm:py-3.5 max-sm:text-base"
+            className="w-full sm:w-auto px-6 sm:px-8 md:px-10 py-3 sm:py-3.5 md:py-4 rounded-full font-semibold text-sm sm:text-base md:text-[0.98rem] cursor-pointer transition-all duration-300 border-none font-sans relative overflow-hidden inline-flex items-center justify-center gap-2 sm:gap-3 tracking-wide bg-gradient-primary text-white shadow-primary hover:-translate-y-0.5 hover:shadow-primary-hover max-md:justify-center"
           >
-            <i className="fas fa-calendar-check text-[1.1rem] text-white"></i>
+            <i className="fas fa-calendar-check text-sm sm:text-base md:text-[1.1rem] text-white"></i>
             Request a Demo
           </button>
           <button
