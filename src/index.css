@@ -111,5 +111,10 @@
   .recording-glow {
     animation: glow-pulse 2s ease-in-out infinite;
   }
+  
+  /* Gradient Radial for Recording Animation */
+  .bg-gradient-radial {
+    background: radial-gradient(circle, var(--tw-gradient-stops));
+  }
 }
 
