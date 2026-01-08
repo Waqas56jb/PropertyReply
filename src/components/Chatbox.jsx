@@ -31,6 +31,89 @@ const Chatbox = ({ isOpen, onClose }) => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
+  // Format bot messages with proper line breaks, headings, and lists
+  const formatBotMessage = (text) => {
+    if (!text) return null;
+    
+    // Clean up the text: remove extra spaces, normalize hashtags, fix spacing issues
+    let cleanedText = text
+      .replace(/#{2,}\s+/g, '\n## ') // Add line break before headings
+      .replace(/\s+#{2,}/g, '') // Remove trailing ##
+      .replace(/\s+#{2,}\s+/g, '\n## ') // Handle ## in middle of text
+      .replace(/(\d+)\s*\.\s*/g, '\n$1. ') // Fix "1 ." to "1." with line break
+      .replace(/\s+/g, ' ') // Normalize multiple spaces to single space
+      .replace(/\n\s+/g, '\n') // Remove leading spaces after line breaks
+      .trim();
+    
+    // Split by lines
+    const lines = cleanedText.split('\n').map(line => line.trim()).filter(line => line);
+    const elements = [];
+    let currentList = [];
+    let key = 0;
+
+    const flushList = () => {
+      if (currentList.length > 0) {
+        elements.push(
+          <ul key={`list-${key++}`} className="list-disc list-inside space-y-1.5 my-2 ml-2 sm:ml-3">
+            {currentList.map((item, idx) => (
+              <li key={idx} className="text-sm sm:text-base leading-relaxed">{item}</li>
+            ))}
+          </ul>
+        );
+        currentList = [];
+      }
+    };
+
+    lines.forEach((line) => {
+      const trimmed = line.trim();
+      
+      // Check for headings (## or #) - remove all # and clean
+      if (trimmed.match(/^#+\s*/)) {
+        flushList();
+        const headingText = trimmed.replace(/^#+\s*/g, '').replace(/#+\s*$/g, '').trim();
+        if (headingText) {
+          elements.push(
+            <h3 key={`heading-${key++}`} className="font-bold text-base sm:text-lg mt-4 mb-2.5 first:mt-0 text-white">
+              {headingText}
+            </h3>
+          );
+        }
+      }
+      // Check for numbered lists (1. 2. etc.)
+      else if (trimmed.match(/^\d+\.\s*/)) {
+        const listItem = trimmed.replace(/^\d+\.\s*/, '').trim();
+        if (listItem) {
+          currentList.push(listItem);
+        }
+      }
+      // Check for bullet points (• or - or *)
+      else if (trimmed.match(/^[•\-*]\s*/)) {
+        const listItem = trimmed.replace(/^[•\-*]\s*/, '').trim();
+        if (listItem) {
+          currentList.push(listItem);
+        }
+      }
+      // Regular paragraph
+      else if (trimmed) {
+        flushList();
+        elements.push(
+          <p key={`para-${key++}`} className="mb-2 text-sm sm:text-base leading-relaxed">
+            {trimmed}
+          </p>
+        );
+      }
+    });
+
+    flushList();
+
+    // If no elements were created, return the original text as a paragraph
+    if (elements.length === 0) {
+      return <p className="text-sm sm:text-base leading-relaxed">{text}</p>;
+    }
+
+    return <div className="space-y-1">{elements}</div>;
+  };
+
   const handleSendMessage = async (e) => {
     e.preventDefault();
     if (!inputMessage.trim()) return;
@@ -267,7 +350,13 @@ const Chatbox = ({ isOpen, onClose }) => {
                   : 'bg-white/10 backdrop-blur-sm text-white border border-white/20'
               }`}
             >
-              <p className="text-sm sm:text-base leading-relaxed break-words">{msg.text}</p>
+              {msg.sender === 'bot' ? (
+                <div className="break-words">
+                  {formatBotMessage(msg.text)}
+                </div>
+              ) : (
+                <p className="text-sm sm:text-base leading-relaxed break-words">{msg.text}</p>
+              )}
             </div>
           </div>
         ))}
