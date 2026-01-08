@@ -283,68 +283,100 @@ const Chatbox = ({ isOpen, onClose }) => {
     }
   };
 
-  // Generate TTS audio using Web Speech API (browser built-in)
+  // Generate TTS audio using Web Speech API (browser built-in) - No backend needed
   const generateAndPlayTTS = async (text) => {
     try {
-      if ('speechSynthesis' in window) {
-        // Cancel any ongoing speech
-        window.speechSynthesis.cancel();
-        
-        // Wait a bit for cancellation to complete
-        await new Promise(resolve => setTimeout(resolve, 100));
-        
-        let voices = window.speechSynthesis.getVoices();
-        if (voices.length === 0) {
-          await new Promise((resolve) => {
-            const loadVoices = () => {
-              voices = window.speechSynthesis.getVoices();
-              if (voices.length > 0) {
-                resolve();
-              } else {
-                setTimeout(loadVoices, 100);
-              }
-            };
-            window.speechSynthesis.onvoiceschanged = loadVoices;
-            loadVoices();
-          });
-        }
-        
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = 'en-US';
-        utterance.rate = 0.9;
-        utterance.pitch = 1;
-        utterance.volume = 1;
-        
-        // Find best available voice
-        const preferredVoice = voices.find(voice => 
-          voice.name.includes('Google') || 
-          voice.name.includes('Natural') ||
-          voice.name.includes('Microsoft') ||
-          (voice.lang.startsWith('en') && voice.localService)
-        ) || voices.find(voice => voice.lang.startsWith('en'));
-        
-        if (preferredVoice) {
-          utterance.voice = preferredVoice;
-        }
-        
-        utterance.onend = () => {
-          setIsPlayingAudio(false);
-        };
-        
-        utterance.onerror = (error) => {
-          // Silently handle 'interrupted' errors (common when new speech starts)
-          if (error.error !== 'interrupted') {
-            console.error('TTS error:', error);
-          }
-          setIsPlayingAudio(false);
-        };
-        
-        setIsPlayingAudio(true);
-        window.speechSynthesis.speak(utterance);
-      } else {
+      if (!('speechSynthesis' in window)) {
         console.warn('Browser does not support speech synthesis');
         setIsPlayingAudio(false);
+        return;
       }
+      
+      console.log('Generating TTS for text:', text.substring(0, 50) + '...');
+      
+      // Cancel any ongoing speech
+      window.speechSynthesis.cancel();
+      
+      // Wait a bit for cancellation to complete
+      await new Promise(resolve => setTimeout(resolve, 200));
+      
+      // Load voices
+      let voices = window.speechSynthesis.getVoices();
+      if (voices.length === 0) {
+        // Wait for voices to load
+        await new Promise((resolve) => {
+          const loadVoices = () => {
+            voices = window.speechSynthesis.getVoices();
+            if (voices.length > 0) {
+              console.log('Voices loaded:', voices.length);
+              resolve();
+            } else {
+              setTimeout(loadVoices, 100);
+            }
+          };
+          window.speechSynthesis.onvoiceschanged = loadVoices;
+          loadVoices();
+        });
+      }
+      
+      // Create utterance
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'en-US';
+      utterance.rate = 0.95; // Slightly slower for clarity
+      utterance.pitch = 1.0;
+      utterance.volume = 1.0;
+      
+      // Find best available voice (prefer natural-sounding voices)
+      const preferredVoice = voices.find(voice => 
+        voice.name.includes('Google') || 
+        voice.name.includes('Natural') ||
+        voice.name.includes('Microsoft') ||
+        (voice.lang.startsWith('en') && voice.localService)
+      ) || voices.find(voice => voice.lang.startsWith('en'));
+      
+      if (preferredVoice) {
+        utterance.voice = preferredVoice;
+        console.log('Using voice:', preferredVoice.name);
+      } else {
+        console.log('Using default voice');
+      }
+      
+      // Set up event handlers
+      utterance.onstart = () => {
+        console.log('TTS started speaking');
+        setIsPlayingAudio(true);
+      };
+      
+      utterance.onend = () => {
+        console.log('TTS finished speaking');
+        setIsPlayingAudio(false);
+      };
+      
+      utterance.onerror = (error) => {
+        // Handle different error types
+        if (error.error === 'interrupted') {
+          console.log('TTS interrupted (normal)');
+        } else if (error.error === 'canceled') {
+          console.log('TTS canceled (normal)');
+        } else {
+          console.error('TTS error:', error.error);
+        }
+        setIsPlayingAudio(false);
+      };
+      
+      // Speak
+      console.log('Starting speech synthesis...');
+      window.speechSynthesis.speak(utterance);
+      
+      // Fallback: if speech doesn't start within 1 second, mark as done
+      setTimeout(() => {
+        if (window.speechSynthesis.speaking) {
+          console.log('TTS is speaking...');
+        } else {
+          console.log('TTS may not have started, checking state...');
+        }
+      }, 1000);
+      
     } catch (error) {
       console.error('Error generating TTS:', error);
       setIsPlayingAudio(false);
@@ -488,6 +520,13 @@ const Chatbox = ({ isOpen, onClose }) => {
       
       // Initialize Web Speech API for real-time transcription
       const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+      if (!SpeechRecognition) {
+        alert('Your browser does not support speech recognition. Please use Chrome, Edge, or Safari.');
+        setIsRecording(false);
+        setIsTranscribing(false);
+        return;
+      }
+      
       const recognition = new SpeechRecognition();
       recognition.continuous = true; // Keep listening
       recognition.interimResults = true; // Get real-time results
@@ -495,8 +534,15 @@ const Chatbox = ({ isOpen, onClose }) => {
       
       speechRecognitionRef.current = recognition;
       
+      // Handle recognition start
+      recognition.onstart = () => {
+        console.log('✅ Speech recognition started and listening...');
+        setIsTranscribing(true);
+      };
+      
       recognition.onresult = (event) => {
         let interimTranscript = '';
+        let hasNewResults = false;
         
         // Process all results from the last result index (token by token)
         for (let i = event.resultIndex; i < event.results.length; i++) {
@@ -504,76 +550,131 @@ const Chatbox = ({ isOpen, onClose }) => {
           if (event.results[i].isFinal) {
             // Accumulate final transcripts
             accumulatedFinalTranscriptRef.current += transcript + ' ';
+            console.log('✅ Final transcript:', transcript);
+            hasNewResults = true;
           } else {
             // Interim results (real-time as user speaks)
             interimTranscript += transcript;
+            console.log('🎤 Interim transcript (real-time):', transcript);
+            hasNewResults = true;
           }
         }
         
-        // Update transcript in real-time (shows in input field as user speaks)
-        handleTranscriptUpdate(interimTranscript, accumulatedFinalTranscriptRef.current.trim());
+        // Only update if we have new results
+        if (hasNewResults) {
+          // Update transcript in real-time (shows in input field as user speaks)
+          handleTranscriptUpdate(interimTranscript, accumulatedFinalTranscriptRef.current.trim());
+        }
       };
       
       recognition.onerror = (event) => {
-        // Silently handle common errors that don't need user attention
+        // Handle different error types
         if (event.error === 'no-speech') {
           // No speech detected - this is normal, continue listening silently
+          // Don't log this as it's very common and clogs the console
+          // The recognition will automatically restart via onend
           return;
         } else if (event.error === 'aborted') {
           // Recognition was aborted - normal when stopping
+          console.log('Recognition aborted (normal)');
           return;
         } else if (event.error === 'audio-capture') {
           // No microphone found
+          console.error('No microphone found');
           setIsRecording(false);
           setIsTranscribing(false);
           alert('No microphone found. Please connect a microphone and try again.');
         } else if (event.error === 'not-allowed') {
           // Microphone permission denied
+          console.error('Microphone permission denied');
           setIsRecording(false);
           setIsTranscribing(false);
-          alert('Microphone permission denied. Please allow microphone access in your browser settings.');
+          alert('Microphone permission denied. Please allow microphone access in your browser settings and refresh the page.');
+        } else if (event.error === 'network') {
+          // Network error
+          console.error('Network error');
+          setIsRecording(false);
+          setIsTranscribing(false);
+          alert('Network error. Please check your internet connection and try again.');
+        } else if (event.error === 'service-not-allowed') {
+          // Service not allowed
+          console.error('Service not allowed');
+          setIsRecording(false);
+          setIsTranscribing(false);
+          alert('Speech recognition service is not available. Please try again later.');
         } else {
-          // Other errors - log but don't stop unless critical
+          // Other errors - log but don't stop (let it continue and restart)
           console.warn('Speech recognition warning:', event.error);
-          // Only stop on critical errors
-          if (event.error === 'network' || event.error === 'service-not-allowed') {
-            setIsRecording(false);
-            setIsTranscribing(false);
-            alert(`Speech recognition error: ${event.error}. Please try again.`);
-          }
+          // Don't stop on minor errors, let it continue and restart via onend
         }
       };
       
       recognition.onend = () => {
+        console.log('Speech recognition ended - attempting restart...');
         // Auto-restart if still recording (for continuous listening - unlimited Q&A)
         if (isRecording && speechRecognitionRef.current) {
-          try {
-            // Small delay before restarting to avoid rapid restarts
-            setTimeout(() => {
-              if (isRecording && speechRecognitionRef.current) {
+          // Use a slightly longer delay to ensure clean restart
+          setTimeout(() => {
+            if (isRecording && speechRecognitionRef.current) {
+              try {
+                console.log('Restarting speech recognition...');
                 // Don't reset transcript here - let it accumulate for continuous conversation
                 // Only reset when we actually send to OpenAI
                 speechRecognitionRef.current.start();
+                console.log('Speech recognition restarted successfully');
+              } catch (e) {
+                // If already started, try again after a longer delay
+                if (e.message && e.message.includes('already started')) {
+                  console.log('Recognition already started, waiting...');
+                  setTimeout(() => {
+                    if (isRecording && speechRecognitionRef.current) {
+                      try {
+                        speechRecognitionRef.current.start();
+                        console.log('Speech recognition restarted after delay');
+                      } catch (err) {
+                        console.log('Recognition restart error (will retry):', err);
+                        // Retry one more time
+                        setTimeout(() => {
+                          if (isRecording && speechRecognitionRef.current) {
+                            try {
+                              speechRecognitionRef.current.start();
+                            } catch (finalErr) {
+                              console.error('Failed to restart recognition:', finalErr);
+                            }
+                          }
+                        }, 500);
+                      }
+                    }
+                  }, 300);
+                } else {
+                  console.log('Recognition restart error (ignored):', e);
+                }
               }
-            }, 100);
-          } catch (e) {
-            // Recognition already started or ended - ignore
-          }
+            }
+          }, 200);
         }
       };
       
       // Start recognition
-      recognition.start();
-      
-      // Play greeting message after mic access is granted and recognition starts
-      // Wait a bit to ensure recognition is fully started
-      setTimeout(() => {
-        const greetingMessage = "Hello! I'm PropertyReply's AI assistant. How can I help you today?";
-        generateAndPlayTTS(greetingMessage).catch(err => {
-          // Silently handle greeting errors
-          console.log('Greeting TTS error:', err);
-        });
-      }, 800);
+      try {
+        console.log('Starting speech recognition...');
+        recognition.start();
+        
+        // Play greeting message after mic access is granted and recognition starts
+        // Wait a bit to ensure recognition is fully started
+        setTimeout(() => {
+          const greetingMessage = "Hello! I'm PropertyReply's AI assistant. How can I help you today?";
+          console.log('Playing greeting message...');
+          generateAndPlayTTS(greetingMessage).catch(err => {
+            console.error('Greeting TTS error:', err);
+          });
+        }, 1000);
+      } catch (error) {
+        console.error('Error starting speech recognition:', error);
+        setIsRecording(false);
+        setIsTranscribing(false);
+        alert('Failed to start speech recognition. Please try again.');
+      }
       
     } catch (err) {
       console.error('Error accessing microphone:', err);
