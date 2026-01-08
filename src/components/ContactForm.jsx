@@ -33,7 +33,16 @@ const ContactForm = () => {
         body: JSON.stringify(formData),
       });
 
-      const data = await response.json();
+      // Check if response is ok before trying to parse JSON
+      let data;
+      try {
+        data = await response.json();
+      } catch (jsonError) {
+        console.error('Error parsing JSON response:', jsonError);
+        setSubmitStatus('error');
+        setIsSubmitting(false);
+        return;
+      }
 
       if (response.ok && data.success) {
         setSubmitStatus('success');
@@ -42,10 +51,15 @@ const ContactForm = () => {
         // Reset status after 5 seconds
         setTimeout(() => setSubmitStatus(null), 5000);
       } else {
+        console.error('Server error:', data.message || 'Unknown error');
         setSubmitStatus('error');
       }
     } catch (error) {
       console.error('Error submitting form:', error);
+      // Check if it's a network error
+      if (error.message.includes('Failed to fetch') || error.message.includes('NetworkError')) {
+        console.error('Network error: Make sure the server is running on port 5000');
+      }
       setSubmitStatus('error');
     } finally {
       setIsSubmitting(false);

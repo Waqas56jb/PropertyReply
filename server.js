@@ -6,31 +6,74 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
+// Get and clean environment variables (remove spaces from app password)
+const ceoEmail = process.env.CEO_EMAIL?.trim();
+const ceoAppPassword = process.env.CEO_APP_PASSWORD?.trim().replace(/\s+/g, ''); // Remove all spaces
+
+// Debug: Check if email credentials are loaded (without showing the actual password)
+console.log('Environment check:');
+console.log('PORT:', PORT);
+console.log('CEO_EMAIL:', ceoEmail ? `${ceoEmail.substring(0, 3)}***` : 'NOT SET');
+console.log('CEO_APP_PASSWORD:', ceoAppPassword ? `SET (${ceoAppPassword.length} chars, hidden)` : 'NOT SET');
+
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: true, // Allow all origins in development
+  credentials: true
+}));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Create Nodemailer transporter
-const transporter = nodemailer.createTransport({
-  service: 'gmail', // Change to 'outlook', 'yahoo', etc. if using different email provider
-  auth: {
-    user: process.env.CEO_EMAIL, // CEO's email address
-    pass: process.env.CEO_APP_PASSWORD // CEO's app password
-  }
+// Request logging middleware
+app.use((req, res, next) => {
+  console.log(`${new Date().toISOString()} - ${req.method} ${req.path}`);
+  next();
 });
 
-// Verify transporter configuration
-transporter.verify((error, success) => {
-  if (error) {
-    console.log('Email transporter error:', error);
-  } else {
-    console.log('Email server is ready to send messages');
-  }
-});
+// Create Nodemailer transporter (only if credentials are provided)
+let transporter = null;
+
+if (ceoEmail && ceoAppPassword) {
+  transporter = nodemailer.createTransport({
+    service: 'gmail', // Change to 'outlook', 'yahoo', etc. if using different email provider
+    auth: {
+      user: ceoEmail, // CEO's email address
+      pass: ceoAppPassword // CEO's app password (spaces removed)
+    }
+  });
+
+  // Verify transporter configuration
+  transporter.verify((error, success) => {
+    if (error) {
+      console.log('Email transporter error:', error.message);
+      console.log('Error code:', error.code);
+      if (error.code === 'EAUTH') {
+        console.log('Authentication failed. Please check:');
+        console.log('1. Email address is correct:', ceoEmail);
+        console.log('2. App password is correct (16 characters, no spaces)');
+        console.log('3. 2-Step Verification is enabled on your Google account');
+        console.log('4. App password was generated correctly');
+      }
+      console.log('Email sending will be disabled. Form submissions will be logged only.');
+    } else {
+      console.log('✓ Email server is ready to send messages');
+      console.log('✓ Email configured for:', ceoEmail);
+    }
+  });
+} else {
+  console.log('Email credentials not found in .env file.');
+  console.log('Form submissions will be logged to console only.');
+  console.log('To enable email, add CEO_EMAIL and CEO_APP_PASSWORD to your .env file.');
+}
 
 // Contact form endpoint
 app.post('/api/contact', async (req, res) => {
+  console.log('Contact form submission received:', { 
+    name: req.body.name, 
+    email: req.body.email,
+    hasMessage: !!req.body.message 
+  });
+  
   try {
     const { name, email, phone, message } = req.body;
 
@@ -39,6 +82,21 @@ app.post('/api/contact', async (req, res) => {
       return res.status(400).json({ 
         success: false, 
         message: 'Name, email, and message are required fields.' 
+      });
+    }
+
+    // Check if email transporter is available
+    if (!transporter) {
+      console.log('Form submission received (email not configured):');
+      console.log('Name:', name);
+      console.log('Email:', email);
+      console.log('Phone:', phone || 'Not provided');
+      console.log('Message:', message);
+      
+      // Still return success, but log the data
+      return res.status(200).json({ 
+        success: true, 
+        message: 'Your message has been received. We will get back to you within 24 hours.' 
       });
     }
 
@@ -108,7 +166,20 @@ You can reply directly to this email to contact ${name} at ${email}.
     };
 
     // Send email
-    await transporter.sendMail(mailOptions);
+    try {
+      await transporter.sendMail(mailOptions);
+      console.log('Email sent successfully to:', process.env.CEO_EMAIL);
+    } catch (emailError) {
+      console.error('Error sending email:', emailError.message);
+      console.log('Form data logged instead:');
+      console.log('Name:', name, 'Email:', email, 'Phone:', phone || 'N/A', 'Message:', message);
+      // Still return success to user, but log the error
+      // In production, you might want to handle this differently
+      return res.status(200).json({ 
+        success: true, 
+        message: 'Your message has been received. We will get back to you within 24 hours.' 
+      });
+    }
 
     // Send confirmation email to client (optional)
     if (process.env.SEND_CLIENT_CONFIRMATION === 'true') {

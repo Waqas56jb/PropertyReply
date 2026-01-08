@@ -10,8 +10,11 @@ const Chatbox = ({ isOpen, onClose }) => {
   ]);
   const [inputMessage, setInputMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [isRecording, setIsRecording] = useState(false);
+  const [recordingTime, setRecordingTime] = useState(0);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+  const recordingIntervalRef = useRef(null);
 
   useEffect(() => {
     if (isOpen && inputRef.current) {
@@ -48,6 +51,55 @@ const Chatbox = ({ isOpen, onClose }) => {
       setIsTyping(false);
     }, 1500);
   };
+
+  const handleVoiceRecord = () => {
+    if (isRecording) {
+      // Stop recording
+      setIsRecording(false);
+      if (recordingIntervalRef.current) {
+        clearInterval(recordingIntervalRef.current);
+      }
+      setRecordingTime(0);
+      
+      // Simulate voice-to-text conversion
+      const simulatedVoiceText = "Hello, I'm interested in learning more about PropertyReply services.";
+      setInputMessage(simulatedVoiceText);
+    } else {
+      // Start recording
+      setIsRecording(true);
+      setRecordingTime(0);
+      
+      // Simulate recording timer
+      recordingIntervalRef.current = setInterval(() => {
+        setRecordingTime(prev => prev + 1);
+      }, 1000);
+      
+      // Request microphone permission (frontend simulation)
+      if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ audio: true })
+          .then(stream => {
+            // In a real implementation, you would process the audio stream here
+            // For frontend demo, we'll just simulate it
+            console.log('Microphone access granted');
+          })
+          .catch(err => {
+            console.log('Microphone access denied:', err);
+            setIsRecording(false);
+            if (recordingIntervalRef.current) {
+              clearInterval(recordingIntervalRef.current);
+            }
+          });
+      }
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (recordingIntervalRef.current) {
+        clearInterval(recordingIntervalRef.current);
+      }
+    };
+  }, []);
 
   if (!isOpen) return null;
 
@@ -107,21 +159,91 @@ const Chatbox = ({ isOpen, onClose }) => {
 
       {/* Input */}
       <form onSubmit={handleSendMessage} className="p-5 border-t border-white/10">
+        {isRecording && (
+          <div className="mb-3 flex items-center justify-center gap-2 text-red-400">
+            <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
+            <span className="text-sm font-medium">
+              Recording... {Math.floor(recordingTime / 60)}:{(recordingTime % 60).toString().padStart(2, '0')}
+            </span>
+          </div>
+        )}
         <div className="flex gap-2">
           <input
             ref={inputRef}
             type="text"
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
-            placeholder="Type your message..."
-            className="flex-1 bg-white/5 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20"
+            placeholder={isRecording ? "Listening..." : "Type your message..."}
+            disabled={isRecording}
+            className="flex-1 bg-white/5 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
           />
           <button
+            type="button"
+            onClick={handleVoiceRecord}
+            className={`${
+              isRecording
+                ? 'bg-red-500 hover:bg-red-600 animate-pulse'
+                : 'bg-gradient-primary hover:opacity-90'
+            } text-white px-4 py-3 rounded-xl transition-all duration-300 flex items-center justify-center`}
+            aria-label={isRecording ? "Stop recording" : "Start voice recording"}
+          >
+            {isRecording ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M9 10a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1h-4a1 1 0 01-1-1v-4z"
+                />
+              </svg>
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"
+                />
+              </svg>
+            )}
+          </button>
+          <button
             type="submit"
-            className="bg-gradient-primary text-white px-5 py-3 rounded-xl hover:opacity-90 transition-opacity"
+            disabled={!inputMessage.trim() || isRecording}
+            className="bg-gradient-primary text-white px-5 py-3 rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
             aria-label="Send message"
           >
-            <i className="fas fa-paper-plane"></i>
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-5 w-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
+              />
+            </svg>
           </button>
         </div>
       </form>
@@ -130,4 +252,3 @@ const Chatbox = ({ isOpen, onClose }) => {
 };
 
 export default Chatbox;
-

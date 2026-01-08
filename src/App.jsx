@@ -11,6 +11,7 @@ import Footer from './components/Footer';
 import Loader from './components/Loader';
 import ParticlesBackground from './components/ParticlesBackground';
 import Chatbox from './components/Chatbox';
+import ChatButton from './components/ChatButton';
 
 function App() {
   const [chatboxOpen, setChatboxOpen] = useState(false);
@@ -80,6 +81,7 @@ function App() {
       <CTA />
       <Contact />
       <Footer />
+      <ChatButton onClick={() => setChatboxOpen(true)} isOpen={chatboxOpen} />
       <Chatbox isOpen={chatboxOpen} onClose={() => setChatboxOpen(false)} />
     </div>
   );
