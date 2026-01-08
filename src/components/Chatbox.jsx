@@ -104,48 +104,48 @@ const Chatbox = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed bottom-6 right-6 w-[400px] h-[600px] bg-dark-light/95 backdrop-blur-[20px] rounded-3xl shadow-2xl border-2 border-white/10 z-[9999] flex flex-col max-md:w-[calc(100%-2rem)] max-md:h-[calc(100vh-8rem)] max-md:bottom-4 max-md:right-4">
+    <div className="fixed bottom-4 right-4 w-[90vw] max-w-[400px] h-[85vh] max-h-[600px] min-h-[500px] bg-dark-light/95 backdrop-blur-[20px] rounded-2xl sm:rounded-3xl shadow-2xl border-2 border-white/10 z-[9999] flex flex-col sm:bottom-6 sm:right-6 sm:w-[400px] sm:h-[600px] sm:min-h-[600px]">
       {/* Header */}
-      <div className="bg-gradient-primary p-5 rounded-t-3xl flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-white/20 rounded-full flex items-center justify-center">
-            <i className="fas fa-robot text-white text-lg"></i>
+      <div className="bg-gradient-primary p-3 sm:p-5 rounded-t-2xl sm:rounded-t-3xl flex items-center justify-between flex-shrink-0">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-white/20 rounded-full flex items-center justify-center">
+            <i className="fas fa-robot text-white text-sm sm:text-lg"></i>
           </div>
           <div>
-            <h3 className="text-white font-bold text-lg">PropertyReply AI</h3>
-            <p className="text-white/80 text-xs">We're here to help</p>
+            <h3 className="text-white font-bold text-sm sm:text-lg">PropertyReply AI</h3>
+            <p className="text-white/80 text-xs sm:text-xs">We're here to help</p>
           </div>
         </div>
         <button
           onClick={onClose}
-          className="w-8 h-8 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center text-white transition-colors"
+          className="w-7 h-7 sm:w-8 sm:h-8 bg-white/20 hover:bg-white/30 rounded-full flex items-center justify-center text-white transition-colors flex-shrink-0"
           aria-label="Close chat"
         >
-          <i className="fas fa-times"></i>
+          <i className="fas fa-times text-xs sm:text-sm"></i>
         </button>
       </div>
 
       {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-5 space-y-4">
+      <div className="flex-1 overflow-y-auto p-3 sm:p-5 space-y-3 sm:space-y-4 min-h-0">
         {messages.map((msg, idx) => (
           <div
             key={idx}
             className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
           >
             <div
-              className={`max-w-[75%] rounded-2xl px-4 py-3 ${
+              className={`max-w-[85%] sm:max-w-[75%] rounded-xl sm:rounded-2xl px-3 py-2 sm:px-4 sm:py-3 ${
                 msg.sender === 'user'
                   ? 'bg-gradient-primary text-white'
                   : 'bg-white/10 text-white border border-white/20'
               }`}
             >
-              <p className="text-sm leading-relaxed">{msg.text}</p>
+              <p className="text-xs sm:text-sm leading-relaxed break-words">{msg.text}</p>
             </div>
           </div>
         ))}
         {isTyping && (
           <div className="flex justify-start">
-            <div className="bg-white/10 text-white border border-white/20 rounded-2xl px-4 py-3">
+            <div className="bg-white/10 text-white border border-white/20 rounded-xl sm:rounded-2xl px-3 py-2 sm:px-4 sm:py-3">
               <div className="flex gap-1">
                 <span className="w-2 h-2 bg-white/60 rounded-full animate-bounce"></span>
                 <span className="w-2 h-2 bg-white/60 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></span>
@@ -158,11 +158,11 @@ const Chatbox = ({ isOpen, onClose }) => {
       </div>
 
       {/* Input */}
-      <form onSubmit={handleSendMessage} className="p-5 border-t border-white/10">
+      <form onSubmit={handleSendMessage} className="p-3 sm:p-5 border-t border-white/10 flex-shrink-0">
         {isRecording && (
-          <div className="mb-3 flex items-center justify-center gap-2 text-red-400">
-            <div className="w-3 h-3 bg-red-500 rounded-full animate-pulse"></div>
-            <span className="text-sm font-medium">
+          <div className="mb-2 sm:mb-3 flex items-center justify-center gap-2 text-red-400">
+            <div className="w-2 h-2 sm:w-3 sm:h-3 bg-red-500 rounded-full animate-pulse"></div>
+            <span className="text-xs sm:text-sm font-medium">
               Recording... {Math.floor(recordingTime / 60)}:{(recordingTime % 60).toString().padStart(2, '0')}
             </span>
           </div>
@@ -175,7 +175,7 @@ const Chatbox = ({ isOpen, onClose }) => {
             onChange={(e) => setInputMessage(e.target.value)}
             placeholder={isRecording ? "Listening..." : "Type your message..."}
             disabled={isRecording}
-            className="flex-1 bg-white/5 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 bg-white/5 border border-white/20 rounded-lg sm:rounded-xl px-3 py-2 sm:px-4 sm:py-3 text-sm sm:text-base text-white placeholder-white/50 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 disabled:opacity-50 disabled:cursor-not-allowed"
           />
           <button
             type="button"
@@ -184,13 +184,13 @@ const Chatbox = ({ isOpen, onClose }) => {
               isRecording
                 ? 'bg-red-500 hover:bg-red-600 animate-pulse'
                 : 'bg-gradient-primary hover:opacity-90'
-            } text-white px-4 py-3 rounded-xl transition-all duration-300 flex items-center justify-center`}
+            } text-white px-3 py-2 sm:px-4 sm:py-3 rounded-lg sm:rounded-xl transition-all duration-300 flex items-center justify-center flex-shrink-0`}
             aria-label={isRecording ? "Stop recording" : "Start voice recording"}
           >
             {isRecording ? (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
+                className="h-4 w-4 sm:h-5 sm:w-5"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -210,7 +210,7 @@ const Chatbox = ({ isOpen, onClose }) => {
             ) : (
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5"
+                className="h-4 w-4 sm:h-5 sm:w-5"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -227,12 +227,12 @@ const Chatbox = ({ isOpen, onClose }) => {
           <button
             type="submit"
             disabled={!inputMessage.trim() || isRecording}
-            className="bg-gradient-primary text-white px-5 py-3 rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+            className="bg-gradient-primary text-white px-3 py-2 sm:px-5 sm:py-3 rounded-lg sm:rounded-xl hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center flex-shrink-0"
             aria-label="Send message"
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="h-5 w-5"
+              className="h-4 w-4 sm:h-5 sm:w-5"
               fill="none"
               viewBox="0 0 24 24"
               stroke="currentColor"
