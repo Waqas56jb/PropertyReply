@@ -497,7 +497,6 @@ const Chatbox = ({ isOpen, onClose }) => {
       
       recognition.onresult = (event) => {
         let interimTranscript = '';
-        let newFinalTranscript = '';
         
         // Process all results from the last result index (token by token)
         for (let i = event.resultIndex; i < event.results.length; i++) {
@@ -505,7 +504,6 @@ const Chatbox = ({ isOpen, onClose }) => {
           if (event.results[i].isFinal) {
             // Accumulate final transcripts
             accumulatedFinalTranscriptRef.current += transcript + ' ';
-            newFinalTranscript += transcript + ' ';
           } else {
             // Interim results (real-time as user speaks)
             interimTranscript += transcript;
