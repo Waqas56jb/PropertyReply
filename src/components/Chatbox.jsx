@@ -29,6 +29,7 @@ const Chatbox = ({ isOpen, onClose }) => {
   const abortControllerRef = useRef(null);
   const accumulatedFinalTranscriptRef = useRef(''); // Component-level ref for accumulated transcript
   const lastSentTranscriptRef = useRef(''); // Track what we've already sent
+  const lastProcessedIndexRef = useRef(-1); // Track last processed result index to prevent duplicates
   
   // Voice agent refs (following proven approach)
   const continuousModeRef = useRef(false); // Voice mode active?
@@ -705,10 +706,11 @@ const Chatbox = ({ isOpen, onClose }) => {
       // User starting - enable continuous mode
       continuousModeRef.current = true;
       
-      // Reset speech base
+      // Reset speech base (including processed index to prevent duplicates)
       speechBaseRef.current = '';
       accumulatedFinalTranscriptRef.current = '';
       lastSentTranscriptRef.current = '';
+      lastProcessedIndexRef.current = -1; // Reset to prevent duplicates
       setInputMessage('');
       
       // Speak greeting IMMEDIATELY on first mic click (only once, simultaneously with mic click)
@@ -762,9 +764,10 @@ const Chatbox = ({ isOpen, onClose }) => {
     recognition.maxAlternatives = 1;       // Only best match
     recognition.lang = 'en-US';            // Language
     
-    // Reset speech tracking
+    // Reset speech tracking (including processed index to prevent duplicates)
     speechBaseRef.current = '';
     accumulatedFinalTranscriptRef.current = '';
+    lastProcessedIndexRef.current = -1; // Reset to prevent duplicates
     setInputMessage('');
     
     recognition.onstart = () => {
@@ -883,6 +886,7 @@ const Chatbox = ({ isOpen, onClose }) => {
             pauseTimerRef.current = null;
             speechBaseRef.current = '';
             accumulatedFinalTranscriptRef.current = '';
+            lastProcessedIndexRef.current = -1; // Reset to prevent duplicates
             setTranscript('');
             setInputMessage('');
             
@@ -998,9 +1002,10 @@ const Chatbox = ({ isOpen, onClose }) => {
       setTranscript('');
       setInputMessage('');
       
-      // Reset transcript tracking
+      // Reset transcript tracking (including processed index)
       accumulatedFinalTranscriptRef.current = '';
       lastSentTranscriptRef.current = '';
+      lastProcessedIndexRef.current = -1;
       
       // Request microphone access first
       const stream = await navigator.mediaDevices.getUserMedia({ 
@@ -1093,44 +1098,59 @@ const Chatbox = ({ isOpen, onClose }) => {
       
       recognition.onresult = (event) => {
         // CRITICAL: Block processing if bot is speaking (prevent feedback loop)
-        // But check state at the moment of processing (not when event was created)
         const isAudioCurrentlyPlaying = isPlayingAudioRef.current || isSpeakingGreetingRef.current;
         
         if (isAudioCurrentlyPlaying) {
-          // Silently ignore - don't log every time to avoid console spam
           return; // Completely ignore speech input while audio is playing
+        }
+        
+        // CRITICAL: Only process NEW results (prevent duplicates)
+        if (event.resultIndex <= lastProcessedIndexRef.current) {
+          return; // Already processed these results
         }
         
         let interimTranscript = '';
         let finalTranscript = '';
         let hasInterimResults = false;
+        let newFinalTranscripts = [];
         
-        // Process all results from the last result index (token by token)
+        // Process only NEW results from resultIndex onwards
         for (let i = event.resultIndex; i < event.results.length; i += 1) {
           const result = event.results[i];
-          const transcript = result[0]?.transcript || '';
+          if (!result || !result[0]) continue;
+          
+          const transcript = result[0].transcript || '';
           
           if (result.isFinal) {
-            // Final result - user finished this sentence
-            finalTranscript += transcript;
+            // Only add if it's a new final result
+            if (i > lastProcessedIndexRef.current) {
+              newFinalTranscripts.push(transcript);
+              finalTranscript += transcript;
+            }
           } else {
-            // Interim result - user is still speaking
+            // Interim results are always new
             interimTranscript += transcript;
             hasInterimResults = true;
           }
         }
         
-        // Accumulate final transcripts
-        if (finalTranscript) {
+        // Update last processed index
+        lastProcessedIndexRef.current = event.results.length - 1;
+        
+        // Accumulate ONLY NEW final transcripts (prevent duplicates)
+        if (finalTranscript && newFinalTranscripts.length > 0) {
           const base = speechBaseRef.current;
-          const normalizedBase = base.toLowerCase();
-          const normalizedFinal = finalTranscript.toLowerCase();
+          const newText = newFinalTranscripts.join(' ').trim();
           
-          // Avoid duplicates
-          if (!normalizedBase.endsWith(normalizedFinal)) {
-            const updatedBase = [base, finalTranscript]
+          // Better duplicate detection
+          const normalizedBase = base.toLowerCase().trim();
+          const normalizedNew = newText.toLowerCase().trim();
+          
+          // Only add if it's truly new (not already contained)
+          if (!normalizedBase.includes(normalizedNew) || normalizedBase.length === 0) {
+            const updatedBase = [base, newText]
               .filter(Boolean)
-              .join(base ? ' ' : '')
+              .join(' ')
               .trim();
             speechBaseRef.current = updatedBase;
             accumulatedFinalTranscriptRef.current = updatedBase;
