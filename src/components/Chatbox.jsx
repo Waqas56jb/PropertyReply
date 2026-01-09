@@ -40,6 +40,7 @@ const Chatbox = ({ isOpen, onClose }) => {
   const speechSynthesisRef = useRef(null); // TTS utterance
   const greetingSpokenRef = useRef(false); // Greeting already spoken?
   const isSpeakingGreetingRef = useRef(false); // Currently speaking greeting?
+  const greetingInProgressRef = useRef(false); // Greeting is currently being initiated (prevents duplicates)
   const lastSpeechTimeRef = useRef(null); // Last time speech was detected
 
   useEffect(() => {
@@ -361,6 +362,7 @@ const Chatbox = ({ isOpen, onClose }) => {
             setIsPlayingAudio(false);
             if (isGreeting) {
               isSpeakingGreetingRef.current = false;
+              greetingInProgressRef.current = false; // Clear in-progress flag
             }
             
             // Resume mic after TTS
@@ -514,18 +516,11 @@ const Chatbox = ({ isOpen, onClose }) => {
           const utterance = new SpeechSynthesisUtterance(text);
           utterance.lang = 'en-US';
           
-          // INCREASED SPEED for faster narration (both greeting and responses)
-          // Rate: 1.0 = normal, 1.2 = 20% faster, 1.3 = 30% faster
-          const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-          if (isIOS) {
-            utterance.rate = 1.15;  // 15% faster for iOS
-            utterance.pitch = 1.0;
-            utterance.volume = 1.0;
-          } else {
-            utterance.rate = 1.2;   // 20% faster for other platforms
-            utterance.pitch = 1.0;
-            utterance.volume = 1.0;
-          }
+          // NORMAL HUMAN SPEED (rate 1.0 = natural human speech)
+          // Rate: 1.0 = normal human speed (as requested)
+          utterance.rate = 1.0;   // Normal human speed for all platforms
+          utterance.pitch = 1.0;
+          utterance.volume = 1.0;
           
           if (selectedVoice) {
             utterance.voice = selectedVoice;
@@ -552,6 +547,7 @@ const Chatbox = ({ isOpen, onClose }) => {
             
             if (isGreeting) {
               isSpeakingGreetingRef.current = false;
+              greetingInProgressRef.current = false; // Clear in-progress flag
             }
             
             // Resume mic IMMEDIATELY after TTS ends (CRITICAL for continuous conversation)
@@ -608,6 +604,7 @@ const Chatbox = ({ isOpen, onClose }) => {
             speechSynthesisRef.current = null;
             if (isGreeting) {
               isSpeakingGreetingRef.current = false;
+              greetingInProgressRef.current = false; // Clear in-progress flag on error
             }
             // Resume mic even on error
             setTimeout(() => {
@@ -693,6 +690,12 @@ const Chatbox = ({ isOpen, onClose }) => {
   };
 
   const handleVoiceRecord = async () => {
+    // CRITICAL: Prevent double-click/rapid clicks that cause duplicate greeting
+    if (greetingInProgressRef.current) {
+      console.log('⏸️ Greeting in progress, ignoring duplicate click');
+      return;
+    }
+    
     if (isRecording) {
       // User stopping - disable continuous mode
       continuousModeRef.current = false;
@@ -713,19 +716,47 @@ const Chatbox = ({ isOpen, onClose }) => {
       lastProcessedIndexRef.current = -1; // Reset to prevent duplicates
       setInputMessage('');
       
-      // Speak greeting IMMEDIATELY on first mic click (only once, simultaneously with mic click)
-      // Use a flag to prevent double greeting
-      if (!greetingSpokenRef.current && !isSpeakingGreetingRef.current) {
+      // Speak greeting ONLY ONCE on first mic click (STRICT guards to prevent ANY duplicates)
+      // Check ALL conditions and set flags ATOMICALLY to prevent race conditions
+      if (!greetingSpokenRef.current && 
+          !isSpeakingGreetingRef.current && 
+          !isPlayingAudioRef.current &&
+          !greetingInProgressRef.current) {
+        
+        // Set ALL flags IMMEDIATELY and ATOMICALLY to prevent any duplicate calls
+        greetingInProgressRef.current = true; // Set first to block any concurrent calls
         greetingSpokenRef.current = true;
         isSpeakingGreetingRef.current = true;
+        isPlayingAudioRef.current = true;
+        
         const greetingMessage = "Hello! I'm PropertyReply's AI assistant. How can I help you today?";
+        
+        console.log('🎤 Playing greeting ONCE (first time only) - all flags set atomically');
         
         // Play greeting immediately using OpenAI Alloy voice (don't wait for startRecording)
         // This ensures greeting happens simultaneously with mic click
-        generateAndPlayTTS(greetingMessage, true).catch((error) => {
-          console.error('Greeting TTS error:', error);
-          isSpeakingGreetingRef.current = false;
-        });
+        generateAndPlayTTS(greetingMessage, true)
+          .then(() => {
+            // Clear in-progress flag after greeting completes
+            greetingInProgressRef.current = false;
+          })
+          .catch((error) => {
+            console.error('Greeting TTS error:', error);
+            isSpeakingGreetingRef.current = false;
+            isPlayingAudioRef.current = false;
+            greetingInProgressRef.current = false; // Reset on error
+          });
+      } else {
+        // Log why greeting is being skipped (for debugging)
+        if (greetingSpokenRef.current) {
+          console.log('ℹ️ Greeting already spoken, skipping duplicate');
+        } else if (greetingInProgressRef.current) {
+          console.log('ℹ️ Greeting in progress, skipping duplicate');
+        } else if (isSpeakingGreetingRef.current) {
+          console.log('ℹ️ Greeting currently speaking, skipping duplicate');
+        } else if (isPlayingAudioRef.current) {
+          console.log('ℹ️ Audio currently playing, skipping greeting');
+        }
       }
       
       // Start recording (runs in parallel with greeting)
