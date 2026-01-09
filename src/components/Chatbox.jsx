@@ -1,14 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 
 const Chatbox = ({ isOpen, onClose }) => {
-  const [messages, setMessages] = useState([
-    {
-      id: Date.now(),
-      text: "Hello! I'm PropertyReply's AI assistant. How can I help you today?",
-      sender: 'bot',
-      timestamp: new Date()
-    }
-  ]);
+  const [messages, setMessages] = useState([]); // Start with empty messages - greeting will be spoken, not shown
   const [inputMessage, setInputMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
@@ -517,8 +510,8 @@ const Chatbox = ({ isOpen, onClose }) => {
           utterance.lang = 'en-US';
           
           // NORMAL HUMAN SPEED (rate 1.0 = natural human speech)
-          // Rate: 1.0 = normal human speed (as requested)
-          utterance.rate = 1.0;   // Normal human speed for all platforms
+          // Rate: 1.2 = clear, faster agent voice (as requested)
+          utterance.rate = 1.2;   // Clear agent voice speed for all platforms
           utterance.pitch = 1.0;
           utterance.volume = 1.0;
           
@@ -687,6 +680,7 @@ const Chatbox = ({ isOpen, onClose }) => {
     isPlayingAudioRef.current = false;
     setIsPlayingAudio(false);
     isSpeakingGreetingRef.current = false;
+    greetingInProgressRef.current = false; // Clear in-progress flag when stopping speech
   };
 
   const handleVoiceRecord = async () => {
@@ -1366,6 +1360,12 @@ const Chatbox = ({ isOpen, onClose }) => {
     setIsRecording(false);
     setIsTranscribing(false);
     setAudioLevel(0);
+    
+    // Reset greeting flags when stopping (so it can play again on next start)
+    // Note: We keep greetingSpokenRef.current = true to prevent duplicate on same session
+    // But reset in-progress flag to allow clean restart
+    greetingInProgressRef.current = false;
+    isSpeakingGreetingRef.current = false;
     
     // Cleanup recognition (proven approach)
     cleanupRecognition();
