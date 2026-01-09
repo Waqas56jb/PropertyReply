@@ -345,29 +345,8 @@ const Chatbox = ({ isOpen, onClose }) => {
       // Get available voices immediately (faster for greeting)
       let voices = window.speechSynthesis.getVoices();
       
-      // If no voices, wait for them to load (but with shorter delay for greeting)
-      if (voices.length === 0) {
-        const loadVoices = () => {
-          voices = window.speechSynthesis.getVoices();
-          if (voices.length > 0) {
-            createAndSpeak();
-          } else {
-            setTimeout(loadVoices, isGreeting ? 50 : 100); // Faster for greeting
-          }
-        };
-        window.speechSynthesis.onvoiceschanged = loadVoices;
-        loadVoices();
-      } else {
-        // For greeting, start immediately; for responses, small delay for cancellation
-        if (isGreeting) {
-          createAndSpeak();
-        } else {
-          setTimeout(() => {
-            createAndSpeak();
-          }, 50); // Minimal delay for responses
-        }
-        
-        function createAndSpeak() {
+      // Define createAndSpeak function first (before it's called)
+      function createAndSpeak() {
           // Find best available FEMALE voice (prioritize female voices)
           const preferredFemaleVoices = [
             'Samantha',           // iOS (female, best quality)
@@ -547,6 +526,28 @@ const Chatbox = ({ isOpen, onClose }) => {
           
           speechSynthesisRef.current = utterance;
           window.speechSynthesis.speak(utterance);
+        }
+        
+      // If no voices, wait for them to load (but with shorter delay for greeting)
+      if (voices.length === 0) {
+        const loadVoices = () => {
+          voices = window.speechSynthesis.getVoices();
+          if (voices.length > 0) {
+            createAndSpeak();
+          } else {
+            setTimeout(loadVoices, isGreeting ? 50 : 100); // Faster for greeting
+          }
+        };
+        window.speechSynthesis.onvoiceschanged = loadVoices;
+        loadVoices();
+      } else {
+        // For greeting, start immediately; for responses, small delay for cancellation
+        if (isGreeting) {
+          createAndSpeak();
+        } else {
+          setTimeout(() => {
+            createAndSpeak();
+          }, 50); // Minimal delay for responses
         }
       }
     });
