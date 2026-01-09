@@ -294,39 +294,20 @@ const Chatbox = ({ isOpen, onClose }) => {
   };
 
   // Generate TTS audio using Web Speech API (browser built-in) - Proven approach
-  // CRITICAL: Stop mic COMPLETELY before speaking to prevent feedback loop
+  // CRITICAL: Stop mic before speaking to prevent feedback loop
   const generateAndPlayTTS = async (text, isGreeting = false) => {
     if (!text || !text.trim()) return Promise.resolve();
     
-    // CRITICAL: Stop and cleanup recognition COMPLETELY before speaking (prevent feedback loop)
-    if (speechRecognitionRef.current) {
-      console.log('🛑 MUTING mic completely before agent speaks');
+    // CRITICAL: Stop mic before speaking (prevent feedback loop)
+    if (isRecording && speechRecognitionRef.current) {
+      console.log('🛑 Stopping mic before speaking');
       try {
-        // Stop recognition
         speechRecognitionRef.current.stop();
-        // Remove event handlers to prevent any processing
-        speechRecognitionRef.current.onresult = null;
-        speechRecognitionRef.current.onerror = null;
-        speechRecognitionRef.current.onend = null;
-        speechRecognitionRef.current.onstart = null;
       } catch (e) {
         // Ignore errors
       }
-      // Clear the ref to ensure no processing happens
-      speechRecognitionRef.current = null;
       setIsRecording(false);
-      setIsTranscribing(false);
     }
-    
-    // Set audio playing flag IMMEDIATELY to block any processing
-    // This ensures mic is COMPLETELY muted during agent speech (prevents feedback loop)
-    isPlayingAudioRef.current = true;
-    setIsPlayingAudio(true);
-    if (isGreeting) {
-      isSpeakingGreetingRef.current = true;
-    }
-    
-    console.log('🔇 Mic is now MUTED - agent will speak (feedback loop prevented)');
     
     return new Promise((resolve, reject) => {
       if (!('speechSynthesis' in window)) {
@@ -417,22 +398,56 @@ const Chatbox = ({ isOpen, onClose }) => {
             }
             
             // Resume mic IMMEDIATELY after TTS ends (simultaneously active)
-            // Create a FRESH recognition instance to ensure it works properly
+            // Use minimal delay to ensure mic is active as soon as speaker stops
             setTimeout(() => {
-              if (continuousModeRef.current && !isPlayingAudioRef.current && isRecording) {
-                console.log('🔄 Activating mic immediately after TTS - creating fresh recognition...');
+              if (continuousModeRef.current && !isPlayingAudioRef.current) {
+                console.log('🔄 Activating mic immediately after TTS...');
                 
-                // Always create a fresh recognition instance after TTS
-                // This ensures it's properly initialized and will process results
-                cleanupRecognition(); // Clean up old instance completely
-                
-                setTimeout(() => {
-                  if (continuousModeRef.current && !isPlayingAudioRef.current && isRecording) {
-                    // Create fresh recognition instance
-                    startSpeechRecognition();
-                    console.log('✅ Fresh recognition instance created - mic is ACTIVE');
+                // Check if recognition exists and is in recording state
+                if (speechRecognitionRef.current && isRecording) {
+                  try {
+                    // Try to restart recognition immediately
+                    speechRecognitionRef.current.stop();
+                    setTimeout(() => {
+                      if (continuousModeRef.current && !isPlayingAudioRef.current && isRecording && speechRecognitionRef.current) {
+                        try {
+                          speechRecognitionRef.current.start();
+                          console.log('✅ Mic activated - recognition restarted and listening');
+                        } catch (e) {
+                          console.log('⚠️ Recognition restart error, retrying...', e.message);
+                          // Retry with longer delay
+                          setTimeout(() => {
+                            if (continuousModeRef.current && !isPlayingAudioRef.current && isRecording && speechRecognitionRef.current) {
+                              try {
+                                speechRecognitionRef.current.start();
+                                console.log('✅ Mic activated after retry');
+                              } catch (err) {
+                                console.error('❌ Failed to activate mic:', err);
+                              }
+                            }
+                          }, 300);
+                        }
+                      }
+                    }, 200);
+                  } catch (e) {
+                    console.log('⚠️ Error stopping recognition:', e);
+                    // If stop fails, try to start anyway
+                    setTimeout(() => {
+                      if (continuousModeRef.current && !isPlayingAudioRef.current && isRecording && speechRecognitionRef.current) {
+                        try {
+                          speechRecognitionRef.current.start();
+                          console.log('✅ Mic activated (start without stop)');
+                        } catch (err) {
+                          console.error('❌ Failed to start recognition:', err);
+                        }
+                      }
+                    }, 300);
                   }
-                }, 200);
+                } else if (isRecording) {
+                  // Recognition doesn't exist, create new one
+                  console.log('🔄 Creating new recognition instance...');
+                  startSpeechRecognition();
+                }
               }
             }, 100); // Minimal delay - mic becomes active almost immediately
             
@@ -596,125 +611,13 @@ const Chatbox = ({ isOpen, onClose }) => {
     setInputMessage('');
     
     recognition.onstart = () => {
-      console.log('✅ Speech recognition started and listening - mic is ACTIVE');
+      console.log('✅ Speech recognition started and listening...');
       setIsTranscribing(true);
       isRestartingRef.current = false;
-      // Ensure mic is unblocked
-      isPlayingAudioRef.current = false;
-      isSpeakingGreetingRef.current = false;
     };
     
-    // Set up onresult handler (CRITICAL for real-time transcription)
-    recognition.onresult = (event) => {
-      // CRITICAL: Block ALL processing if bot is speaking (prevent feedback loop)
-      if (isPlayingAudioRef.current || isSpeakingGreetingRef.current) {
-        return; // Mic is muted during agent speech
-      }
-      
-      // CRITICAL: Verify this recognition instance is still active
-      if (!speechRecognitionRef.current || speechRecognitionRef.current !== recognition) {
-        return; // Recognition was stopped/cleaned up
-      }
-      
-      let interimTranscript = '';
-      let finalTranscript = '';
-      let hasInterimResults = false;
-      
-      // Process all results from the last result index (token by token)
-      for (let i = event.resultIndex; i < event.results.length; i += 1) {
-        const result = event.results[i];
-        if (!result || !result[0]) continue;
-        
-        const transcript = result[0].transcript || '';
-        
-        if (result.isFinal) {
-          finalTranscript += transcript;
-        } else {
-          interimTranscript += transcript;
-          hasInterimResults = true;
-        }
-      }
-      
-      if (!interimTranscript && !finalTranscript) {
-        return;
-      }
-      
-      // Accumulate final transcripts
-      if (finalTranscript) {
-        const base = speechBaseRef.current;
-        const normalizedBase = base.toLowerCase();
-        const normalizedFinal = finalTranscript.toLowerCase();
-        
-        if (!normalizedBase.endsWith(normalizedFinal)) {
-          const updatedBase = [base, finalTranscript]
-            .filter(Boolean)
-            .join(base ? ' ' : '')
-            .trim();
-          speechBaseRef.current = updatedBase;
-          accumulatedFinalTranscriptRef.current = updatedBase;
-        }
-      }
-      
-      lastSpeechTimeRef.current = Date.now();
-      
-      // Update UI with real-time transcript (REAL-TIME RESPONSIVE)
-      const displayText = speechBaseRef.current + (interimTranscript ? ' ' + interimTranscript : '');
-      setTranscript(displayText);
-      setInputMessage(displayText);
-      
-      // Log real-time transcription
-      if (interimTranscript) {
-        console.log('🎤 Real-time interim:', interimTranscript);
-      }
-      if (finalTranscript) {
-        console.log('✅ Final:', finalTranscript);
-      }
-      
-      // Clear existing pause timer
-      if (pauseTimerRef.current) {
-        clearTimeout(pauseTimerRef.current);
-        pauseTimerRef.current = null;
-      }
-      
-      // PAUSE DETECTION: If user stopped speaking, start 1-second timer
-      const finalValue = speechBaseRef.current || '';
-      
-      if (!hasInterimResults && 
-          finalValue && finalValue.trim() && 
-          continuousModeRef.current && 
-          !isPlayingAudioRef.current && 
-          !isSpeakingGreetingRef.current) {
-        
-        pauseTimerRef.current = setTimeout(() => {
-          const currentText = speechBaseRef.current || '';
-          const textToSend = currentText.trim();
-          
-          if (textToSend && 
-              continuousModeRef.current && 
-              !isPlayingAudioRef.current &&
-              !isSpeakingGreetingRef.current) {
-            
-            console.log('🚀 Auto-sending after 1+ second pause:', textToSend);
-            
-            if (speechRecognitionRef.current) {
-              try {
-                speechRecognitionRef.current.stop();
-              } catch (e) {
-                // Ignore
-              }
-            }
-            
-            pauseTimerRef.current = null;
-            speechBaseRef.current = '';
-            accumulatedFinalTranscriptRef.current = '';
-            setTranscript('');
-            setInputMessage('');
-            
-            sendTranscriptToOpenAI(textToSend);
-          }
-        }, 1000);
-      }
-    };
+    // Use the same onresult handler from above (already updated)
+    // ... (onresult is already set in startRecording)
     
     recognition.onerror = (event) => {
       if (event.error === 'no-speech') {
@@ -728,18 +631,17 @@ const Chatbox = ({ isOpen, onClose }) => {
     
     recognition.onend = () => {
       // Auto-restart if still in continuous mode
-      if (continuousModeRef.current && !isPlayingAudioRef.current && !isSpeakingGreetingRef.current) {
+      if (continuousModeRef.current && !isPlayingAudioRef.current) {
         isRestartingRef.current = true;
         setTimeout(() => {
-          if (continuousModeRef.current && !isPlayingAudioRef.current && !isSpeakingGreetingRef.current && speechRecognitionRef.current === recognition) {
+          if (continuousModeRef.current && !isPlayingAudioRef.current) {
             try {
               recognition.start();
-              console.log('🔄 Recognition auto-restarted');
             } catch (e) {
-              console.log('⚠️ Auto-restart error:', e.message);
+              // Ignore
             }
           }
-        }, 300);
+        }, 500);
       }
     };
     
@@ -1244,10 +1146,9 @@ const Chatbox = ({ isOpen, onClose }) => {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Recording Animation Overlay - Transparent so input field is visible and accessible */}
-      {/* Only show overlay in the messages area, not covering the input */}
+      {/* Recording Animation Overlay - Transparent so input field is visible */}
       {isRecording && (
-        <div className="absolute top-0 left-0 right-0 bottom-[120px] sm:bottom-[140px] bg-gradient-to-br from-dark/20 via-dark/10 to-dark/20 backdrop-blur-[1px] z-10 flex flex-col items-center justify-center p-4 sm:p-6 rounded-none sm:rounded-t-2xl md:rounded-t-3xl pointer-events-none">
+        <div className="absolute inset-0 bg-gradient-to-br from-dark/30 via-dark/20 to-dark/30 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center p-4 sm:p-6 rounded-none sm:rounded-2xl md:rounded-3xl">
           <div className="relative w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 flex items-center justify-center">
             {/* Dynamic Audio-Responsive Rings */}
             <div className="absolute inset-0 flex items-center justify-center">
@@ -1428,18 +1329,17 @@ const Chatbox = ({ isOpen, onClose }) => {
         </div>
       )}
 
-      {/* Input - Always visible and accessible, even during recording */}
-      <form onSubmit={handleSendMessage} className="p-4 sm:p-5 border-t border-white/20 bg-dark-light/50 backdrop-blur-sm flex-shrink-0 relative z-30">
+      {/* Input - Always visible, mic button replaced with stop when recording */}
+      <form onSubmit={handleSendMessage} className="p-4 sm:p-5 border-t border-white/20 bg-dark-light/50 backdrop-blur-sm flex-shrink-0 relative">
         <div className="flex gap-2 items-center">
           <input
             ref={inputRef}
             type="text"
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
-            placeholder={isRecording ? "Speaking... (voice input active)" : "Type your message..."}
-            disabled={false}
-            readOnly={isRecording}
-            className="flex-1 min-w-0 bg-white/10 border border-white/30 rounded-xl px-4 py-3 sm:px-5 sm:py-3.5 text-base text-white placeholder-white/60 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/30 shadow-inner"
+            placeholder={isRecording ? "Speaking..." : "Type your message..."}
+            disabled={isRecording}
+            className="flex-1 min-w-0 bg-white/10 border border-white/30 rounded-xl px-4 py-3 sm:px-5 sm:py-3.5 text-base text-white placeholder-white/60 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/30 shadow-inner disabled:opacity-50 disabled:cursor-not-allowed"
           />
                 <button
                   type="button"
