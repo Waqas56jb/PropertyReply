@@ -311,7 +311,7 @@ const Chatbox = ({ isOpen, onClose }) => {
     // Note: isPlayingAudio will be set to false by TTS onend handler
   };
 
-  // Generate TTS audio using Web Speech API (browser built-in) - Proven approach
+  // Generate TTS audio using OpenAI Alloy voice (with fallback to browser TTS)
   // CRITICAL: Stop mic before speaking to prevent feedback loop
   const generateAndPlayTTS = async (text, isGreeting = false) => {
     if (!text || !text.trim()) return Promise.resolve();
@@ -327,6 +327,106 @@ const Chatbox = ({ isOpen, onClose }) => {
       setIsRecording(false);
     }
     
+    const API_URL = (process.env.REACT_APP_API_URL || 'https://property-reply-backend.vercel.app').replace(/\/$/, '');
+    
+    // Try OpenAI TTS API first (Alloy voice model)
+    try {
+      console.log('🎙️ Generating TTS with OpenAI Alloy voice:', text.substring(0, 50) + '...');
+      
+      const response = await fetch(`${API_URL}/api/tts`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify({ 
+          text: text.trim(),
+          voice: 'alloy', // OpenAI Alloy voice model
+          model: 'tts-1' // or 'tts-1-hd' for higher quality
+        }),
+        mode: 'cors',
+      });
+
+      if (response.ok) {
+        const audioBlob = await response.blob();
+        const audioUrl = URL.createObjectURL(audioBlob);
+        const audio = new Audio(audioUrl);
+        
+        return new Promise((resolve, reject) => {
+          audio.onended = () => {
+            URL.revokeObjectURL(audioUrl);
+            console.log('✅ OpenAI TTS finished speaking');
+            isPlayingAudioRef.current = false;
+            setIsPlayingAudio(false);
+            if (isGreeting) {
+              isSpeakingGreetingRef.current = false;
+            }
+            
+            // Resume mic after TTS
+            setTimeout(() => {
+              if (continuousModeRef.current && !isPlayingAudioRef.current) {
+                console.log('🔄 Activating mic immediately after OpenAI TTS...');
+                if (!isRecording) {
+                  setIsRecording(true);
+                  setIsTranscribing(true);
+                }
+                if (speechRecognitionRef.current) {
+                  try {
+                    speechRecognitionRef.current.stop();
+                  } catch (e) {
+                    // Ignore
+                  }
+                  speechRecognitionRef.current.onresult = null;
+                  speechRecognitionRef.current.onerror = null;
+                  speechRecognitionRef.current.onend = null;
+                  speechRecognitionRef.current.onstart = null;
+                  speechRecognitionRef.current = null;
+                }
+                setTimeout(() => {
+                  if (continuousModeRef.current && !isPlayingAudioRef.current) {
+                    startSpeechRecognition();
+                    console.log('✅ Fresh recognition instance created - mic is ACTIVE');
+                  }
+                }, 200);
+              }
+            }, 100);
+            
+            resolve();
+          };
+          
+          audio.onerror = (error) => {
+            URL.revokeObjectURL(audioUrl);
+            console.error('❌ OpenAI TTS playback error:', error);
+            isPlayingAudioRef.current = false;
+            setIsPlayingAudio(false);
+            if (isGreeting) {
+              isSpeakingGreetingRef.current = false;
+            }
+            reject(error);
+          };
+          
+          isPlayingAudioRef.current = true;
+          setIsPlayingAudio(true);
+          if (isGreeting) {
+            isSpeakingGreetingRef.current = true;
+          }
+          
+          audio.play().catch(reject);
+        });
+      } else {
+        // If OpenAI TTS fails, fall back to browser TTS
+        console.log('⚠️ OpenAI TTS not available, falling back to browser TTS');
+        throw new Error('OpenAI TTS not available');
+      }
+    } catch (error) {
+      // Fallback to browser TTS if OpenAI TTS fails
+      console.log('🔄 Using browser TTS as fallback');
+      return generateBrowserTTS(text, isGreeting);
+    }
+  };
+  
+  // Fallback: Generate TTS using browser Web Speech API
+  const generateBrowserTTS = async (text, isGreeting = false) => {
     return new Promise((resolve, reject) => {
       if (!('speechSynthesis' in window)) {
         console.warn('Browser does not support speech synthesis');
@@ -335,7 +435,7 @@ const Chatbox = ({ isOpen, onClose }) => {
         return;
       }
       
-      console.log('🔊 Generating TTS for text:', text.substring(0, 50) + '...');
+      console.log('🔊 Generating browser TTS for text:', text.substring(0, 50) + '...');
       
       // Cancel any ongoing speech
       if (speechSynthesisRef.current) {
@@ -612,14 +712,17 @@ const Chatbox = ({ isOpen, onClose }) => {
       setInputMessage('');
       
       // Speak greeting IMMEDIATELY on first mic click (only once, simultaneously with mic click)
-      if (!greetingSpokenRef.current) {
+      // Use a flag to prevent double greeting
+      if (!greetingSpokenRef.current && !isSpeakingGreetingRef.current) {
         greetingSpokenRef.current = true;
+        isSpeakingGreetingRef.current = true;
         const greetingMessage = "Hello! I'm PropertyReply's AI assistant. How can I help you today?";
         
-        // Play greeting immediately (don't wait for startRecording)
+        // Play greeting immediately using OpenAI Alloy voice (don't wait for startRecording)
         // This ensures greeting happens simultaneously with mic click
         generateAndPlayTTS(greetingMessage, true).catch((error) => {
           console.error('Greeting TTS error:', error);
+          isSpeakingGreetingRef.current = false;
         });
       }
       
