@@ -1244,9 +1244,10 @@ const Chatbox = ({ isOpen, onClose }) => {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Recording Animation Overlay - Transparent so input field is visible */}
+      {/* Recording Animation Overlay - Transparent so input field is visible and accessible */}
+      {/* Only show overlay in the messages area, not covering the input */}
       {isRecording && (
-        <div className="absolute inset-0 bg-gradient-to-br from-dark/30 via-dark/20 to-dark/30 backdrop-blur-[2px] z-10 flex flex-col items-center justify-center p-4 sm:p-6 rounded-none sm:rounded-2xl md:rounded-3xl">
+        <div className="absolute top-0 left-0 right-0 bottom-[120px] sm:bottom-[140px] bg-gradient-to-br from-dark/20 via-dark/10 to-dark/20 backdrop-blur-[1px] z-10 flex flex-col items-center justify-center p-4 sm:p-6 rounded-none sm:rounded-t-2xl md:rounded-t-3xl pointer-events-none">
           <div className="relative w-64 h-64 sm:w-80 sm:h-80 md:w-96 md:h-96 flex items-center justify-center">
             {/* Dynamic Audio-Responsive Rings */}
             <div className="absolute inset-0 flex items-center justify-center">
@@ -1427,17 +1428,18 @@ const Chatbox = ({ isOpen, onClose }) => {
         </div>
       )}
 
-      {/* Input - Always visible, mic button replaced with stop when recording */}
-      <form onSubmit={handleSendMessage} className="p-4 sm:p-5 border-t border-white/20 bg-dark-light/50 backdrop-blur-sm flex-shrink-0 relative">
+      {/* Input - Always visible and accessible, even during recording */}
+      <form onSubmit={handleSendMessage} className="p-4 sm:p-5 border-t border-white/20 bg-dark-light/50 backdrop-blur-sm flex-shrink-0 relative z-30">
         <div className="flex gap-2 items-center">
           <input
             ref={inputRef}
             type="text"
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
-            placeholder={isRecording ? "Speaking..." : "Type your message..."}
-            disabled={isRecording}
-            className="flex-1 min-w-0 bg-white/10 border border-white/30 rounded-xl px-4 py-3 sm:px-5 sm:py-3.5 text-base text-white placeholder-white/60 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/30 shadow-inner disabled:opacity-50 disabled:cursor-not-allowed"
+            placeholder={isRecording ? "Speaking... (voice input active)" : "Type your message..."}
+            disabled={false}
+            readOnly={isRecording}
+            className="flex-1 min-w-0 bg-white/10 border border-white/30 rounded-xl px-4 py-3 sm:px-5 sm:py-3.5 text-base text-white placeholder-white/60 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/30 shadow-inner"
           />
                 <button
                   type="button"
