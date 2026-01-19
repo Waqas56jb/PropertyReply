@@ -6,7 +6,7 @@ const Contact = () => {
     {
       icon: 'fa-envelope',
       title: 'Email',
-      content: 'info@propertyreply.com'
+      content: 'Propertyreply1@gmail.com'
     },
     {
       icon: 'fa-phone',

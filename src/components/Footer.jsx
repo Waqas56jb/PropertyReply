@@ -116,7 +116,7 @@ const Footer = () => {
           <div className="flex flex-col gap-4">
             <div className="flex items-center gap-4 text-white/70">
               <i className="fas fa-envelope text-primary text-lg"></i>
-              <span>info@propertyreply.com</span>
+              <span>Propertyreply1@gmail.com</span>
             </div>
             <div className="flex items-center gap-4 text-white/70">
               <a 

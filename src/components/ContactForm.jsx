@@ -165,7 +165,7 @@ const ContactForm = () => {
             <i className="fas fa-exclamation-circle mt-1"></i>
             <div>
               <p className="font-semibold">Something went wrong.</p>
-              <p className="text-sm mt-1">Please check your internet connection and try again, or email us directly at info@propertyreply.com</p>
+              <p className="text-sm mt-1">Please check your internet connection and try again, or email us directly at Propertyreply1@gmail.com</p>
               <p className="text-xs mt-2 opacity-75">API: property-reply-backend.vercel.app</p>
             </div>
           </div>

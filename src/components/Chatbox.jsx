@@ -179,7 +179,7 @@ const Chatbox = ({ isOpen, onClose }) => {
     } catch (error) {
       console.error('Error calling chatbot API:', error);
       const botResponse = {
-        text: 'Sorry, I\'m having trouble connecting right now. Please try again later or contact us directly at info@propertyreply.com',
+        text: 'Sorry, I\'m having trouble connecting right now. Please try again later or contact us directly at Propertyreply1@gmail.com',
         sender: 'bot',
         timestamp: new Date()
       };

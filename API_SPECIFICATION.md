@@ -67,7 +67,7 @@ Content-Type: application/json
 ```json
 {
   "success": false,
-  "message": "Failed to send message. Please try again later or contact us directly at info@propertyreply.com"
+  "message": "Failed to send message. Please try again later or contact us directly at Propertyreply1@gmail.com"
 }
 ```
 
@@ -87,14 +87,14 @@ Access-Control-Allow-Headers: X-CSRF-Token, X-Requested-With, Accept, Accept-Ver
 ### Environment Variables Needed
 
 ```env
-CEO_EMAIL=info@propertyreply.com
+CEO_EMAIL=Propertyreply1@gmail.com
 CEO_APP_PASSWORD=ttnwkqnqwjqyrspz
 ```
 
 ### Email Details
 
-- **From:** `info@propertyreply.com`
-- **To:** `info@propertyreply.com`
+- **From:** `Propertyreply1@gmail.com`
+- **To:** `Propertyreply1@gmail.com`
 - **Reply-To:** User's email (from request)
 - **Subject:** `New Contact Form Submission from {name} - PropertyReply`
 
@@ -120,7 +120,7 @@ app.use(cors());
 app.use(express.json());
 
 // Email configuration
-const ceoEmail = process.env.CEO_EMAIL || 'info@propertyreply.com';
+const ceoEmail = process.env.CEO_EMAIL || 'Propertyreply1@gmail.com';
 const ceoAppPassword = process.env.CEO_APP_PASSWORD || 'ttnwkqnqwjqyrspz';
 
 // Create transporter
@@ -232,7 +232,7 @@ You can reply directly to this email to contact ${name} at ${email}.
     console.error('Error sending email:', error);
     res.status(500).json({
       success: false,
-      message: 'Failed to send message. Please try again later or contact us directly at info@propertyreply.com'
+      message: 'Failed to send message. Please try again later or contact us directly at Propertyreply1@gmail.com'
     });
   }
 });
