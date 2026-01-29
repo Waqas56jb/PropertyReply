@@ -1,14 +1,34 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
+
+// Production-safe video URL (works on Vercel and local)
+const getDemoVideoSrc = () => {
+  if (typeof window === 'undefined') return '/demo.mp4';
+  const base = window.location.origin + (process.env.PUBLIC_URL || '');
+  return base.replace(/\/$/, '') + '/demo.mp4';
+};
 
 const DemoModal = ({ isOpen, onClose }) => {
   const videoRef = useRef(null);
   const [isMuted, setIsMuted] = useState(true);
-  const [volume, setVolume] = useState(0.7);
+  const [volume, setVolume] = useState(1);
+  const demoVideoSrc = useMemo(getDemoVideoSrc, []);
+
+  // When user opens demo: reset volume to high (100%) and start video
+  useEffect(() => {
+    if (!isOpen) return;
+    setVolume(1);
+  }, [isOpen]);
 
   useEffect(() => {
-    if (isOpen && videoRef.current) {
-      videoRef.current.play().catch(() => {});
-    }
+    if (!isOpen || !videoRef.current) return;
+    const video = videoRef.current;
+    video.muted = true;
+    video.volume = 1;
+    video.load();
+    const play = () => video.play().catch(() => {});
+    if (video.readyState >= 2) play();
+    else video.addEventListener('canplay', play, { once: true });
+    return () => video.removeEventListener('canplay', play);
   }, [isOpen]);
 
   useEffect(() => {
@@ -36,75 +56,110 @@ const DemoModal = ({ isOpen, onClose }) => {
 
   return (
     <div
-      className="fixed inset-0 z-[1100] flex items-center justify-center p-4 opacity-100 transition-opacity duration-200"
+      className="fixed inset-0 z-[1100] flex items-center justify-center p-3 sm:p-4 md:p-6"
       role="dialog"
       aria-modal="true"
       aria-label="Live product demo"
     >
-      {/* Backdrop */}
+      {/* Backdrop - deep blur + gradient vignette */}
       <div
-        className="absolute inset-0 bg-black/75 backdrop-blur-sm"
+        className="absolute inset-0 bg-gradient-to-br from-slate-950/95 via-slate-900/90 to-slate-950/95 backdrop-blur-xl"
         onClick={onClose}
         aria-hidden="true"
       />
-
-      {/* Live demo card - realistic screen frame with subtle glow */}
       <div
-        className="relative w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl border border-white/15 bg-[#0f172a] animate-fadeInUp ring-2 ring-primary/20 ring-offset-2 ring-offset-black/50"
-        style={{ boxShadow: '0 0 60px rgba(37, 99, 235, 0.15), 0 25px 50px -12px rgba(0, 0, 0, 0.6)' }}
+        className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_50%,rgba(37,99,235,0.08)_0%,transparent_50%)] pointer-events-none"
+        aria-hidden="true"
+      />
+
+      {/* Main card - premium glass frame with gradient border */}
+      <div
+        className="relative w-full max-w-5xl rounded-3xl overflow-hidden animate-fadeInUp"
+        style={{
+          boxShadow: '0 0 0 1px rgba(255,255,255,0.08), 0 0 80px rgba(37,99,235,0.2), 0 32px 64px -24px rgba(0,0,0,0.7), 0 0 1px rgba(0,0,0,0.5)',
+          background: 'linear-gradient(160deg, #0f172a 0%, #0c1222 50%, #0a0f1a 100%)',
+        }}
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Browser-style top bar */}
-        <div className="flex items-center justify-between px-4 py-3 bg-[#1e293b] border-b border-white/10">
-          <div className="flex items-center gap-3">
-            <div className="flex gap-1.5">
-              <span className="w-3 h-3 rounded-full bg-[#ef4444]" />
-              <span className="w-3 h-3 rounded-full bg-[#eab308]" />
-              <span className="w-3 h-3 rounded-full bg-[#22c55e]" />
+        {/* Gradient border glow - top edge */}
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-primary/60 to-transparent z-10" aria-hidden="true" />
+
+        {/* Top bar - refined browser chrome */}
+        <div
+          className="flex items-center justify-between px-3 sm:px-4 md:px-5 py-2.5 sm:py-3 border-b border-white/[0.06] flex-shrink-0"
+          style={{ background: 'linear-gradient(180deg, rgba(30,41,59,0.9) 0%, rgba(15,23,42,0.95) 100%)' }}
+        >
+          <div className="flex items-center gap-4">
+            <div className="flex gap-2">
+              <span className="w-3.5 h-3.5 rounded-full bg-[#ff5f57] shadow-inner" />
+              <span className="w-3.5 h-3.5 rounded-full bg-[#febc2e] shadow-inner" />
+              <span className="w-3.5 h-3.5 rounded-full bg-[#28c840] shadow-inner" />
             </div>
-            <span className="text-white/60 text-sm font-medium ml-2">PropertyReply • Live Demo</span>
-            <span className="ml-2 flex items-center gap-1 rounded-full bg-emerald-500/20 px-2 py-0.5 text-xs font-semibold text-emerald-400 border border-emerald-500/40">
-              <span className="relative flex h-1.5 w-1.5">
-                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75" />
-                <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
+            <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/[0.04] border border-white/[0.06]">
+              <i className="fas fa-play text-primary/80 text-xs" />
+              <span className="text-white/70 text-sm font-medium">PropertyReply Demo</span>
+            </div>
+            <span
+              className="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-semibold text-emerald-400/95 border border-emerald-500/30"
+              style={{ background: 'linear-gradient(135deg, rgba(16,185,129,0.2) 0%, rgba(5,150,105,0.15) 100%)', boxShadow: '0 0 20px rgba(16,185,129,0.15)' }}
+            >
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-70" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
               </span>
               LIVE
             </span>
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-lg text-white/70 hover:text-white hover:bg-white/10 transition-colors"
+            className="p-2.5 rounded-xl text-white/60 hover:text-white hover:bg-white/10 transition-all duration-200"
             aria-label="Close demo"
           >
             <i className="fas fa-times text-lg" />
           </button>
         </div>
 
-        {/* Video container with on-screen volume controls */}
-        <div className="relative aspect-video bg-black">
-          <video
-            ref={videoRef}
-            src="/demo.mp4"
-            className="w-full h-full object-contain"
-            autoPlay
-            muted
-            loop
-            playsInline
-          />
-          {/* Subtle gradient vignette for realism */}
-          <div className="absolute inset-0 pointer-events-none rounded-b-2xl shadow-[inset_0_-40px_60px_-20px_rgba(0,0,0,0.4)]" />
-          {/* Volume controls overlay - bottom left */}
-          <div className="absolute bottom-3 left-3 right-3 flex items-center gap-3 px-3 py-2 rounded-xl bg-black/60 backdrop-blur-sm border border-white/10">
+        {/* Video area - balanced 16:9 proportion (taller, less letterboxing) */}
+        <div className="relative bg-black flex-shrink min-h-0 flex flex-col">
+          <div className="relative w-full aspect-video min-h-[240px] max-h-[50vh] sm:max-h-[55vh] md:max-h-[432px] overflow-hidden">
+            <video
+              ref={videoRef}
+              src={demoVideoSrc}
+              className="w-full h-full object-contain"
+              autoPlay
+              muted
+              loop
+              playsInline
+              preload="auto"
+            />
+            {/* Soft edge vignette */}
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                boxShadow: 'inset 0 0 80px 0 rgba(0,0,0,0.25), inset 0 0 0 1px rgba(255,255,255,0.03)',
+              }}
+            />
+          </div>
+
+          {/* Volume bar - glass pill, responsive padding */}
+          <div
+            className="absolute bottom-2 left-2 right-2 sm:bottom-3 sm:left-3 sm:right-3 md:bottom-4 md:left-4 md:right-4 flex items-center gap-2 sm:gap-3 px-3 py-2 sm:px-4 sm:py-3 rounded-xl sm:rounded-2xl border border-white/[0.08]"
+            style={{
+              background: 'linear-gradient(135deg, rgba(15,23,42,0.85) 0%, rgba(30,41,59,0.75) 100%)',
+              boxShadow: '0 8px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.05)',
+              backdropFilter: 'blur(12px)',
+            }}
+          >
             <button
               type="button"
               onClick={() => setIsMuted((m) => !m)}
-              className="flex-shrink-0 w-9 h-9 rounded-lg flex items-center justify-center text-white/90 hover:text-white hover:bg-white/15 transition-colors"
+              className="flex-shrink-0 w-8 h-8 sm:w-9 sm:h-9 md:w-10 md:h-10 rounded-lg sm:rounded-xl flex items-center justify-center text-white/80 hover:text-white transition-all duration-200 hover:bg-white/10"
               aria-label={isMuted ? 'Unmute' : 'Mute'}
             >
-              <i className={`fas text-lg ${isMuted ? 'fa-volume-mute' : 'fa-volume-up'}`} />
+              <i className={`fas text-base sm:text-lg ${isMuted ? 'fa-volume-mute' : 'fa-volume-up'}`} />
             </button>
-            <div className="flex items-center gap-2 flex-1 min-w-0">
-              <i className="fas fa-volume-down text-white/60 text-sm flex-shrink-0" />
+            <div className="flex items-center gap-2 sm:gap-3 flex-1 min-w-0">
+              <i className="fas fa-volume-down text-white/40 text-xs sm:text-sm flex-shrink-0 hidden sm:block" />
               <input
                 type="range"
                 min="0"
@@ -116,20 +171,28 @@ const DemoModal = ({ isOpen, onClose }) => {
                   setVolume(v);
                   if (v > 0) setIsMuted(false);
                 }}
-                className="flex-1 h-2 rounded-full appearance-none bg-white/20 accent-primary cursor-pointer [&::-webkit-slider-thumb]:appearance-none [&::-webkit-slider-thumb]:w-4 [&::-webkit-slider-thumb]:h-4 [&::-webkit-slider-thumb]:rounded-full [&::-webkit-slider-thumb]:bg-primary [&::-webkit-slider-thumb]:cursor-pointer [&::-webkit-slider-thumb]:shadow-md"
+                className="demo-volume-slider flex-1 h-1.5 sm:h-2 rounded-full appearance-none bg-white/15 cursor-pointer"
               />
-              <i className="fas fa-volume-up text-white/60 text-sm flex-shrink-0" />
+              <i className="fas fa-volume-up text-white/40 text-xs sm:text-sm flex-shrink-0 hidden sm:block" />
             </div>
-            <span className="text-white/70 text-xs font-medium flex-shrink-0 w-10 text-right">
+            <span className="text-white/60 text-xs font-semibold tabular-nums flex-shrink-0 w-9 sm:w-11 text-right">
               {isMuted ? 'Muted' : `${Math.round(volume * 100)}%`}
             </span>
           </div>
         </div>
 
-        {/* Footer strip */}
-        <div className="flex items-center justify-between px-4 py-2 bg-[#1e293b]/80 border-t border-white/5 text-white/50 text-xs">
-          <span>Real-time product walkthrough</span>
-          <span>PropertyReply for UK estate agents</span>
+        {/* Footer - subtle gradient strip */}
+        <div
+          className="flex items-center justify-between px-3 sm:px-4 md:px-5 py-2 sm:py-2.5 md:py-3 border-t border-white/[0.06] flex-shrink-0"
+          style={{ background: 'linear-gradient(180deg, rgba(15,23,42,0.98) 0%, rgba(15,23,42,0.95) 100%)' }}
+        >
+          <span className="text-white/40 text-xs font-medium flex items-center gap-2">
+            <i className="fas fa-film text-white/30" />
+            Product walkthrough
+          </span>
+          <span className="text-white/30 text-xs">
+            PropertyReply · UK estate agents
+          </span>
         </div>
       </div>
     </div>
