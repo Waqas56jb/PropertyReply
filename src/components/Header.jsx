@@ -34,8 +34,8 @@ const Header = () => {
 
   const handleCTAClick = (e) => {
     e.preventDefault();
-    if (window.openChatbox) {
-      window.openChatbox();
+    if (window.openDemoModal) {
+      window.openDemoModal();
     }
   };
 

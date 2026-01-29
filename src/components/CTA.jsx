@@ -1,7 +1,14 @@
 import React from 'react';
 
 const CTA = () => {
-  const handleCTAClick = (e) => {
+  const handleDemoClick = (e) => {
+    e.preventDefault();
+    if (window.openDemoModal) {
+      window.openDemoModal();
+    }
+  };
+
+  const handleTrialClick = (e) => {
     e.preventDefault();
     if (window.openChatbox) {
       window.openChatbox();
@@ -19,11 +26,11 @@ const CTA = () => {
         </p>
         
         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 md:gap-6 justify-center items-stretch sm:items-center relative max-w-full">
-          <button onClick={handleCTAClick} className="w-full sm:w-auto px-6 sm:px-8 md:px-11 py-3 sm:py-3.5 md:py-4.5 rounded-full font-semibold text-sm sm:text-base md:text-lg cursor-pointer transition-all duration-300 border-none font-sans relative overflow-hidden inline-flex items-center justify-center gap-2 sm:gap-3 tracking-wide bg-gradient-accent text-white shadow-md hover:-translate-y-1 hover:shadow-lg">
+          <button onClick={handleTrialClick} className="w-full sm:w-auto px-6 sm:px-8 md:px-11 py-3 sm:py-3.5 md:py-4.5 rounded-full font-semibold text-sm sm:text-base md:text-lg cursor-pointer transition-all duration-300 border-none font-sans relative overflow-hidden inline-flex items-center justify-center gap-2 sm:gap-3 tracking-wide bg-gradient-accent text-white shadow-md hover:-translate-y-1 hover:shadow-lg">
             <i className="fas fa-rocket text-sm sm:text-base md:text-[1.1rem] text-white"></i>
             Start Free Trial
           </button>
-          <button onClick={handleCTAClick} className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-3.5 rounded-full font-semibold text-sm sm:text-base cursor-pointer transition-all duration-300 border-none font-sans relative overflow-hidden inline-flex items-center justify-center gap-2 sm:gap-3 tracking-wide bg-gradient-dark text-white shadow-md hover:-translate-y-1 hover:shadow-lg">
+          <button onClick={handleDemoClick} className="w-full sm:w-auto px-6 sm:px-8 py-3 sm:py-3.5 rounded-full font-semibold text-sm sm:text-base cursor-pointer transition-all duration-300 border-none font-sans relative overflow-hidden inline-flex items-center justify-center gap-2 sm:gap-3 tracking-wide bg-gradient-dark text-white shadow-md hover:-translate-y-1 hover:shadow-lg">
             <i className="fas fa-calendar-check text-sm sm:text-base md:text-[1.1rem] text-white"></i>
             Book a Demo
           </button>

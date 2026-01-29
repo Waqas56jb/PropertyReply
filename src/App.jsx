@@ -11,15 +11,19 @@ import Loader from './components/Loader';
 import ParticlesBackground from './components/ParticlesBackground';
 import Chatbox from './components/Chatbox';
 import ChatButton from './components/ChatButton';
+import DemoModal from './components/DemoModal';
 
 function App() {
   const [chatboxOpen, setChatboxOpen] = useState(false);
+  const [demoModalOpen, setDemoModalOpen] = useState(false);
 
-  // Expose function globally so all components can open chatbox
+  // Expose functions globally so all components can open chatbox or demo modal
   useEffect(() => {
     window.openChatbox = () => setChatboxOpen(true);
+    window.openDemoModal = () => setDemoModalOpen(true);
     return () => {
       delete window.openChatbox;
+      delete window.openDemoModal;
     };
   }, []);
   useEffect(() => {
@@ -81,6 +85,7 @@ function App() {
       <Footer />
       <ChatButton onClick={() => setChatboxOpen(true)} isOpen={chatboxOpen} />
       <Chatbox isOpen={chatboxOpen} onClose={() => setChatboxOpen(false)} />
+      <DemoModal isOpen={demoModalOpen} onClose={() => setDemoModalOpen(false)} />
     </div>
   );
 }
