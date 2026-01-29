@@ -12,10 +12,17 @@ import ParticlesBackground from './components/ParticlesBackground';
 import Chatbox from './components/Chatbox';
 import ChatButton from './components/ChatButton';
 import DemoModal from './components/DemoModal';
+import { getDemoVideoUrl } from './utils/demoVideoUrl';
 
 function App() {
   const [chatboxOpen, setChatboxOpen] = useState(false);
   const [demoModalOpen, setDemoModalOpen] = useState(false);
+  const [demoVideoUrl, setDemoVideoUrl] = useState('');
+
+  // Preload demo video as soon as app mounts so it's cached when user opens modal
+  useEffect(() => {
+    setDemoVideoUrl(getDemoVideoUrl());
+  }, []);
 
   // Expose functions globally so all components can open chatbox or demo modal
   useEffect(() => {
@@ -85,6 +92,17 @@ function App() {
       <Footer />
       <ChatButton onClick={() => setChatboxOpen(true)} isOpen={chatboxOpen} />
       <Chatbox isOpen={chatboxOpen} onClose={() => setChatboxOpen(false)} />
+      {/* Hidden preloader: starts loading demo video on page load so modal plays on first click */}
+      {demoVideoUrl && (
+        <video
+          src={demoVideoUrl}
+          preload="auto"
+          muted
+          playsInline
+          style={{ position: 'absolute', width: 0, height: 0, opacity: 0, pointerEvents: 'none' }}
+          aria-hidden="true"
+        />
+      )}
       <DemoModal isOpen={demoModalOpen} onClose={() => setDemoModalOpen(false)} />
     </div>
   );

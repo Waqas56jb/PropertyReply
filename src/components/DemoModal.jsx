@@ -1,14 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-
-// Video URL: use env if set (for Vercel/external hosting), else absolute URL from current origin
-const getDemoVideoUrl = () => {
-  if (typeof window === 'undefined') return '';
-  const envUrl = process.env.REACT_APP_DEMO_VIDEO_URL;
-  if (envUrl) return envUrl;
-  const origin = window.location.origin;
-  const base = (process.env.PUBLIC_URL || '').replace(/\/$/, '');
-  return `${origin}${base}/demo.mp4`;
-};
+import { getDemoVideoUrl } from '../utils/demoVideoUrl';
 
 const DemoModal = ({ isOpen, onClose }) => {
   const videoRef = useRef(null);
@@ -16,21 +7,24 @@ const DemoModal = ({ isOpen, onClose }) => {
   const [volume, setVolume] = useState(1);
   const [videoSrc, setVideoSrc] = useState('');
   const [loadError, setLoadError] = useState(false);
+  const [isVideoReady, setIsVideoReady] = useState(false);
 
   // When modal opens: set video URL (client-side origin for Vercel) and reset volume
   useEffect(() => {
     if (!isOpen) {
       setLoadError(false);
+      setIsVideoReady(false);
       return;
     }
     setVolume(1);
     setVideoSrc(getDemoVideoUrl());
   }, [isOpen]);
 
-  // When we have src: load and play (defer one frame so ref is attached after mount)
+  // When we have src: load and play as soon as first frame is ready (loadeddata = faster than canplay)
   useEffect(() => {
     if (!videoSrc || !isOpen) return;
     setLoadError(false);
+    setIsVideoReady(false);
     let cancelled = false;
     const id = requestAnimationFrame(() => {
       if (cancelled) return;
@@ -39,10 +33,13 @@ const DemoModal = ({ isOpen, onClose }) => {
       video.muted = true;
       video.volume = 1;
       video.load();
-      const play = () => video.play().catch(() => {});
-      const onCanPlay = () => play();
+      const play = () => {
+        video.play().then(() => setIsVideoReady(true)).catch(() => {});
+      };
+      // Start play on loadeddata (first frame) so playback begins ASAP; canplay waits for more buffer
+      const onLoadedData = () => play();
       const onError = () => setLoadError(true);
-      video.addEventListener('canplay', onCanPlay, { once: true });
+      video.addEventListener('loadeddata', onLoadedData, { once: true });
       video.addEventListener('error', onError, { once: true });
       if (video.readyState >= 2) play();
     });
@@ -155,6 +152,12 @@ const DemoModal = ({ isOpen, onClose }) => {
                 playsInline
                 preload="auto"
               />
+            )}
+            {!isVideoReady && !loadError && videoSrc && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-4 bg-black/80" aria-hidden="true">
+                <div className="w-10 h-10 border-2 border-primary/60 border-t-primary rounded-full animate-spin" />
+                <p className="text-white/80 text-sm font-medium">Loading video…</p>
+              </div>
             )}
             {loadError && (
               <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-4 text-center bg-black/90">
