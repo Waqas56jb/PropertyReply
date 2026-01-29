@@ -1729,11 +1729,12 @@ const Chatbox = ({ isOpen, onClose }) => {
             disabled={isRecording}
             className="flex-1 min-w-0 bg-white/10 border border-white/30 rounded-xl px-4 py-3 sm:px-5 sm:py-3.5 text-base text-white placeholder-white/60 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/30 shadow-inner disabled:opacity-50 disabled:cursor-not-allowed"
           />
+                {/* Mic button hidden - text-only chat; backend voice logic unchanged */}
                 <button
                   type="button"
                   onClick={handleVoiceRecord}
                   disabled={isPlayingAudio && !isRecording}
-                  className={`${
+                  className={`hidden ${
                     isRecording
                       ? 'bg-red-500 hover:bg-red-600 animate-pulse shadow-lg'
                       : isPlayingAudio
