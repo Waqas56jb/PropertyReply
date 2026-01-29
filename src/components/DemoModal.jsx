@@ -1,35 +1,56 @@
-import React, { useEffect, useRef, useState, useMemo } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
-// Production-safe video URL (works on Vercel and local)
-const getDemoVideoSrc = () => {
-  if (typeof window === 'undefined') return '/demo.mp4';
-  const base = window.location.origin + (process.env.PUBLIC_URL || '');
-  return base.replace(/\/$/, '') + '/demo.mp4';
+// Video URL: use env if set (for Vercel/external hosting), else absolute URL from current origin
+const getDemoVideoUrl = () => {
+  if (typeof window === 'undefined') return '';
+  const envUrl = process.env.REACT_APP_DEMO_VIDEO_URL;
+  if (envUrl) return envUrl;
+  const origin = window.location.origin;
+  const base = (process.env.PUBLIC_URL || '').replace(/\/$/, '');
+  return `${origin}${base}/demo.mp4`;
 };
 
 const DemoModal = ({ isOpen, onClose }) => {
   const videoRef = useRef(null);
   const [isMuted, setIsMuted] = useState(true);
   const [volume, setVolume] = useState(1);
-  const demoVideoSrc = useMemo(getDemoVideoSrc, []);
+  const [videoSrc, setVideoSrc] = useState('');
+  const [loadError, setLoadError] = useState(false);
 
-  // When user opens demo: reset volume to high (100%) and start video
+  // When modal opens: set video URL (client-side origin for Vercel) and reset volume
   useEffect(() => {
-    if (!isOpen) return;
+    if (!isOpen) {
+      setLoadError(false);
+      return;
+    }
     setVolume(1);
+    setVideoSrc(getDemoVideoUrl());
   }, [isOpen]);
 
+  // When we have src: load and play (defer one frame so ref is attached after mount)
   useEffect(() => {
-    if (!isOpen || !videoRef.current) return;
-    const video = videoRef.current;
-    video.muted = true;
-    video.volume = 1;
-    video.load();
-    const play = () => video.play().catch(() => {});
-    if (video.readyState >= 2) play();
-    else video.addEventListener('canplay', play, { once: true });
-    return () => video.removeEventListener('canplay', play);
-  }, [isOpen]);
+    if (!videoSrc || !isOpen) return;
+    setLoadError(false);
+    let cancelled = false;
+    const id = requestAnimationFrame(() => {
+      if (cancelled) return;
+      const video = videoRef.current;
+      if (!video) return;
+      video.muted = true;
+      video.volume = 1;
+      video.load();
+      const play = () => video.play().catch(() => {});
+      const onCanPlay = () => play();
+      const onError = () => setLoadError(true);
+      video.addEventListener('canplay', onCanPlay, { once: true });
+      video.addEventListener('error', onError, { once: true });
+      if (video.readyState >= 2) play();
+    });
+    return () => {
+      cancelled = true;
+      cancelAnimationFrame(id);
+    };
+  }, [videoSrc, isOpen]);
 
   useEffect(() => {
     const video = videoRef.current;
@@ -122,16 +143,34 @@ const DemoModal = ({ isOpen, onClose }) => {
         {/* Video area - balanced 16:9 proportion (taller, less letterboxing) */}
         <div className="relative bg-black flex-shrink min-h-0 flex flex-col">
           <div className="relative w-full aspect-video min-h-[240px] max-h-[50vh] sm:max-h-[55vh] md:max-h-[432px] overflow-hidden">
-            <video
-              ref={videoRef}
-              src={demoVideoSrc}
-              className="w-full h-full object-contain"
-              autoPlay
-              muted
-              loop
-              playsInline
-              preload="auto"
-            />
+            {videoSrc && (
+              <video
+                key={videoSrc}
+                ref={videoRef}
+                src={videoSrc}
+                className="w-full h-full object-contain"
+                autoPlay
+                muted
+                loop
+                playsInline
+                preload="auto"
+              />
+            )}
+            {loadError && (
+              <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 p-4 text-center bg-black/90">
+                <i className="fas fa-exclamation-triangle text-4xl text-amber-400" />
+                <p className="text-white/90 font-medium">Video could not be loaded</p>
+                <p className="text-white/60 text-sm">Ensure demo.mp4 is in the public folder and deployed, or set REACT_APP_DEMO_VIDEO_URL in Vercel.</p>
+                <a
+                  href={videoSrc}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-primary hover:underline text-sm"
+                >
+                  Open video link
+                </a>
+              </div>
+            )}
             {/* Soft edge vignette */}
             <div
               className="absolute inset-0 pointer-events-none"

@@ -32,6 +32,10 @@ A modern, professional React application for PropertyReply - AI Real Estate Assi
    npm run build
    ```
 
+4. **Deploying to Vercel (demo video)**
+   - Ensure `public/demo.mp4` is committed to Git so it is included in the build.
+   - If the video is hosted elsewhere (e.g. CDN), set **REACT_APP_DEMO_VIDEO_URL** in Vercel → Project → Settings → Environment Variables to the full video URL.
+
 ## Project Structure
 
 ```
