@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 
 const DEFAULT_GREETING = {
   id: 'welcome',
@@ -10,18 +10,60 @@ const FullscreenChatbot = ({ isOpen, onClose }) => {
   const [messages, setMessages] = useState([DEFAULT_GREETING]);
   const [inputMessage, setInputMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [viewportStyle, setViewportStyle] = useState({});
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+  const inputFocusedRef = useRef(false);
+  const messagesAreaRef = useRef(null);
 
   useEffect(() => {
     if (isOpen && inputRef.current) {
-      inputRef.current.focus();
+      const t = setTimeout(() => inputRef.current?.focus(), 100);
+      return () => clearTimeout(t);
     }
   }, [isOpen]);
 
+  // Scroll messages to bottom only when messages change; skip if user is typing (keeps focus, smooth keystrokes)
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (inputFocusedRef.current) return;
+    const id = requestAnimationFrame(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
+    });
+    return () => cancelAnimationFrame(id);
   }, [messages]);
+
+  // Visual Viewport: keep chat (and input) above the keyboard on mobile
+  useEffect(() => {
+    if (!isOpen || typeof window === 'undefined' || !window.visualViewport) return;
+    const update = () => {
+      const vv = window.visualViewport;
+      setViewportStyle({
+        height: `${vv.height}px`,
+        width: `${vv.width}px`,
+        left: `${vv.offsetLeft}px`,
+        top: `${vv.offsetTop}px`,
+      });
+    };
+    update();
+    window.visualViewport.addEventListener('resize', update);
+    window.visualViewport.addEventListener('scroll', update);
+    return () => {
+      window.visualViewport.removeEventListener('resize', update);
+      window.visualViewport.removeEventListener('scroll', update);
+    };
+  }, [isOpen]);
+
+  const handleInputFocus = useCallback(() => {
+    inputFocusedRef.current = true;
+    // Keep input above keyboard after it opens (delay so keyboard is visible first)
+    setTimeout(() => {
+      inputRef.current?.scrollIntoView({ block: 'end', behavior: 'smooth' });
+    }, 350);
+  }, []);
+
+  const handleInputBlur = useCallback(() => {
+    inputFocusedRef.current = false;
+  }, []);
 
   const formatBotMessage = (text) => {
     if (!text) return null;
@@ -123,9 +165,27 @@ const FullscreenChatbot = ({ isOpen, onClose }) => {
 
   if (!isOpen) return null;
 
+  const hasViewport = Object.keys(viewportStyle).length > 0;
+  const rootStyle = hasViewport
+    ? {
+        position: 'fixed',
+        zIndex: 1200,
+        ...viewportStyle,
+        paddingTop: 'env(safe-area-inset-top, 0)',
+        paddingBottom: 'env(safe-area-inset-bottom, 0)',
+        paddingLeft: 'env(safe-area-inset-left, 0)',
+        paddingRight: 'env(safe-area-inset-right, 0)',
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'hidden',
+        boxSizing: 'border-box',
+      }
+    : { minHeight: '100vh' };
+
   return (
     <div
-      className="fixed inset-0 z-[1200] flex flex-col bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 min-h-[100dvh] min-h-[100vh] pt-safe pb-safe pl-safe pr-safe"
+      className="fixed inset-0 z-[1200] flex flex-col bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 overflow-hidden box-border"
+      style={rootStyle}
       role="dialog"
       aria-modal="true"
       aria-label="PropertyReply Demo Chat"
@@ -136,56 +196,61 @@ const FullscreenChatbot = ({ isOpen, onClose }) => {
 
       {/* Header */}
       <header
-        className="relative flex items-center justify-between px-3 sm:px-6 md:px-8 py-3 sm:py-4 md:py-5 border-b border-white/10 flex-shrink-0 min-h-[56px] sm:min-h-0"
+        className="relative flex items-center justify-between px-3 sm:px-6 md:px-8 py-3 sm:py-4 md:py-5 border-b border-white/10 flex-shrink-0 min-h-[52px] sm:min-h-0"
         style={{
           background: 'linear-gradient(180deg, rgba(30,41,59,0.6) 0%, rgba(15,23,42,0.4) 100%)',
           boxShadow: '0 1px 0 0 rgba(255,255,255,0.06)',
         }}
       >
-        <div className="flex items-center gap-2 sm:gap-3 md:gap-4 min-w-0">
+        <div className="flex items-center gap-2 sm:gap-3 md:gap-4 min-w-0 flex-1 overflow-hidden">
           <div className="w-9 h-9 sm:w-10 sm:h-10 md:w-12 md:h-12 rounded-lg sm:rounded-xl flex-shrink-0 bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-blue-500/25">
             <i className="fas fa-robot text-white text-base sm:text-lg md:text-xl" />
           </div>
-          <div className="min-w-0">
+          <div className="min-w-0 overflow-hidden">
             <h1 className="text-base sm:text-lg md:text-xl font-bold text-white tracking-tight truncate">PropertyReply AI</h1>
             <p className="text-xs sm:text-sm text-white/60 truncate">Demo chat · We&apos;re here to help</p>
           </div>
         </div>
         <button
+          type="button"
           onClick={onClose}
-          className="flex-shrink-0 p-2.5 sm:p-3 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-all duration-200 min-h-[44px] min-w-[44px] flex items-center justify-center touch-manipulation"
+          className="flex-shrink-0 p-2.5 sm:p-3 rounded-xl text-white/70 hover:text-white hover:bg-white/10 transition-colors duration-200 min-h-[44px] min-w-[44px] flex items-center justify-center touch-manipulation"
           aria-label="Close demo chat"
         >
           <i className="fas fa-times text-base sm:text-lg md:text-xl" />
         </button>
       </header>
 
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-6 md:p-8 space-y-3 sm:space-y-5 min-h-0">
+      {/* Messages - contained scroll, no overflow */}
+      <div
+        ref={messagesAreaRef}
+        className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden overscroll-contain p-3 sm:p-6 md:p-8 space-y-3 sm:space-y-5"
+        style={{ WebkitOverflowScrolling: 'touch' }}
+      >
         {messages.map((msg) => (
           <div
             key={msg.id || msg.timestamp?.getTime?.() || Math.random()}
-            className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+            className={`flex ${msg.sender === 'user' ? 'justify-end' : 'justify-start'} min-w-0 w-full`}
           >
             <div
-              className={`max-w-[92%] sm:max-w-[80%] md:max-w-[70%] rounded-xl sm:rounded-2xl px-3 py-2.5 sm:px-5 sm:py-4 shadow-lg transition-all duration-200 ${
+              className={`max-w-[92%] sm:max-w-[80%] md:max-w-[70%] min-w-0 rounded-xl sm:rounded-2xl px-3 py-2.5 sm:px-5 sm:py-4 shadow-lg flex-shrink-0 ${
                 msg.sender === 'user'
                   ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white'
                   : 'bg-white/10 backdrop-blur-sm text-white border border-white/20'
               }`}
             >
               {msg.sender === 'bot' ? (
-                <div className="break-words text-sm sm:text-base leading-relaxed">
+                <div className="text-sm sm:text-base leading-relaxed break-words" style={{ overflowWrap: 'anywhere' }}>
                   {formatBotMessage(msg.text)}
                 </div>
               ) : (
-                <p className="text-sm sm:text-base leading-relaxed break-words">{msg.text}</p>
+                <p className="text-sm sm:text-base leading-relaxed break-words" style={{ overflowWrap: 'anywhere' }}>{msg.text}</p>
               )}
             </div>
           </div>
         ))}
         {isTyping && (
-          <div className="flex justify-start">
+          <div className="flex justify-start min-w-0">
             <div className="bg-white/10 text-white border border-white/20 rounded-xl sm:rounded-2xl px-3 py-2.5 sm:px-5 sm:py-4">
               <div className="flex gap-1.5">
                 <span className="w-2 h-2 sm:w-2.5 sm:h-2.5 bg-white/70 rounded-full animate-bounce" />
@@ -198,26 +263,32 @@ const FullscreenChatbot = ({ isOpen, onClose }) => {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input - touch-friendly on mobile */}
+      {/* Input - fixed at bottom, stays above keyboard via visual viewport */}
       <div
-        className="relative p-3 sm:p-5 md:p-6 pb-safe border-t border-white/10 flex-shrink-0"
+        className="relative flex-shrink-0 p-3 sm:p-5 md:p-6 border-t border-white/10 pb-safe"
         style={{
-          background: 'linear-gradient(0deg, rgba(15,23,42,0.95) 0%, rgba(30,41,59,0.6) 100%)',
+          background: 'linear-gradient(0deg, rgba(15,23,42,0.98) 0%, rgba(30,41,59,0.6) 100%)',
         }}
       >
-        <form onSubmit={handleSendMessage} className="flex gap-2 sm:gap-4 items-stretch sm:items-center max-w-4xl mx-auto">
+        <form onSubmit={handleSendMessage} className="flex gap-2 sm:gap-4 items-center max-w-4xl mx-auto min-w-0 w-full">
           <input
             ref={inputRef}
             type="text"
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
+            onFocus={handleInputFocus}
+            onBlur={handleInputBlur}
             placeholder="Type your message..."
-            className="flex-1 min-w-0 bg-white/10 border border-white/20 rounded-xl sm:rounded-2xl px-4 py-3 sm:px-5 sm:py-4 text-sm sm:text-base text-white placeholder-white/50 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30 transition-all min-h-[44px]"
+            inputMode="text"
+            autoComplete="off"
+            autoCorrect="on"
+            autoCapitalize="sentences"
+            className="flex-1 min-w-0 w-full max-w-full bg-white/10 border border-white/20 rounded-xl sm:rounded-2xl px-4 py-3 sm:px-5 sm:py-4 text-sm sm:text-base text-white placeholder-white/50 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/30 min-h-[44px] touch-manipulation"
           />
           <button
             type="submit"
             disabled={!inputMessage.trim() || isTyping}
-            className="flex-shrink-0 px-4 py-3 sm:px-6 sm:py-4 rounded-xl sm:rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 hover:scale-[1.02] active:scale-[0.98] min-h-[44px] min-w-[44px] flex items-center justify-center touch-manipulation"
+            className="flex-shrink-0 px-4 py-3 sm:px-6 sm:py-4 rounded-xl sm:rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-semibold shadow-lg shadow-blue-500/25 hover:shadow-blue-500/40 disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px] min-w-[44px] flex items-center justify-center touch-manipulation active:scale-95 transition-transform"
             aria-label="Send message"
           >
             <i className="fas fa-paper-plane text-base sm:text-lg md:text-xl" />
