@@ -12,11 +12,13 @@ import ParticlesBackground from './components/ParticlesBackground';
 import Chatbox from './components/Chatbox';
 import ChatButton from './components/ChatButton';
 import DemoModal from './components/DemoModal';
+import FullscreenChatbot from './components/FullscreenChatbot';
 import { getDemoVideoUrl } from './utils/demoVideoUrl';
 
 function App() {
   const [chatboxOpen, setChatboxOpen] = useState(false);
   const [demoModalOpen, setDemoModalOpen] = useState(false);
+  const [fullscreenChatOpen, setFullscreenChatOpen] = useState(false);
   const [demoVideoUrl, setDemoVideoUrl] = useState('');
 
   // Preload demo video as soon as app mounts so it's cached when user opens modal
@@ -24,13 +26,15 @@ function App() {
     setDemoVideoUrl(getDemoVideoUrl());
   }, []);
 
-  // Expose functions globally so all components can open chatbox or demo modal
+  // Request a Demo / Book a Demo → fullscreen chatbot; openVideoDemo → video modal
   useEffect(() => {
     window.openChatbox = () => setChatboxOpen(true);
-    window.openDemoModal = () => setDemoModalOpen(true);
+    window.openDemoModal = () => setFullscreenChatOpen(true);
+    window.openVideoDemo = () => setDemoModalOpen(true);
     return () => {
       delete window.openChatbox;
       delete window.openDemoModal;
+      delete window.openVideoDemo;
     };
   }, []);
   useEffect(() => {
@@ -90,7 +94,9 @@ function App() {
       <CTA />
       <Contact />
       <Footer />
-      <ChatButton onClick={() => setChatboxOpen(true)} isOpen={chatboxOpen} />
+      {!fullscreenChatOpen && (
+        <ChatButton onClick={() => setChatboxOpen(true)} isOpen={chatboxOpen} />
+      )}
       <Chatbox isOpen={chatboxOpen} onClose={() => setChatboxOpen(false)} />
       {/* Hidden preloader: starts loading demo video on page load so modal plays on first click */}
       {demoVideoUrl && (
@@ -103,6 +109,7 @@ function App() {
           aria-hidden="true"
         />
       )}
+      <FullscreenChatbot isOpen={fullscreenChatOpen} onClose={() => setFullscreenChatOpen(false)} />
       <DemoModal isOpen={demoModalOpen} onClose={() => setDemoModalOpen(false)} />
     </div>
   );

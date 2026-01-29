@@ -1,7 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 
+// Default greeting shown when user opens the chatbot (2-line intro to PropertyReply)
+const DEFAULT_GREETING = {
+  id: 'welcome',
+  sender: 'bot',
+  text: 'Hi! Welcome to PropertyReply.\nWe help UK estate agents capture leads and respond to enquiries 24/7 with AI.',
+};
+
 const Chatbox = ({ isOpen, onClose }) => {
-  const [messages, setMessages] = useState([]); // Start with empty messages - greeting will be spoken, not shown
+  const [messages, setMessages] = useState([DEFAULT_GREETING]);
   const [inputMessage, setInputMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
   const [isRecording, setIsRecording] = useState(false);
@@ -1475,7 +1482,13 @@ const Chatbox = ({ isOpen, onClose }) => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed bottom-0 right-0 sm:bottom-4 sm:right-4 w-full h-full sm:w-[90vw] sm:max-w-[400px] sm:h-[85vh] sm:max-h-[600px] sm:min-h-[500px] bg-dark-light/98 backdrop-blur-[20px] rounded-none sm:rounded-2xl md:rounded-3xl shadow-2xl border-0 sm:border-2 border-white/10 z-[9999] flex flex-col">
+    <div
+      className="fixed bottom-0 right-0 sm:bottom-4 sm:right-4 w-full h-full max-h-[100dvh] max-h-[100vh] sm:w-[90vw] sm:max-w-[400px] sm:h-[85vh] sm:max-h-[600px] sm:min-h-[400px] bg-dark-light/98 backdrop-blur-[20px] rounded-none sm:rounded-2xl md:rounded-3xl shadow-2xl border-0 sm:border-2 border-white/10 z-[9999] flex flex-col"
+      style={{
+        paddingBottom: 'env(safe-area-inset-bottom, 0)',
+        paddingRight: 'env(safe-area-inset-right, 0)',
+      }}
+    >
       {/* Header */}
       <div className="bg-gradient-primary p-4 sm:p-5 rounded-none sm:rounded-t-2xl md:rounded-t-3xl flex items-center justify-between flex-shrink-0 shadow-lg">
         <div className="flex items-center gap-3">
@@ -1718,7 +1731,7 @@ const Chatbox = ({ isOpen, onClose }) => {
       )}
 
       {/* Input - Always visible, mic button replaced with stop when recording */}
-      <form onSubmit={handleSendMessage} className="p-4 sm:p-5 border-t border-white/20 bg-dark-light/50 backdrop-blur-sm flex-shrink-0 relative">
+      <form onSubmit={handleSendMessage} className="p-3 sm:p-5 border-t border-white/20 bg-dark-light/50 backdrop-blur-sm flex-shrink-0 relative">
         <div className="flex gap-2 items-center">
           <input
             ref={inputRef}
@@ -1727,7 +1740,7 @@ const Chatbox = ({ isOpen, onClose }) => {
             onChange={(e) => setInputMessage(e.target.value)}
             placeholder={isRecording ? "Speaking..." : "Type your message..."}
             disabled={isRecording}
-            className="flex-1 min-w-0 bg-white/10 border border-white/30 rounded-xl px-4 py-3 sm:px-5 sm:py-3.5 text-base text-white placeholder-white/60 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/30 shadow-inner disabled:opacity-50 disabled:cursor-not-allowed"
+            className="flex-1 min-w-0 bg-white/10 border border-white/30 rounded-xl px-4 py-3 sm:px-5 sm:py-3.5 text-sm sm:text-base text-white placeholder-white/60 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/30 shadow-inner disabled:opacity-50 disabled:cursor-not-allowed min-h-[44px] touch-manipulation"
           />
                 {/* Mic button hidden - text-only chat; backend voice logic unchanged */}
                 <button

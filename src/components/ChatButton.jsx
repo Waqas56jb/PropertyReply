@@ -4,14 +4,14 @@ const ChatButton = ({ onClick, isOpen }) => {
   return (
     <button
       onClick={onClick}
-      className={`fixed bottom-4 right-4 sm:bottom-6 sm:right-6 w-14 h-14 sm:w-16 sm:h-16 bg-gradient-primary rounded-full shadow-2xl flex items-center justify-center text-white z-[9998] transition-all duration-300 hover:scale-110 hover:shadow-primary-hover ${
+      className={`fixed bottom-safe right-safe w-14 h-14 sm:w-16 sm:h-16 bg-gradient-primary rounded-full shadow-2xl flex items-center justify-center text-white z-[9998] transition-all duration-300 hover:scale-110 hover:shadow-primary-hover touch-manipulation min-w-[56px] min-h-[56px] sm:min-w-[64px] sm:min-h-[64px] ${
         isOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'
       }`}
       aria-label="Open chat"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
-        className="h-6 w-6 sm:h-8 sm:w-8"
+        className="h-6 w-6 sm:h-8 sm:w-8 flex-shrink-0"
         fill="none"
         viewBox="0 0 24 24"
         stroke="currentColor"

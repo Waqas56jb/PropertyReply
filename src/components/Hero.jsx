@@ -32,12 +32,16 @@ const Hero = () => {
 
   const handleSecondaryClick = (e) => {
     e.preventDefault();
-    const featuresSection = document.querySelector('#features');
-    if (featuresSection) {
-      window.scrollTo({
-        top: featuresSection.offsetTop - 80,
-        behavior: 'smooth'
-      });
+    if (window.openVideoDemo) {
+      window.openVideoDemo();
+    } else {
+      const featuresSection = document.querySelector('#features');
+      if (featuresSection) {
+        window.scrollTo({
+          top: featuresSection.offsetTop - 80,
+          behavior: 'smooth'
+        });
+      }
     }
   };
 
