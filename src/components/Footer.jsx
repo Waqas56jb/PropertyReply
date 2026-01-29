@@ -12,7 +12,6 @@ const Footer = () => {
     { text: 'Home', href: '#home' },
     { text: 'Services', href: '#services' },
     { text: 'Features', href: '#features' },
-    { text: 'Pricing', href: '#pricing' },
     { text: 'Contact', href: '#contact' }
   ];
 
@@ -55,9 +54,6 @@ const Footer = () => {
           </div>
           <p className="text-white/70 mb-6">
             Turn property enquiries into qualified leads and booked viewings — 24/7.
-          </p>
-          <p className="text-white/60 text-sm mb-4">
-            <span className="font-semibold text-white">SAQIB HUSSAIN</span> | CEO
           </p>
           <div className="flex gap-4 mt-6">
             {socialLinks.map((social, index) => (
