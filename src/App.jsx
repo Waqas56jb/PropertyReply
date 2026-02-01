@@ -12,14 +12,12 @@ import ParticlesBackground from './components/ParticlesBackground';
 import Chatbox from './components/Chatbox';
 import ChatButton from './components/ChatButton';
 import DemoModal from './components/DemoModal';
-import DemoRequestModal from './components/DemoRequestModal';
 import FullscreenChatbot from './components/FullscreenChatbot';
 import { getDemoVideoUrl } from './utils/demoVideoUrl';
 
 function App() {
   const [chatboxOpen, setChatboxOpen] = useState(false);
   const [demoModalOpen, setDemoModalOpen] = useState(false);
-  const [demoRequestModalOpen, setDemoRequestModalOpen] = useState(false);
   const [fullscreenChatOpen, setFullscreenChatOpen] = useState(false);
   const [demoVideoUrl, setDemoVideoUrl] = useState('');
 
@@ -28,10 +26,10 @@ function App() {
     setDemoVideoUrl(getDemoVideoUrl());
   }, []);
 
-  // Request a Demo / Book a Demo → demo request form modal; openVideoDemo → video modal
+  // Request a Demo / Book a Demo → fullscreen chatbot; openVideoDemo → video modal
   useEffect(() => {
     window.openChatbox = () => setChatboxOpen(true);
-    window.openDemoModal = () => setDemoRequestModalOpen(true);
+    window.openDemoModal = () => setFullscreenChatOpen(true);
     window.openVideoDemo = () => setDemoModalOpen(true);
     return () => {
       delete window.openChatbox;
@@ -112,7 +110,6 @@ function App() {
         />
       )}
       <FullscreenChatbot isOpen={fullscreenChatOpen} onClose={() => setFullscreenChatOpen(false)} />
-      <DemoRequestModal isOpen={demoRequestModalOpen} onClose={() => setDemoRequestModalOpen(false)} />
       <DemoModal isOpen={demoModalOpen} onClose={() => setDemoModalOpen(false)} />
     </div>
   );
