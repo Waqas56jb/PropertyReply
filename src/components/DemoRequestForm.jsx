@@ -23,13 +23,21 @@ const DemoRequestForm = ({ onSubmit, onCancel }) => {
     });
   };
 
-  const handleNext = () => {
-    if (currentStep < 3) {
+  const handleNext = (e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+    if (currentStep < 3 && isStepValid()) {
       setCurrentStep(currentStep + 1);
     }
   };
 
-  const handleBack = () => {
+  const handleBack = (e) => {
+    if (e) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
     if (currentStep > 1) {
       setCurrentStep(currentStep - 1);
     }
@@ -37,6 +45,13 @@ const DemoRequestForm = ({ onSubmit, onCancel }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    e.stopPropagation();
+    
+    // Only allow submission on step 3
+    if (currentStep !== 3) {
+      return;
+    }
+    
     setIsSubmitting(true);
     setSubmitStatus(null);
 
@@ -72,7 +87,7 @@ const DemoRequestForm = ({ onSubmit, onCancel }) => {
         if (onSubmit) {
           onSubmit(formData);
         }
-        // Reset form after 3 seconds
+        // Reset form after 5 seconds (only on success)
         setTimeout(() => {
           setFormData({
             agencyName: '',
@@ -87,13 +102,15 @@ const DemoRequestForm = ({ onSubmit, onCancel }) => {
           });
           setCurrentStep(1);
           setSubmitStatus(null);
-        }, 3000);
+        }, 5000);
       } else {
         setSubmitStatus('error');
+        // Don't reset form on error - keep all data
       }
     } catch (error) {
       console.error('Error submitting demo request:', error);
       setSubmitStatus('error');
+      // Don't reset form on error - keep all data
     } finally {
       setIsSubmitting(false);
     }
@@ -112,8 +129,18 @@ const DemoRequestForm = ({ onSubmit, onCancel }) => {
     }
   };
 
+  // Prevent Enter key from submitting form unless on step 3
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' && currentStep !== 3) {
+      e.preventDefault();
+      if (isStepValid()) {
+        handleNext(e);
+      }
+    }
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} onKeyDown={handleKeyDown} className="space-y-6">
       {/* Progress indicator */}
       <div className="flex items-center justify-between mb-6">
         {[1, 2, 3].map((step) => (
@@ -157,6 +184,14 @@ const DemoRequestForm = ({ onSubmit, onCancel }) => {
               required
               value={formData.agencyName}
               onChange={handleChange}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && currentStep === 1) {
+                  e.preventDefault();
+                  if (isStepValid()) {
+                    handleNext(e);
+                  }
+                }
+              }}
               className="w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
               placeholder="Your estate agency name"
             />
@@ -173,6 +208,14 @@ const DemoRequestForm = ({ onSubmit, onCancel }) => {
               required
               value={formData.contactName}
               onChange={handleChange}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && currentStep === 1) {
+                  e.preventDefault();
+                  if (isStepValid()) {
+                    handleNext(e);
+                  }
+                }
+              }}
               className="w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
               placeholder="Your full name"
             />
@@ -209,6 +252,14 @@ const DemoRequestForm = ({ onSubmit, onCancel }) => {
               required
               value={formData.email}
               onChange={handleChange}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && currentStep === 2) {
+                  e.preventDefault();
+                  if (isStepValid()) {
+                    handleNext(e);
+                  }
+                }
+              }}
               className="w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
               placeholder="your.email@agency.com"
             />
@@ -225,6 +276,14 @@ const DemoRequestForm = ({ onSubmit, onCancel }) => {
               required
               value={formData.phone}
               onChange={handleChange}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' && currentStep === 2) {
+                  e.preventDefault();
+                  if (isStepValid()) {
+                    handleNext(e);
+                  }
+                }
+              }}
               className="w-full bg-white/5 border border-white/20 rounded-xl px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
               placeholder="+44 1234 567890"
             />
